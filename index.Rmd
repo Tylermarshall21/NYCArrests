@@ -1,6 +1,6 @@
 --- 
-title: "YOUR TITLE HERE"
-author: "YOUR NAMES HERE"
+title: "NYC Arrests"
+author: "Ryan Rogers and Tyler Marshall"
 date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
 ---
