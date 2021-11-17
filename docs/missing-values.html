@@ -24,7 +24,7 @@
 <meta name="author" content="Ryan Rogers and Tyler Marshall" />
 
 
-<meta name="date" content="2021-11-10" />
+<meta name="date" content="2021-11-17" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -33,7 +33,7 @@
   
 <link rel="prev" href="data-transformation.html"/>
 <link rel="next" href="results.html"/>
-<script src="libs/header-attrs-2.10/header-attrs.js"></script>
+<script src="libs/header-attrs-2.11/header-attrs.js"></script>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -73,10 +73,21 @@
 <li><a href="./">NYC Arrests</a></li>
 
 <li class="divider"></li>
-<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a></li>
-<li class="chapter" data-level="2" data-path="data-sources.html"><a href="data-sources.html"><i class="fa fa-check"></i><b>2</b> Data sources</a></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#overview-of-analysis"><i class="fa fa-check"></i><b>1.1</b> Overview of analysis:</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="data-sources.html"><a href="data-sources.html"><i class="fa fa-check"></i><b>2</b> Data sources</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="data-sources.html"><a href="data-sources.html#arrest-data"><i class="fa fa-check"></i><b>2.1</b> Arrest Data</a></li>
+</ul></li>
 <li class="chapter" data-level="3" data-path="data-transformation.html"><a href="data-transformation.html"><i class="fa fa-check"></i><b>3</b> Data transformation</a></li>
-<li class="chapter" data-level="4" data-path="missing-values.html"><a href="missing-values.html"><i class="fa fa-check"></i><b>4</b> Missing values</a></li>
+<li class="chapter" data-level="4" data-path="missing-values.html"><a href="missing-values.html"><i class="fa fa-check"></i><b>4</b> Missing values</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="missing-values.html"><a href="missing-values.html#composing-our-visualization-for-missing-data"><i class="fa fa-check"></i><b>4.1</b> Composing our Visualization for Missing Data</a></li>
+<li class="chapter" data-level="4.2" data-path="missing-values.html"><a href="missing-values.html#importing-the-arrests-dataset"><i class="fa fa-check"></i><b>4.2</b> Importing the Arrests Dataset</a></li>
+<li class="chapter" data-level="4.3" data-path="missing-values.html"><a href="missing-values.html#visualizing-the-missing-values"><i class="fa fa-check"></i><b>4.3</b> Visualizing the Missing Values</a></li>
+</ul></li>
 <li class="chapter" data-level="5" data-path="results.html"><a href="results.html"><i class="fa fa-check"></i><b>5</b> Results</a></li>
 <li class="chapter" data-level="6" data-path="interactive-component.html"><a href="interactive-component.html"><i class="fa fa-check"></i><b>6</b> Interactive component</a></li>
 <li class="chapter" data-level="7" data-path="conclusion.html"><a href="conclusion.html"><i class="fa fa-check"></i><b>7</b> Conclusion</a></li>
@@ -101,7 +112,21 @@
             <section class="normal" id="section-">
 <div id="missing-values" class="section level1" number="4">
 <h1><span class="header-section-number">Chapter 4</span> Missing values</h1>
+<div id="composing-our-visualization-for-missing-data" class="section level2" number="4.1">
+<h2><span class="header-section-number">4.1</span> Composing our Visualization for Missing Data</h2>
+<p>We start by introducing a function that will visualize missing values in our dataset. The code to do this can be seen below:</p>
+</div>
+<div id="importing-the-arrests-dataset" class="section level2" number="4.2">
+<h2><span class="header-section-number">4.2</span> Importing the Arrests Dataset</h2>
+<p>We are now ready to look out our dataset. First, we import the data from its source:</p>
+</div>
+<div id="visualizing-the-missing-values" class="section level2" number="4.3">
+<h2><span class="header-section-number">4.3</span> Visualizing the Missing Values</h2>
+<p>Our last step will be to look at our dataset for missing values.</p>
+<p><img src="finalproj_files/figure-html/unnamed-chunk-8-1.png" width="672" /><img src="finalproj_files/figure-html/unnamed-chunk-8-2.png" width="672" /></p>
+<p>As we can see from the percentage visualization, there are only a small number of rows missing one of two columns: KY_CD (Key code), which is a generalized classification code, and PD_CD (Police Department code), which is a more granular code.</p>
 
+</div>
 </div>
             </section>
 
