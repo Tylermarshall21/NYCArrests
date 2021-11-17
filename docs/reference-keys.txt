@@ -7,3 +7,6 @@ interactive-component
 conclusion
 overview-of-analysis
 arrest-data
+composing-our-visualization-for-missing-data
+importing-the-arrests-dataset
+visualizing-the-missing-values

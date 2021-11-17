@@ -1,1 +1,127 @@
 # Missing values
+
+```{r, include=FALSE}
+library(tidyverse)
+library(patchwork)
+```
+
+
+## Composing our Visualization for Missing Data
+
+We start by introducing a function that will visualize missing values in our dataset. The code to do this can be seen below:
+
+```{r}
+visna_na_plot <-
+  function(dataset,percent=FALSE){
+    missing_patterns <- data.frame(is.na(dataset)) %>%
+      group_by_all() %>%
+      count(name = "count", sort = TRUE) %>%
+      ungroup() %>%
+      mutate(percentage = (count / sum(count)) * 100)
+
+    dataset_nulls <- {
+      colSums(is.na(dataset)) %>%
+        sort(decreasing = TRUE)
+    }
+    df_null <- {
+      data.frame(dataset_nulls) %>%
+        rownames_to_column() %>%
+        mutate(percentage = (dataset_nulls / nrow(dataset)) * 100)
+    }
+    
+    missing_patterns['pattern'] <- as.integer(row.names(missing_patterns))
+    
+    missing_patterns_p2 <-{
+      missing_patterns %>%
+        rowwise() %>%
+        mutate(is_complete = !any(c_across(where(is.logical))))
+    }
+    
+    if(percent == FALSE){
+      p3 <- {
+        ggplot(missing_patterns_p2, aes(y = reorder(pattern, desc(pattern)), x = count, alpha = is_complete)) + 
+          geom_col(fill="blue") +
+          labs(x = 'Row Count', y = '') +
+          theme(legend.position = 'none', axis.text.x = element_text(angle=90, hjust = 1)) +
+          scale_alpha_manual(values = c(0.5, 1))
+      }
+    }else{
+      p3 <- {
+        ggplot(missing_patterns_p2, aes(y = reorder(pattern, desc(pattern)), x = percentage, alpha = is_complete)) + 
+          geom_col(fill="blue") +
+          xlim(0,100) +
+          labs(x = '% Rows', y = '') +
+          theme(legend.position = 'none', axis.text.x = element_text(angle=90, hjust = 1)) +
+          scale_alpha_manual(values = c(0.5, 1))
+      }
+    }
+    
+    
+    missing_patterns_pivoted <- {
+      missing_patterns_p2 %>%
+        pivot_longer(cols = !c(count, percentage, pattern, is_complete)) %>%
+        left_join(df_null, by= c('name'='rowname'))
+    }
+    
+    p2 <- {
+      ggplot(missing_patterns_pivoted,
+             aes(
+               x = reorder(name, desc(dataset_nulls)),
+               y = reorder(pattern, desc(pattern)),
+               fill = value,
+               alpha = is_complete)) +
+        geom_tile(color = 'white') +
+        annotate("text",
+                 x = (ncol(missing_patterns_p2)-2)/2,
+                 y = (nrow(missing_patterns_p2) - as.integer(filter(missing_patterns_p2, is_complete)['pattern'][[1]]) + 1),
+                 label = 'Complete Cases') +
+        labs(x = 'Variable', y = 'Missing Pattern') +
+        theme(legend.position = 'none', axis.text.x = element_text(angle=90, hjust = 1)) +
+        scale_alpha_manual(values = c(0.5, 1)) +
+        scale_fill_manual(values = c("gray", "blue"))
+    }
+    if(percent == FALSE){
+      p1 <- {
+        ggplot(df_null, aes(reorder(rowname,-dataset_nulls),dataset_nulls,alpha = 0.5)) +
+          geom_col(fill='blue') +
+          labs(x = '',y = 'Rows Missing') +
+          theme(legend.position = 'none', axis.text.x = element_text(angle=90, hjust = 1))
+      }
+    }else{
+      p1 <- {
+        ggplot(df_null, aes(reorder(rowname,-percentage),percentage,alpha = 0.5)) +
+          geom_col(fill='blue') +
+          ylim(0,100) +
+          labs(x = '',y = '% Rows Missing') +
+          theme(legend.position = 'none', axis.text.x = element_text(angle=90, hjust = 1))
+      }
+    }
+    
+    p1 + plot_spacer() + p2 + p3 + plot_layout(widths = c(5, 1), heights = c(1, 5))
+  }
+```
+
+
+## Importing the Arrests Dataset
+
+We are now ready to look out our dataset. First, we import the data from its source: 
+
+```{r}
+nyc_arrests <- read.table("https://data.cityofnewyork.us/api/views/uip8-fykc/rows.csv?accessType=DOWNLOAD",
+                          header=TRUE,
+                          sep=",",
+                          quote='"'
+                          )
+```
+
+## Visualizing the Missing Values
+
+Our last step will be to look at our dataset for missing values.
+
+```{r}
+names(nyc_arrests) <- abbreviate(names(nyc_arrests),minlength=3)
+visna_na_plot(nyc_arrests)
+visna_na_plot(nyc_arrests, percent = TRUE)
+```
+
+As we can see from the percentage visualization, there are only a small number of rows missing one of two columns: KY_CD (Key code), which is a generalized classification code, and PD_CD (Police Department code), which is a more granular code.
