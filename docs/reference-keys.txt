@@ -10,3 +10,8 @@ arrest-data
 composing-our-visualization-for-missing-data
 importing-the-arrests-dataset
 visualizing-the-missing-values
+crime-data
+data-import---2021-data
+data-import---2006-2021-data
+combining-old-and-new
+arrests-compared-to-crime

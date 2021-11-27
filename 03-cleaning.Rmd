@@ -20,13 +20,51 @@ nyc_arrests <- read.table("https://data.cityofnewyork.us/api/views/uip8-fykc/row
                           )
 ```
 
-For easier use of the dates associated with the arrests, we will convert these into R-compatible dates.
+For easier use of the dates associated with the arrests, we will convert these into R-compatible dates. We will also remove several columns not necessary for the analysis.
 
 ```{r}
 nyc_arrests$ARREST_DATE <- as_date(nyc_arrests$ARREST_DATE, format="%m/%d/%Y")
+nyc_arrests <- nyc_arrests %>% select(-c(New.Georeferenced.Column, X_COORD_CD, Y_COORD_CD))
 ```
 
 ## Data Import - 2006-2021 Data
 
-We now repeat this transformation on our older data. We save this data as 'nyc_arrests_old'. One issue with this dataset is its size. Weighing in at over one Gigabyte, this dataset in its unmodified form takes a very long time to download and modify.
+We now repeat this transformation on our older data. We save this data as 'nyc_arrests_old'. One issue with this dataset is its size. Weighing in at over one Gigabyte, this dataset in its unmodified form takes a very long time to download and modify. As a result, we have decided to utilize a reduced version of this dataset. The transformations used to create this historical dataset are seen below:
+
+```{r, eval=FALSE}
+nyc_arrests <- read.table("D:/Documents/R Projects/Final Project Proposal/NYPD_Arrests_Data__Historic_.csv",
+                           header=TRUE,
+                           sep=",",
+                           quote='"'
+)
+
+nyc_arrests <- nyc_arrests %>% select(-c(Lon_Lat, X_COORD_CD, Y_COORD_CD))
+
+nyc_arrests$ARREST_DATE <- as_date(nyc_arrests$ARREST_DATE, format="%m/%d/%Y")
+
+nyc_arrests <- filter(nyc_arrests, ARREST_DATE > "2010-12-31")
+
+write.csv(nyc_arrests, file="nyc_arrests_post2010.csv")
+```
+
+We then run a matching set of data transformations.
+
+```{r}
+nyc_arrests_old <- read.table("nyc_arrests_post2010.csv",
+                          header=TRUE,
+                          sep=",",
+                          quote='"'
+                          )
+nyc_arrests_old <- nyc_arrests_old %>% select(-c(X))
+nyc_arrests_old$ARREST_DATE <- as_date(nyc_arrests_old$ARREST_DATE, format="%Y-%m-%d")
+```
+
+## Combining Old and New
+
+If we need a combined dataset, we can append the historical data to the 2021 data like so:
+
+```{r}
+nyc_arrests_combined <- bind_rows(nyc_arrests, nyc_arrests_old)
+```
+
 
