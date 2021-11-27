@@ -1,1 +1,35 @@
 # Results
+
+```{r setup}
+# Initial setup and dataset preparation.
+knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+library(tidyr)
+library(dplyr)
+library(lubridate)
+
+nyc_arrests <- read.table("https://data.cityofnewyork.us/api/views/uip8-fykc/rows.csv?accessType=DOWNLOAD",
+                          header=TRUE,
+                          sep=",",
+                          quote='"'
+                          )
+nyc_arrests$ARREST_DATE <- as_date(nyc_arrests$ARREST_DATE, format="%m/%d/%Y")
+nyc_arrests <- nyc_arrests %>% select(-c(New.Georeferenced.Column, X_COORD_CD, Y_COORD_CD))
+nyc_arrests_old <- read.table("nyc_arrests_post2010.csv",
+                          header=TRUE,
+                          sep=",",
+                          quote='"'
+                          )
+nyc_arrests_old <- nyc_arrests_old %>% select(-c(X))
+nyc_arrests_old$ARREST_DATE <- as_date(nyc_arrests_old$ARREST_DATE, format="%Y-%m-%d")
+nyc_arrests_combined <- bind_rows(nyc_arrests, nyc_arrests_old)
+```
+
+## Arrests Compared to Crime
+
+Earlier in this analysis, we mentioned how arrests can be considered a proxy for crime, but that this equivalence is not perfect. To begin, we will put this assumption to the test by comparing our data on arrests in New York City to our data on reported NYC crime.
+
+```{r}
+
+```
+
