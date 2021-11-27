@@ -7,4 +7,14 @@ Arrest data from the city of New York from 2006 to the present will serve as our
 1. 2006 - Jan 1st 2021: https://data.cityofnewyork.us/Public-Safety/NYPD-Arrests-Data-Historic-/8h9b-rp9u 
 2. Jan 1st 2021 – Present: https://data.cityofnewyork.us/Public-Safety/NYPD-Arrest-Data-Year-to-Date-/uip8-fykc 
 
+This data is collected by the NYPD and made available through New York City Open Data.
+
 This data has a number of interesting features, such as geographical data regarding where the arrest was made, crime related to the arrest, and various pieces of demographic data associated with the apprehended person. The various crime statistics, as well as location information, will allow us to plot out trends in arrests over various factors, and effectively connect these factors with other datasets.
+
+## Crime Data
+
+Data on crimes reported in New York City will serve as a check against our general assumption that crime correlates strongly with arrests. This data is obtained from https://data.ny.gov/Public-Safety/Index-Crimes-by-County-and-Agency-Beginning-1990/ca8h-8gjq , and is maintained by the New York State Division of Criminal Justice Services.
+
+This dataset, which spans the years 1990 to 2020, provides summary crime statistics for each New York county in each year. It provides aggregated values for the numbers of crimes committed in various categories over the given calendar year. One shortcoming with this dataset is its lack of granularity. Annual, county-level data is good, but it does limit the dataset's usefulness for considering crime demographics, and does not allow for comparing crime rates during particular times of the year.
+
+Another point to note regarding this dataset is classification. The definition of rape applied to categorize these crimes was altered in the year 2015 (https://www.criminaljustice.ny.gov/crimnet/ojsa/stats.htm). As a result, comparisons made before and after 2015 should be mindful an uptick in crimes of this category is certainly related to some degree with this change in classification technique.

@@ -1,1 +1,32 @@
 # Data transformation
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+library(tidyr)
+library(dplyr)
+library(lubridate)
+```
+
+## Data Import - 2021 Data
+
+We begin by importing our data source as-is. This will give us a starting point for our data adjustment and cleaning. We save this data as 'nyc_arrests'.
+
+```{r}
+nyc_arrests <- read.table("https://data.cityofnewyork.us/api/views/uip8-fykc/rows.csv?accessType=DOWNLOAD",
+                          header=TRUE,
+                          sep=",",
+                          quote='"'
+                          )
+```
+
+For easier use of the dates associated with the arrests, we will convert these into R-compatible dates.
+
+```{r}
+nyc_arrests$ARREST_DATE <- as_date(nyc_arrests$ARREST_DATE, format="%m/%d/%Y")
+```
+
+## Data Import - 2006-2021 Data
+
+We now repeat this transformation on our older data. We save this data as 'nyc_arrests_old'. One issue with this dataset is its size. Weighing in at over one Gigabyte, this dataset in its unmodified form takes a very long time to download and modify.
+
