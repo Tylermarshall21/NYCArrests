@@ -3,9 +3,7 @@
 ```{r setup}
 # Initial setup and dataset preparation.
 knitr::opts_chunk$set(echo = TRUE)
-library(ggplot2)
-library(tidyr)
-library(dplyr)
+library(tidyverse)
 library(lubridate)
 
 nyc_arrests <- read.table("https://data.cityofnewyork.us/api/views/uip8-fykc/rows.csv?accessType=DOWNLOAD",
@@ -23,6 +21,43 @@ nyc_arrests_old <- read.table("nyc_arrests_post2010.csv",
 nyc_arrests_old <- nyc_arrests_old %>% select(-c(X))
 nyc_arrests_old$ARREST_DATE <- as_date(nyc_arrests_old$ARREST_DATE, format="%Y-%m-%d")
 nyc_arrests_combined <- bind_rows(nyc_arrests, nyc_arrests_old)
+
+## Arrests - Categorized
+nyc_arrests_by_category_year_boro <- (
+  nyc_arrests_combined %>%
+    drop_na(OFNS_DESC) %>%
+    filter(OFNS_DESC != "", ARREST_BORO != "") %>%
+    mutate(ARREST_YEAR = year(ARREST_DATE)) %>%
+    group_by(ARREST_YEAR, OFNS_DESC, ARREST_BORO) %>%
+    summarize(COUNT_OF_ARRESTS = n()) %>%
+    mutate(Murder = ifelse(grepl("MURDER",OFNS_DESC, fixed = TRUE), COUNT_OF_ARRESTS, 0)) %>%
+    mutate(Rape = ifelse(grepl("RAPE",OFNS_DESC, fixed = TRUE), COUNT_OF_ARRESTS, 0)) %>%
+    mutate(Aggravated.Assault = ifelse(grepl("ASSAULT",OFNS_DESC, fixed = TRUE), COUNT_OF_ARRESTS, 0)) %>%
+    mutate(Motor.Vehicle.Theft = ifelse(grepl("MOTOR",OFNS_DESC, fixed = TRUE), COUNT_OF_ARRESTS, 0))
+)
+
+nyc_arrests_categories_simple <- (
+  nyc_arrests_by_category_year_boro %>%
+    group_by(ARREST_YEAR, ARREST_BORO) %>%
+    summarize(Murder = sum(Murder),
+              Rape = sum(Rape),
+              Aggravated.Assault = sum(Aggravated.Assault),
+              Motor.Vehicle.Theft = sum(Motor.Vehicle.Theft)
+              )
+)
+
+nyc_arrests_categories_simple$ARREST_BORO <- factor(nyc_arrests_categories_simple$ARREST_BORO,
+                                                    levels= c("B", "S", "K", "M", "Q"),
+                                                    labels=c("Bronx", "Richmond", "Kings", "New York", "Queens")
+                                                    )
+
+# Crime Data Import
+nyc_crime <- read.table("https://data.ny.gov/api/views/ca8h-8gjq/rows.csv?accessType=DOWNLOAD&sorting=true",
+                        header=TRUE,
+                        sep=",",
+                        quote='"'
+                        )
+nyc_crime <- filter(nyc_crime, Region == "New York City", Year > 2010)
 ```
 
 ## Arrests Compared to Crime

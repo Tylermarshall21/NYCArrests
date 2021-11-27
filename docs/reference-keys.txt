@@ -15,3 +15,5 @@ data-import---2021-data
 data-import---2006-2021-data
 combining-old-and-new
 arrests-compared-to-crime
+crime-data-1
+aggregating-by-category
