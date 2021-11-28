@@ -8,7 +8,9 @@ library(dplyr)
 library(lubridate)
 ```
 
-## Data Import - 2021 Data
+## Crime Data
+
+### Data Import - 2021 Data
 
 We begin by importing our data source as-is. This will give us a starting point for our data adjustment and cleaning. We save this data as 'nyc_arrests'.
 
@@ -27,7 +29,7 @@ nyc_arrests$ARREST_DATE <- as_date(nyc_arrests$ARREST_DATE, format="%m/%d/%Y")
 nyc_arrests <- nyc_arrests %>% select(-c(New.Georeferenced.Column, X_COORD_CD, Y_COORD_CD))
 ```
 
-## Data Import - 2006-2021 Data
+### Data Import - 2006-2021 Data
 
 We now repeat this transformation on our older data. We save this data as 'nyc_arrests_old'. One issue with this dataset is its size. Weighing in at over one Gigabyte, this dataset in its unmodified form takes a very long time to download and modify. As a result, we have decided to utilize a reduced version of this dataset. The transformations used to create this historical dataset are seen below:
 
@@ -59,7 +61,7 @@ nyc_arrests_old <- nyc_arrests_old %>% select(-c(X))
 nyc_arrests_old$ARREST_DATE <- as_date(nyc_arrests_old$ARREST_DATE, format="%Y-%m-%d")
 ```
 
-## Combining Old and New
+### Combining Old and New
 
 If we need a combined dataset, we can append the historical data to the 2021 data like so:
 
@@ -67,4 +69,18 @@ If we need a combined dataset, we can append the historical data to the 2021 dat
 nyc_arrests_combined <- bind_rows(nyc_arrests, nyc_arrests_old)
 ```
 
+### Aggregating by Category
+
+For many of our analyses, it is sensible to aggregate crime by its rough category, like so:
+
+```{r}
+nyc_arrests_by_category_year_boro <- (
+  nyc_arrests_combined %>%
+    drop_na(OFNS_DESC) %>%
+    filter(OFNS_DESC != "", ARREST_BORO != "") %>%
+    mutate(ARREST_YEAR = year(ARREST_DATE)) %>%
+    group_by(ARREST_YEAR, OFNS_DESC, ARREST_BORO) %>%
+    summarize(COUNT_OF_ARRESTS = n())
+)
+```
 
