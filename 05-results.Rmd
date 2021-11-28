@@ -31,7 +31,8 @@ nyc_arrests_by_category_year_boro <- (
     group_by(ARREST_YEAR, OFNS_DESC, ARREST_BORO) %>%
     summarize(COUNT_OF_ARRESTS = n()) %>%
     mutate(Murder = ifelse(grepl("MURDER",OFNS_DESC, fixed = TRUE), COUNT_OF_ARRESTS, 0)) %>%
-    mutate(Rape = ifelse(grepl("RAPE",OFNS_DESC, fixed = TRUE), COUNT_OF_ARRESTS, 0)) %>%
+    mutate(Rape = ifelse(grepl("RAPE",OFNS_DESC, fixed = TRUE), COUNT_OF_ARRESTS,
+                         ifelse(grepl("SEX",OFNS_DESC, fixed = TRUE), COUNT_OF_ARRESTS, 0))) %>%
     mutate(Aggravated.Assault = ifelse(grepl("ASSAULT",OFNS_DESC, fixed = TRUE), COUNT_OF_ARRESTS, 0)) %>%
     mutate(Motor.Vehicle.Theft = ifelse(grepl("MOTOR",OFNS_DESC, fixed = TRUE), COUNT_OF_ARRESTS, 0))
 )
@@ -43,13 +44,17 @@ nyc_arrests_categories_simple <- (
               Rape = sum(Rape),
               Aggravated.Assault = sum(Aggravated.Assault),
               Motor.Vehicle.Theft = sum(Motor.Vehicle.Theft)
-              )
+              ) %>%
+    ungroup() %>%
+    mutate(Category = "Arrests") %>%
+    rename(Year = ARREST_YEAR) %>%
+    rename(County = ARREST_BORO)
 )
 
-nyc_arrests_categories_simple$ARREST_BORO <- factor(nyc_arrests_categories_simple$ARREST_BORO,
-                                                    levels= c("B", "S", "K", "M", "Q"),
-                                                    labels=c("Bronx", "Richmond", "Kings", "New York", "Queens")
-                                                    )
+nyc_arrests_categories_simple$County <- factor(nyc_arrests_categories_simple$County,
+                                               levels= c("B", "S", "K", "M", "Q"),
+                                               labels=c("Bronx", "Richmond", "Kings", "New York", "Queens")
+                                               )
 
 # Crime Data Import
 nyc_crime <- read.table("https://data.ny.gov/api/views/ca8h-8gjq/rows.csv?accessType=DOWNLOAD&sorting=true",
@@ -57,14 +62,32 @@ nyc_crime <- read.table("https://data.ny.gov/api/views/ca8h-8gjq/rows.csv?access
                         sep=",",
                         quote='"'
                         )
-nyc_crime <- filter(nyc_crime, Region == "New York City", Year > 2010)
+nyc_crime <- (
+  filter(nyc_crime, Region == "New York City", Year > 2010) %>%
+    select(c(County, Year, Murder, Rape, Aggravated.Assault, Motor.Vehicle.Theft)) %>%
+    mutate(Category = "Crime Reports")
+)
 ```
 
 ## Arrests Compared to Crime
 
 Earlier in this analysis, we mentioned how arrests can be considered a proxy for crime, but that this equivalence is not perfect. To begin, we will put this assumption to the test by comparing our data on arrests in New York City to our data on reported NYC crime.
 
-```{r}
+```{r, echo=FALSE}
+crime_vs_arrests <- (
+  bind_rows(nyc_crime, nyc_arrests_categories_simple) %>%
+    pivot_longer(c(Murder, Rape, Aggravated.Assault, Motor.Vehicle.Theft), names_to = "Crime", values_to = "Count") %>%
+    mutate(YearCounty = paste(Year, County)) %>%
+    filter(Year < 2021, Year > 2017)
+)
+
+crime_vs_arrests$YearCounty <- abbreviate(crime_vs_arrests$YearCounty, minlength=6)
+
+ggplot(crime_vs_arrests, aes(fill = Category, y = YearCounty, x = Count)) +
+  geom_bar(position="dodge", stat="identity") +
+  facet_wrap(vars(Crime), scales = "free") +
+  coord_flip() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
 
 ```
 
