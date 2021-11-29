@@ -23,17 +23,21 @@ nyc_arrests_old$ARREST_DATE <- as_date(nyc_arrests_old$ARREST_DATE, format="%Y-%
 nyc_arrests_combined <- bind_rows(nyc_arrests, nyc_arrests_old)
 
 ## Arrests - Categorized
+### Note: some filters must be applied to the data to yield a dataset comparable to the UCR definitions
 nyc_arrests_by_category_year_boro <- (
   nyc_arrests_combined %>%
     drop_na(OFNS_DESC) %>%
-    filter(OFNS_DESC != "", ARREST_BORO != "") %>%
+    filter(OFNS_DESC != "",
+           ARREST_BORO != "",
+           !grepl("OBSCEN", PD_DESC),
+           !grepl("ENDANGERING", PD_DESC)) %>%
     mutate(ARREST_YEAR = year(ARREST_DATE)) %>%
     group_by(ARREST_YEAR, OFNS_DESC, ARREST_BORO) %>%
     summarize(COUNT_OF_ARRESTS = n()) %>%
     mutate(Murder = ifelse(grepl("MURDER",OFNS_DESC, fixed = TRUE), COUNT_OF_ARRESTS, 0)) %>%
     mutate(Rape = ifelse(grepl("RAPE",OFNS_DESC, fixed = TRUE), COUNT_OF_ARRESTS,
                          ifelse(grepl("SEX",OFNS_DESC, fixed = TRUE), COUNT_OF_ARRESTS, 0))) %>%
-    mutate(Aggravated.Assault = ifelse(grepl("ASSAULT",OFNS_DESC, fixed = TRUE), COUNT_OF_ARRESTS, 0)) %>%
+    mutate(Aggravated.Assault = ifelse(grepl("FELONY ASSAULT",OFNS_DESC, fixed = TRUE), COUNT_OF_ARRESTS, 0)) %>%
     mutate(Motor.Vehicle.Theft = ifelse(grepl("MOTOR",OFNS_DESC, fixed = TRUE), COUNT_OF_ARRESTS, 0))
 )
 
@@ -71,14 +75,14 @@ nyc_crime <- (
 
 ## Arrests Compared to Crime
 
-Earlier in this analysis, we mentioned how arrests can be considered a proxy for crime, but that this equivalence is not perfect. To begin, we will put this assumption to the test by comparing our data on arrests in New York City to our data on reported NYC crime.
+Earlier in this analysis, we mentioned how arrests can be considered a proxy for crime, but that this equivalence is not perfect. To begin, we will put this assumption to the test by comparing our data on arrests in New York City to our data on reported NYC crime. In the below visuals, we see reported crimes of several categories, paired with their associated arrests. Columns are grouped by their year and associated county (NY for New York, Kn for Kings, Rc for Richmond, Br for Brooklyn, and Qn for Queens).
 
 ```{r, echo=FALSE}
 crime_vs_arrests <- (
   bind_rows(nyc_crime, nyc_arrests_categories_simple) %>%
     pivot_longer(c(Murder, Rape, Aggravated.Assault, Motor.Vehicle.Theft), names_to = "Crime", values_to = "Count") %>%
     mutate(YearCounty = paste(Year, County)) %>%
-    filter(Year < 2021, Year > 2017)
+    filter(Year < 2020, Year > 2016)
 )
 
 crime_vs_arrests$YearCounty <- abbreviate(crime_vs_arrests$YearCounty, minlength=6)
@@ -90,4 +94,7 @@ ggplot(crime_vs_arrests, aes(fill = Category, y = YearCounty, x = Count)) +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
 
 ```
+
+There are some very interesting things to be observed here. First, arrests do not map exactly to reported crimes. Aggravated Assault, Murder, and Motor Vehicle Theft all present cases where the number of arrests does not exactly match the associated number of crimes reported. Rape seems the exception, with arrest counts closer to crime reports. Next, it is interesting to note that the degree to which arrests differ from crime reports, and the direction of the mismatch, varies. In the case of motor vehicle theft, crime reports outpace arrests by a large degree. This makes sense, considering that many motor vehicle thefts occur when the vehicle owner is not present. Since motor vehicle theft often has the criminal and the victim at different locations during the time of the crime, it is reasonable that it may be harder to make an arrest after the crime, since fewer details may be known about the criminal. One confusing relation is the relation between murder arrests and reports. It seems counter-intuitive that the number of arrests made would exceed the number of murders committed. Perhaps this can be attributed to arrests made before the actual criminal was determined. Once again, we have a case where the victim cannot report effectively regarding details of the criminal, but with a crime considered to be more severe.
+In general, however, arrests seem to exhibit values similar to crime reports. One of the primary lessons from this visual is the understanding that arrest data can serve as a proxy for crime data, but should be recognized as a different metric, and prone to distortion.
 
