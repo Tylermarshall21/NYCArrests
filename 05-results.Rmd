@@ -98,3 +98,23 @@ ggplot(crime_vs_arrests, aes(fill = Category, y = YearCounty, x = Count)) +
 There are some very interesting things to be observed here. First, arrests do not map exactly to reported crimes. Aggravated Assault, Murder, and Motor Vehicle Theft all present cases where the number of arrests does not exactly match the associated number of crimes reported. Rape seems the exception, with arrest counts closer to crime reports. Next, it is interesting to note that the degree to which arrests differ from crime reports, and the direction of the mismatch, varies. In the case of motor vehicle theft, crime reports outpace arrests by a large degree. This makes sense, considering that many motor vehicle thefts occur when the vehicle owner is not present. Since motor vehicle theft often has the criminal and the victim at different locations during the time of the crime, it is reasonable that it may be harder to make an arrest after the crime, since fewer details may be known about the criminal. One confusing relation is the relation between murder arrests and reports. It seems counter-intuitive that the number of arrests made would exceed the number of murders committed. Perhaps this can be attributed to arrests made before the actual criminal was determined. Once again, we have a case where the victim cannot report effectively regarding details of the criminal, but with a crime considered to be more severe.
 In general, however, arrests seem to exhibit values similar to crime reports. One of the primary lessons from this visual is the understanding that arrest data can serve as a proxy for crime data, but should be recognized as a different metric, and prone to distortion.
 
+
+
+# Arrests by Type
+
+```{r}
+nyc_arrests_type <- nyc_arrests2 %>%
+  group_by(LAW_CA) %>%
+  summarize(Number_Arrests = n())
+
+ggplot(data = nyc_arrests_type, aes(x = fct_reorder(LAW_CA, Number_Arrests, .desc = TRUE), y = Number_Arrests)) + geom_col()
+
+
+nyc_arrests_year <- nyc_arrests2 %>%
+  mutate(ARREST_D = as_date(ARREST_D, format = "%m/%d/%Y"),
+         ARREST_YEAR = format(ARREST_D, format = "%Y")) %>%
+  group_by(ARREST_YEAR) %>%
+  summarize(Number_Arrests = n())
+
+```
+
