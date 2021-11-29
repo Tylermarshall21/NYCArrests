@@ -102,19 +102,50 @@ In general, however, arrests seem to exhibit values similar to crime reports. On
 
 # Arrests by Type
 
+As we get comfortable understanding the different aspects of our large dataset, we want to look at the types of arrests that are occuring in New York City. The three types of arrests according to the data dictionary are felonies, misdemanors, and violations. A bar plot showing the number of arrests of each type is below.
+
 ```{r}
-nyc_arrests_type <- nyc_arrests2 %>%
-  group_by(LAW_CA) %>%
-  summarize(Number_Arrests = n())
+nyc_arrests_type <- nyc_arrests_combined %>%
+  group_by(LAW_CAT_CD) %>%
+  summarize(Number_Arrests = n()) %>%
+  na_if("")
 
-ggplot(data = nyc_arrests_type, aes(x = fct_reorder(LAW_CA, Number_Arrests, .desc = TRUE), y = Number_Arrests)) + geom_col()
+ggplot(data = nyc_arrests_type, aes(x = fct_reorder(LAW_CAT_CD, Number_Arrests, .desc = TRUE), y = Number_Arrests)) + 
+  geom_col() + labs(title = "Number of Arrests by Arrest Type",
+                    x = "Arrest Type",
+                    y = "Number of Arrests")
+```
+From the bar plot above, we can see that misdemeanor is the most common type of arrest in our dataset with over 2 million arrests that were related to misdemeanor charges. Felony is the next most common type of arrest with just under 1 million arrests while violations only account for around 200,000 arrests. There is also a small portion of arrests classified as `I`, but it is not exactly clear from the data dictionary what that stands for. There were also a small amount of arrests that did not have a `LAW_CAT_CD`, so these were categorized as `NA` in our plot. 
 
 
-nyc_arrests_year <- nyc_arrests2 %>%
-  mutate(ARREST_D = as_date(ARREST_D, format = "%m/%d/%Y"),
-         ARREST_YEAR = format(ARREST_D, format = "%Y")) %>%
+Since we are using data from the past 10 years, we are interested in seeing how the number of arrests has changed over the past 10 years. The bar plot below shows the number of arrests that occured each year since 2011.
+
+```{r}
+nyc_arrests_year <- nyc_arrests_combined %>%
+  mutate(ARREST_YEAR = format(ARREST_DATE, format = "%Y")) %>%
   group_by(ARREST_YEAR) %>%
   summarize(Number_Arrests = n())
+
+ggplot(data = nyc_arrests_year, aes(x = ARREST_YEAR, y = Number_Arrests)) + geom_col() +
+  labs(title = "Number of Arrests by Year",
+       x = "Year",
+       y = "Number of Arrests")
+```
+
+From the plot above, we can see that the number of arrests has decreased each year for the past 10 years. The decrease in arrests is very significant as well since there were over 400,000 arrests in 2011 while there were under 150,000 arrests in 2020 and just over 100,000 arrests so far in 2021. It seems likely that the impact of COVID-19 has helped decrease the number of arrests in 2020 and 2021, especially in 2020 with so many things being shutdown. It will be interesting to see if the number of arrests in 2021 is larger than the 2020 which would be a deviation from the trend of arrests going down. While this plot indicates progress in terms of safety in New York, it will be interesting to see if the number of crimes has dropped significantly as well.  
+
+```{r}
+nyc_arrests_perp <- nyc_arrests_combined %>%
+  group_by(PERP_SEX) %>%
+  summarize(Number_Arrests = n())
+
+ggplot(data = nyc_arrests_perp, aes(x = PERP_SEX, y = Number_Arrests)) + geom_col()
+
+nyc_arrests_perp <- nyc_arrests_combined %>%
+  group_by(PERP_RACE) %>%
+  summarize(Number_Arrests = n())
+
+ggplot(data = nyc_arrests_perp, aes(x = PERP_RACE, y = Number_Arrests)) + geom_col()
 
 ```
 
