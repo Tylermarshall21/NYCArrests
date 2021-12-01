@@ -11,7 +11,8 @@ This data is collected by the NYPD and made available through New York City Open
 
 This data has a number of interesting features, such as geographical data regarding where the arrest was made, crime related to the arrest, and various pieces of demographic data associated with the apprehended person. The various crime statistics, as well as location information, will allow us to plot out trends in arrests over various factors, and effectively connect these factors with other datasets.
 
-For this analysis, we will limit our data to the last 10 years, starting on January 1st, 2011.
+For this analysis, we will limit our data to the last 10 years, starting on January 1st, 2011. Since the entire dataset is quite large, focusing on a smaller time period made data cleaning and transformation quicker while also making the size of the data file smaller. We still wanted to look at an extended period of time to look for patterns in arrests, so we decided to use the last 10 years for our project. Even after limiting the dataset to the last 10 years, there are still over 3.2 million observations (3,248,336 to be exact). This is still a very large dataset, so we will still be able to use it to identify arrest trends in New York City. 
+
 
 ## Crime Data
 
