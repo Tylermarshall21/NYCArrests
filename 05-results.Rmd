@@ -15,7 +15,24 @@ ggplot(data = nyc_arrests_year, aes(x = ARREST_YEAR, y = Number_Arrests)) + geom
        y = "Number of Arrests (in Hundred Thousands)")
 ```
 
-From the plot above, we can see that the number of arrests has decreased each year for the past 10 years. The decrease in arrests is very significant as well since there were over 400,000 arrests in 2011 while there were under 150,000 arrests in 2020 and just over 100,000 arrests so far in 2021. It seems likely that the impact of COVID-19 has helped decrease the number of arrests in 2020 and 2021, especially in 2020 with so many things being shutdown. It will be interesting to see if the number of arrests in 2021 is larger than the 2020 which would be a deviation from the trend of arrests going down. While this plot indicates progress in terms of safety in New York, it will be interesting to see if the number of crimes has dropped significantly as well. If arrests are going down, but crimes are not, then this would indicate that the city is not actually safer, but instead people are getting away with more crimes. 
+From the plot above, we can see that the number of arrests has decreased each year for the past 10 years. The decrease in arrests is very significant as well since there were over 400,000 arrests in 2011 while there were under 150,000 arrests in 2020 and just over 100,000 arrests so far in 2021. It seems likely that the impact of COVID-19 has helped decrease the number of arrests in 2020 and 2021, especially in 2020 with so many things being shutdown. It will be interesting to see if the number of arrests in 2021 is larger than the 2020 which would be a deviation from the trend of arrests going down. While this plot indicates progress in terms of safety in New York, it will be interesting to see if the number of crimes has dropped significantly as well. If arrests are going down, but crimes are not, then this would indicate that the city is not actually safer, but instead people are getting away with more crimes. We were also interested in looking at the distribution of arrests by month to see if this varied throughout the year. From the plot below, we see that there doesn't seem to be significant variation from month to month in terms of arrests over the past 10 years.
+
+```{r}
+nyc_arrests_biggest_months <- nyc_arrests_combined %>%
+  mutate(ARREST_YEAR = format(ARREST_DATE, format = "%Y"),
+         ARREST_MONTH = format(ARREST_DATE, format = "%m")) %>%
+  group_by(ARREST_MONTH, ARREST_YEAR) %>%
+  summarize(Number_Arrests = n()) %>%
+  mutate(Number_Arrests = Number_Arrests/1000)
+
+
+ggplot(data = nyc_arrests_biggest_months, aes(x = ARREST_MONTH, y = Number_Arrests)) + geom_col() + facet_wrap(~ ARREST_YEAR) +
+  labs(title = "Number of Arrests by Month Over Past 10 Years",
+       x = "Month",
+       y = "Number of Arrests (in Thousands)")
+```
+
+One small pattern that we can see from this plot is that the number of arrests seems to drop off a little in December, with December 2014 being the most extreme example. The reasoning for this drop off is unclear, but it could potentially be related to the holiday season. It will be interesting to compare to the number of crimes in December to see if people commit fewer crimes at the end of the year. Another aspect of this plot that we found interesting is that the number of arrests really drops off in 2020 once COVID hit. April, June, and July all had very low arrest totals and this was likely due to the fact that most people were quarantining and not going out much. 
 
 We also want to look at the types of arrests that are occurring in New York City. The three types of arrests according to the data dictionary are felonies, misdemeanors, and violations. A bar plot showing how common each arrest type has been over the past 10 years is below. 
 
@@ -132,24 +149,6 @@ ggplot(crime_vs_arrests, aes(fill = Category, y = YearCounty, x = Count)) +
 There are some very interesting things to be observed here. First, arrests do not map exactly to reported crimes. Aggravated Assault, Murder, and Motor Vehicle Theft all present cases where the number of arrests does not exactly match the associated number of crimes reported. Rape seems the exception, with arrest counts closer to crime reports. Next, it is interesting to note that the degree to which arrests differ from crime reports, and the direction of the mismatch, varies. In the case of motor vehicle theft, crime reports outpace arrests by a large degree. This makes sense, considering that many motor vehicle thefts occur when the vehicle owner is not present. Since motor vehicle theft often has the criminal and the victim at different locations during the time of the crime, it is reasonable that it may be harder to make an arrest after the crime, since fewer details may be known about the criminal. One confusing relation is the relation between murder arrests and reports. It seems counter-intuitive that the number of arrests made would exceed the number of murders committed. Perhaps this can be attributed to arrests made before the actual criminal was determined. Once again, we have a case where the victim cannot report effectively regarding details of the criminal, but with a crime considered to be more severe.
 In general, however, arrests seem to exhibit values similar to crime reports. One of the primary lessons from this visual is the understanding that arrest data can serve as a proxy for crime data, but should be recognized as a different metric, and prone to distortion.
 
-
-
-# Arrests by Type
-
-As we get comfortable understanding the different aspects of our large dataset, we want to look at the types of arrests that are occuring in New York City. The three types of arrests according to the data dictionary are felonies, misdemanors, and violations. A bar plot showing the number of arrests of each type is below.
-
-```{r}
-nyc_arrests_type <- nyc_arrests_combined %>%
-  group_by(LAW_CAT_CD) %>%
-  summarize(Number_Arrests = n()) %>%
-  na_if("")
-
-ggplot(data = nyc_arrests_type, aes(x = fct_reorder(LAW_CAT_CD, Number_Arrests, .desc = TRUE), y = Number_Arrests)) + 
-  geom_col() + labs(title = "Number of Arrests by Arrest Type",
-                    x = "Arrest Type",
-                    y = "Number of Arrests")
-```
-From the bar plot above, we can see that misdemeanor is the most common type of arrest in our dataset with over 2 million arrests that were related to misdemeanor charges. Felony is the next most common type of arrest with just under 1 million arrests while violations only account for around 200,000 arrests. There is also a small portion of arrests classified as `I`, but it is not exactly clear from the data dictionary what that stands for. There were also a small amount of arrests that did not have a `LAW_CAT_CD`, so these were categorized as `NA` in our plot. 
 
 
 
