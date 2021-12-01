@@ -1,10 +1,12 @@
 # Results
 
+## Initial Exploration
+
 In this section, we will be sharing the results of exploratory analysis with our data. We will be focusing on the findings that we found most interesting during this process while also trying to provide some insight into some of the questions of interest mentioned at the beginning of this project. To start, we made some basic bar charts to get a better understanding of the arrests occuring in New York City. First, we looked at how the number of arrests has changed over the past 10 years. 
 
 ```{r setup}
 # Initial setup and dataset preparation.
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = FALSE)
 library(tidyverse)
 library(lubridate)
 
@@ -124,37 +126,6 @@ ggplot(data = nyc_arrests_type, aes(x = fct_reorder(LAW_CAT_CD, Number_Arrests, 
 
 From the bar plot above, we can see that misdemeanor is the most common type of arrest in our dataset with over 2 million arrests that were related to misdemeanor charges. Felony is the next most common type of arrest with just under 1 million arrests while violations only account for around 200,000 arrests. There is also a small portion of arrests classified as `I`, but it is not exactly clear from the data dictionary what that stands for. There were also a small amount of arrests that did not have a `LAW_CAT_CD`, so these were categorized as `NA` in our plot. 
 
-
-
-## Arrests Compared to Crime
-
-Earlier in this analysis, we mentioned how arrests can be considered a proxy for crime, but that this equivalence is not perfect. To begin, we will put this assumption to the test by comparing our data on arrests in New York City to our data on reported NYC crime. In the below visuals, we see reported crimes of several categories, paired with their associated arrests. Columns are grouped by their year and associated county (NY for New York, Kn for Kings, Rc for Richmond, Br for Brooklyn, and Qn for Queens).
-
-```{r, echo=FALSE}
-crime_vs_arrests <- (
-  bind_rows(nyc_crime, nyc_arrests_categories_simple) %>%
-    pivot_longer(c(Murder, Rape, Aggravated.Assault, Motor.Vehicle.Theft), names_to = "Crime", values_to = "Count") %>%
-    mutate(YearCounty = paste(Year, County)) %>%
-    filter(Year < 2020, Year > 2016)
-)
-
-crime_vs_arrests$YearCounty <- abbreviate(crime_vs_arrests$YearCounty, minlength=6)
-
-ggplot(crime_vs_arrests, aes(fill = Category, y = YearCounty, x = Count)) +
-  geom_bar(position="dodge", stat="identity") +
-  facet_wrap(vars(Crime), scales = "free") +
-  coord_flip() +
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
-
-```
-
-There are some very interesting things to be observed here. First, arrests do not map exactly to reported crimes. Aggravated Assault, Murder, and Motor Vehicle Theft all present cases where the number of arrests does not exactly match the associated number of crimes reported. Rape seems the exception, with arrest counts closer to crime reports. Next, it is interesting to note that the degree to which arrests differ from crime reports, and the direction of the mismatch, varies. In the case of motor vehicle theft, crime reports outpace arrests by a large degree. This makes sense, considering that many motor vehicle thefts occur when the vehicle owner is not present. Since motor vehicle theft often has the criminal and the victim at different locations during the time of the crime, it is reasonable that it may be harder to make an arrest after the crime, since fewer details may be known about the criminal. One confusing relation is the relation between murder arrests and reports. It seems counter-intuitive that the number of arrests made would exceed the number of murders committed. Perhaps this can be attributed to arrests made before the actual criminal was determined. Once again, we have a case where the victim cannot report effectively regarding details of the criminal, but with a crime considered to be more severe.
-In general, however, arrests seem to exhibit values similar to crime reports. One of the primary lessons from this visual is the understanding that arrest data can serve as a proxy for crime data, but should be recognized as a different metric, and prone to distortion.
-
-
-
-
-
 ```{r}
 nyc_arrests_perp <- nyc_arrests_combined %>%
   group_by(PERP_SEX) %>%
@@ -200,6 +171,31 @@ parcoords(data = nyc_coords, rownames = FALSE, reorderable = TRUE, brushMode = '
       ), 
       withD3 = TRUE)
 ```
+
+## Arrests Compared to Crime
+
+Earlier in this analysis, we mentioned how arrests can be considered a proxy for crime, but that this equivalence is not perfect. To begin, we will put this assumption to the test by comparing our data on arrests in New York City to our data on reported NYC crime. In the below visuals, we see reported crimes of several categories, paired with their associated arrests. Columns are grouped by their year and associated county (NY for New York, Kn for Kings, Rc for Richmond, Br for Brooklyn, and Qn for Queens).
+
+```{r, echo=FALSE}
+crime_vs_arrests <- (
+  bind_rows(nyc_crime, nyc_arrests_categories_simple) %>%
+    pivot_longer(c(Murder, Rape, Aggravated.Assault, Motor.Vehicle.Theft), names_to = "Crime", values_to = "Count") %>%
+    mutate(YearCounty = paste(Year, County)) %>%
+    filter(Year < 2020, Year > 2016)
+)
+
+crime_vs_arrests$YearCounty <- abbreviate(crime_vs_arrests$YearCounty, minlength=6)
+
+ggplot(crime_vs_arrests, aes(fill = Category, y = YearCounty, x = Count)) +
+  geom_bar(position="dodge", stat="identity") +
+  facet_wrap(vars(Crime), scales = "free") +
+  coord_flip() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+```
+
+There are some very interesting things to be observed here. First, arrests do not map exactly to reported crimes. Aggravated Assault, Murder, and Motor Vehicle Theft all present cases where the number of arrests does not exactly match the associated number of crimes reported. Rape seems the exception, with arrest counts closer to crime reports. Next, it is interesting to note that the degree to which arrests differ from crime reports, and the direction of the mismatch, varies. In the case of motor vehicle theft, crime reports outpace arrests by a large degree. This makes sense, considering that many motor vehicle thefts occur when the vehicle owner is not present. Since motor vehicle theft often has the criminal and the victim at different locations during the time of the crime, it is reasonable that it may be harder to make an arrest after the crime, since fewer details may be known about the criminal. One confusing relation is the relation between murder arrests and reports. It seems counter-intuitive that the number of arrests made would exceed the number of murders committed. Perhaps this can be attributed to arrests made before the actual criminal was determined. Once again, we have a case where the victim cannot report effectively regarding details of the criminal, but with a crime considered to be more severe.
+In general, however, arrests seem to exhibit values similar to crime reports. One of the primary lessons from this visual is the understanding that arrest data can serve as a proxy for crime data, but should be recognized as a different metric, and prone to distortion.
 
 ## Arrests Related to Marijuana over time
 
