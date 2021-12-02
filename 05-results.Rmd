@@ -148,33 +148,6 @@ parcoords(data = nyc_coords, rownames = FALSE, reorderable = TRUE, brushMode = '
       withD3 = TRUE)
 ```
 
-```{r}
-nyc_arrests_perp <- nyc_arrests_combined %>%
-  group_by(PERP_SEX) %>%
-  summarize(Number_Arrests = n())
-
-ggplot(data = nyc_arrests_perp, aes(x = PERP_SEX, y = Number_Arrests)) + geom_col()
-
-nyc_arrests_perp <- nyc_arrests_combined %>%
-  group_by(PERP_RACE) %>%
-  summarize(Number_Arrests = n())
-
-ggplot(data = nyc_arrests_perp, aes(x = PERP_RACE, y = Number_Arrests)) + geom_col()
-
-```
-
-
-
-```{r}
-nyc_arrests_biggest_months <- nyc_arrests_combined %>%
-  mutate(ARREST_YEAR = format(ARREST_DATE, format = "%Y"),
-         ARREST_MONTH = format(ARREST_DATE, format = "%m")) %>%
-  group_by(ARREST_MONTH, ARREST_YEAR) %>%
-  summarize(Number_Arrests = n())
-
-
-ggplot(data = nyc_arrests_biggest_months, aes(x = ARREST_MONTH, y = Number_Arrests)) + geom_col() + facet_wrap(~ ARREST_YEAR)
-```
 
 
 ## Arrests Compared to Crime
