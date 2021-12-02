@@ -155,7 +155,7 @@ parcoords(data = nyc_coords, rownames = FALSE, reorderable = TRUE, brushMode = '
 
 Earlier in this analysis, we mentioned how arrests can be considered a proxy for crime, but that this equivalence is not perfect. To begin, we will put this assumption to the test by comparing our data on arrests in New York City to our data on reported NYC crime. In the below visuals, we see reported crimes of several categories, paired with their associated arrests. Columns are grouped by their year and associated county (NY for New York, Kn for Kings, Rc for Richmond, Br for Brooklyn, and Qn for Queens).
 
-```{r, echo=FALSE}
+```{r, echo=FALSE, warning = FALSE}
 crime_vs_arrests <- (
   bind_rows(nyc_crime, nyc_arrests_categories_simple) %>%
     pivot_longer(c(Murder, Rape, Aggravated.Assault, Motor.Vehicle.Theft), names_to = "Crime", values_to = "Count") %>%
