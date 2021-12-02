@@ -9,7 +9,6 @@ In this section, we will be sharing the results of exploratory analysis with our
 knitr::opts_chunk$set(echo = FALSE)
 library(tidyverse)
 library(lubridate)
-library(parcoords)
 library(GGally)
 
 nyc_arrests <- read.table("https://data.cityofnewyork.us/api/views/uip8-fykc/rows.csv?accessType=DOWNLOAD",
@@ -147,26 +146,6 @@ ggparcoord(data = nyc_coords, columns = 2:6, groupColumn = "County", scale = "gl
 
 
 ```
-
-```{r, fig.width=8, fig.height = 8}
-nyc_coords <- nyc_arrests_categories_simple %>%
-  group_by(County) %>%
-  summarize(Murder = sum(Murder),
-            Rape = sum(Rape),
-            Aggravated.Assault = sum(Aggravated.Assault),
-            Motor.Vehicle.Theft = sum(Motor.Vehicle.Theft),
-            Robbery = sum(Robbery))
-#Parallel Coordinate plot
-parcoords(data = nyc_coords, rownames = FALSE, reorderable = TRUE, brushMode = '1D-axes', color = list(
-        colorBy = "County", 
-        colorScale = "scaleOrdinal", 
-        colorScheme = "schemeCategory10"
-      ), 
-      withD3 = TRUE)
-
-```
-
-
 
 ## Arrests Compared to Crime
 
