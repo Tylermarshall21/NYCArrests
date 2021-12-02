@@ -10,6 +10,7 @@ knitr::opts_chunk$set(echo = FALSE)
 library(tidyverse)
 library(lubridate)
 library(parcoords)
+library(GGally)
 
 nyc_arrests <- read.table("https://data.cityofnewyork.us/api/views/uip8-fykc/rows.csv?accessType=DOWNLOAD",
                           header=TRUE,
@@ -130,6 +131,22 @@ ggplot(data = nyc_arrests_type, aes(x = fct_reorder(LAW_CAT_CD, Number_Arrests, 
 From the bar plot above, we can see that misdemeanor is the most common type of arrest in our dataset with over 2 million arrests that were related to misdemeanor charges. Felony is the next most common type of arrest with just under 1 million arrests while violations only account for around 200,000 arrests. There is also a small portion of arrests classified as `I`, but it is not exactly clear from the data dictionary what that stands for. There were also a small amount of arrests that did not have a `LAW_CAT_CD`, so these were categorized as `NA` in our plot. 
 
 Next, we made a parallel coordinates plot to get a better understanding of the arrests made in each borough. We categorized the types of arrests into five categories: Murder, Rape, Aggravated Assault, Motor Vehicle Theft, and Robbery. From the plot below, Richmond County (Staten Island) has had the fewest number of arrests in all of these categories over the past 10 years. This is not surprising since Staten Island is the least populated of the five boroughs. The Bronx has had the most arrests related to murder with over 3500 in the past 10 years, but did not have the most arrests in any of the other four categories. Kings County (Brooklyn) had the most arrests related to rape, aggravated assault, motor vehicle theft, and robbery since 2011. While Kings County had the most arrests in all of these categories, the number of arrests varied significantly. Aggravated assault had almost 50,000 arrests and robbery had around 35,000 while there were just over 5000 arrests for rape and 3500 for motor vehicle theft. Queens County did not have the most or fewest arrests in any category, but almost had as many motor vehicle thefts as Kings County. Finally, New York County had the second fewest arrests for murder, rape, aggravated assault, and motor vehicle theft.
+
+```{r}
+nyc_coords <- nyc_arrests_categories_simple %>%
+  group_by(County) %>%
+  summarize(Murder = sum(Murder),
+            Rape = sum(Rape),
+            Aggravated.Assault = sum(Aggravated.Assault),
+            Motor.Vehicle.Theft = sum(Motor.Vehicle.Theft),
+            Robbery = sum(Robbery))
+ggparcoord(data = nyc_coords, columns = 2:6, groupColumn = "County", scale = "globalminmax", splineFactor = 10) +
+  labs(title = "Parallel Coordinate Plot of Arrest Type by County",
+      x = "Arrest Type",
+      y = "Number of Arrests")
+
+
+```
 
 ```{r, fig.width=8, fig.height = 8}
 nyc_coords <- nyc_arrests_categories_simple %>%
