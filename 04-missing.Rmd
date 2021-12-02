@@ -131,5 +131,5 @@ From the first plot, we can see that there are 4 different patterns in our data 
 visna_na_plot(nyc_arrests2, percent = TRUE)
 ```
 
-The patterns are the same as the plot above, but this plot emphasizes the limited amount of missing data in our dataset. The portion of missing data is very small for our dataset, which is a good sign for our analysis. If there is too much missing data, the analysis can be much more challenging, but this is not the case with our NYC arrests data.
+The patterns are the same as the plot above, but this plot emphasizes the limited amount of missing data in our dataset. The portion of missing data is very small for our dataset, which is a good sign for our analysis. If there is too much missing data, the analysis can be much more challenging, but this is not the case with the NYC arrests data.
 
