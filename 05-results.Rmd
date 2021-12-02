@@ -139,7 +139,7 @@ nyc_coords <- nyc_arrests_categories_simple %>%
             Aggravated.Assault = sum(Aggravated.Assault),
             Motor.Vehicle.Theft = sum(Motor.Vehicle.Theft),
             Robbery = sum(Robbery))
-  
+#Parallel Coordinate plot
 parcoords(data = nyc_coords, rownames = FALSE, reorderable = TRUE, brushMode = '1D-axes', color = list(
         colorBy = "County", 
         colorScale = "scaleOrdinal", 
