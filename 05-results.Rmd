@@ -2,6 +2,8 @@
 
 ## Initial Exploration
 
+TESTING
+
 In this section, we will be sharing the results of exploratory analysis with our data. We will be focusing on the findings that we found most interesting during this process while also trying to provide some insight into some of the questions of interest mentioned at the beginning of this project. To start, we made some basic bar charts to get a better understanding of the arrests occuring in New York City. First, we looked at how the number of arrests has changed over the past 10 years. 
 
 ```{r setup}
