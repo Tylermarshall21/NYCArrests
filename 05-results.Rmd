@@ -10,6 +10,8 @@ knitr::opts_chunk$set(echo = FALSE)
 library(tidyverse)
 library(lubridate)
 library(GGally)
+library(vcd)
+library(forcats)
 
 nyc_arrests <- read.table("https://data.cityofnewyork.us/api/views/uip8-fykc/rows.csv?accessType=DOWNLOAD",
                           header=TRUE,
@@ -205,5 +207,40 @@ ggplot(nyc_mj_arrests_by_date,aes(x=month,y=COUNT_OF_ARRESTS)) +
 
 There are some very interesting observations here. As can be observed, there was a tremendous drop in marijuana arrests after the launch of Mayor de Blasio's November 19th, 2014 policy initiative. However, this short-term decrease did not last. Though marijuana arrests show a marked decrease after the initiative as compared to before, arrests did see a rebound in 2015. The next largest decline appears to begin around January 2018, though the cause of this decline is not immediately obvious. It may be linked to a more widespread acceptance of marijuana that year, as evident in the commissioning of a study on the legalization of marijuana commissioned by Governor Cuomo that January (https://www.nysenate.gov/newsroom/press-releases/jamaal-t-bailey/marijuana-legalization-impact-assessment-study). Further developments later that year solidify this direction, such as the aforementioned end of prosecution in several boroughs, and the end of arrests for smoking. Unlike the previous decline, this second drop in arrests would not see a rebound, and arrests end entirely after the March 31st, 2021 legalization. The reasons for earlier declines in 2011 and 2012 are not as easy to explain, but it should be noted that 2011 was a high point in marijuana arrests. (https://gothamist.com/news/nyc-still-marijuana-arrest-capital-of-the-world-arrests-rose-again-last-year)
 
+While marijuana was still illegal, and the cause of many arrests, many critics of marijuana laws claimed that one of the main victims of these laws were young men of color, who were arrested and often jailed at higher rates as a consequence of these laws. Is this actually the case? Below is a visual that looks at data from 2011-2013 (inclusive), before any major policy actions we have discussed.
 
+```{r, fig.width = 10, fig.height = 10}
+nyc_mj_arrests_mosaic <- (
+  nyc_arrests_combined %>%
+    filter(grepl("MARIJUANA", PD_DESC) &
+             year(ARREST_DATE) %in% c(2011,2012,2013) ) %>%
+    group_by(PD_DESC, AGE_GROUP, PERP_SEX, PERP_RACE) %>%
+    summarize(Freq = n())
+)
 
+nyc_mj_arrests_mosaic$PERP_RACE <- abbreviate(nyc_mj_arrests_mosaic$PERP_RACE, minlength=10)
+
+nyc_mj_arrests_mosaic$PERP_RACE <- factor(nyc_mj_arrests_mosaic$PERP_RACE)
+nyc_mj_arrests_mosaic$PERP_RACE <- fct_lump(nyc_mj_arrests_mosaic$PERP_RACE, n = 4, w=nyc_mj_arrests_mosaic$Freq)
+nyc_mj_arrests_mosaic$PERP_RACE <- fct_relevel(nyc_mj_arrests_mosaic$PERP_RACE, 'WHITE', 'WHITEHISPA','BLACKHISPA','BLACK','OTHER')
+
+mosaic(data=nyc_mj_arrests_mosaic, PERP_RACE ~ AGE_GROUP + PERP_SEX, direction = c("v", "v", "h"))
+```
+
+This graph yields a very interesting result. Though it seems apparent that young, non-white people are the demographic with the most marijuana arrests, as was contended in the past, it would seem that the ratio of white to non-white arrests is more skewed with older, rather than younger individuals. That is, though people of color under 44 represent the largest group of marijuana arrests, older individuals arrested for marijuana offenses tended to be more non-white, relative to the ratio seen with younger arrests. This pattern seems to present itself most prominently among Black individuals. We can confirm that this distortion is present through a Chi-Squared test.
+
+```{r, echo=TRUE}
+Chi_mj_arrests_mosaic <- {
+  nyc_mj_arrests_mosaic %>%
+    group_by(AGE_GROUP, PERP_RACE) %>%
+    summarize(Freq = sum(Freq)) %>%
+    pivot_wider(names_from = 'PERP_RACE', values_from = 'Freq')
+}
+rownames(Chi_mj_arrests_mosaic) <- Chi_mj_arrests_mosaic$AGE_GROUP
+Mat_mj_arrests_mosaic <- as.matrix(Chi_mj_arrests_mosaic[2:6])
+
+chi_results <-chisq.test(Mat_mj_arrests_mosaic, correct = FALSE)
+chi_results
+```
+
+The exact reason this pattern is present seems an interesting avenue for speculation, as it seems difficult to reason why older people of color, especially Black individuals, would be more likely to be arrested for marijuana crimes, relative to younger people of color.
