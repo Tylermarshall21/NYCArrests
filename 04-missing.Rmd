@@ -3,9 +3,10 @@
 ```{r, include=FALSE}
 library(tidyverse)
 library(patchwork)
+library(lubridate)
 ```
 
-```{r}
+```{r, echo = FALSE}
 visna_na_plot <-
   function(dataset,percent=FALSE){
     missing_patterns <- data.frame(is.na(dataset)) %>%
@@ -101,12 +102,22 @@ visna_na_plot <-
 
 We are now ready to look out our dataset. The main dataset for our project is data on New York City arrests. For this particular analysis, we will focus only on the NYC arrest data for the current year (2021). 
 
-```{r}
+```{r, echo = FALSE}
 nyc_arrests <- read.table("https://data.cityofnewyork.us/api/views/uip8-fykc/rows.csv?accessType=DOWNLOAD",
                           header=TRUE,
                           sep=",",
                           quote='"'
                           )
+nyc_arrests$ARREST_DATE <- as_date(nyc_arrests$ARREST_DATE, format="%m/%d/%Y")
+nyc_arrests <- nyc_arrests %>% select(-c(New.Georeferenced.Column, X_COORD_CD, Y_COORD_CD))
+nyc_arrests_old <- read.table("nyc_arrests_post2010.csv",
+                          header=TRUE,
+                          sep=",",
+                          quote='"'
+                          )
+nyc_arrests_old <- nyc_arrests_old %>% select(-c(X))
+nyc_arrests_old$ARREST_DATE <- as_date(nyc_arrests_old$ARREST_DATE, format="%Y-%m-%d")
+nyc_arrests_combined <- bind_rows(nyc_arrests, nyc_arrests_old)
 ```
 
 
@@ -114,22 +125,49 @@ nyc_arrests <- read.table("https://data.cityofnewyork.us/api/views/uip8-fykc/row
 
 Now that we have imported our data in its original form, we will look at our dataset for missing values. Before visualizing our missing values, however, we noticed that some of the entries in the data had empty strings (""), but were not classified as NA in the dataset. Since we felt these empty strings were the equivalent of NA, we changed them in our dataset before plotting the missing values.
 
-```{r missing values 1}
+```{r missing values 1, echo = FALSE}
 #First replace "" with NA
-nyc_arrests2 <- nyc_arrests %>%
+nyc_arrests_combined2 <- nyc_arrests_combined %>%
   na_if("")
 #Abbreviate names to make it easier to read
-names(nyc_arrests2) <- abbreviate(names(nyc_arrests2),minlength=3)
+names(nyc_arrests_combined2) <- abbreviate(names(nyc_arrests_combined2),minlength=3)
 #Plot NA patterns
-visna_na_plot(nyc_arrests2)
+visna_na_plot(nyc_arrests_combined2)
 ```
 
-From the first plot, we can see that there are 4 different patterns in our data with the most common pattern being no missing data. The plot above shows that there isn't too much missing data in our dataset, but there are still a few variables that had missing values. The most common pattern where there was missing data is for just `LAW_CA` to be missing, and this happened around 1000 times in our dataset. `LAW_CA` is the level of the offense (felony, misdemeanor or violation), so it seems this is not always documented when the arrest occurs. The second most common pattern where data was missing was for the data to be missing `KY_`, `OFN`, and `PD_D`. This pattern was far less common and occurred under 100 times out of the 115,299 observations in the data. `KY_` is an internal classification keycode,  `OFN` is a description of internal classification, and `PD_D` is a description of internal classification that is more granular than `OFN`. It seems that on occasion these codes and descriptions were not filled in when the arrest was made. The final pattern contains `KY_`, `OFN`, `PD_D` again, but also contains `PD_C`. `PD_C` is another internal classification code that is more granular than `KY_`. This pattern is very similar to previous one, but contains another missing variable that is similar to the others. We also want to plot our missing data showing percentage missing instead of number of rows missing.
+From the first plot, we can see that there are 6 different patterns in our data with the most common pattern being no missing data. The plot above shows that there isn't too much missing data in our dataset, but there are still a few variables that had missing values. The most common pattern where there was missing data is for just `LAW_CA` to be missing, and this happened around 15000 times in our dataset. `LAW_CA` is the level of the offense (felony, misdemeanor or violation), so it seems this is not always documented when the arrest occurs. The second most common pattern where data was missing was for the data to be missing `KY_`, `OFN`, and `PD_D`. This pattern was far less common and occurred around 5000 times out of over 3.2 million observations in the data. `KY_` is an internal classification keycode,  `OFN` is a description of internal classification, and `PD_D` is a description of internal classification that is more granular than `OFN`. It seems that on occasion these codes and descriptions were not filled in when the arrest was made. The next most common pattern contains `KY_`, `OFN`, `PD_D` again, but also contains `PD_C`. `PD_C` is another internal classification code that is more granular than `KY_`. This pattern is very similar to previous one, but contains another missing variable that is similar to the others. The next most common missing patterns has the most missing variables with `LAW_CA`, `KY_`, `OFN`, `PD_D`, `PD_C`, `LAW_CO` all missing. `LAW_CO` is the only variable in this group that hadn't been in another pattern and this variable represents the law code charges which is a classification code to indicate the charge of the arrest. Our final missing pattern only had `ARREST_B` variable which is the borough that the arrest occurred in. This pattern was not very common which indicates that the arrest records do a good job keeping track of the location where the arrest happened. We also want to plot our missing data showing percentage missing instead of number of rows missing.
 
-```{r missing values 2}
+```{r missing values 2, echo = FALSE}
 #Plot NA patterns with percentages
-visna_na_plot(nyc_arrests2, percent = TRUE)
+visna_na_plot(nyc_arrests_combined2, percent = TRUE)
 ```
 
 The patterns are the same as the plot above, but this plot emphasizes the limited amount of missing data in our dataset. The portion of missing data is very small for our dataset, which is a good sign for our analysis. If there is too much missing data, the analysis can be much more challenging, but this is not the case with the NYC arrests data.
+
+Before moving on to the results section, we wanted to look further into the missing values in our dataset to see if there were any patterns with values of other variables. 
+
+```{r, echo = FALSE}
+nyc_arrests_missing <- nyc_arrests_combined2[rowSums(is.na(nyc_arrests_combined2)) > 0,]
+nyc_arrests_missing2 <- nyc_arrests_missing %>%
+  group_by(ARREST_P) %>%
+  summarize(Number_Missing = n())
+
+nyc_arrests_missing3 <- nyc_arrests_missing %>%
+  group_by(ARREST_B) %>%
+  summarize(Number_Missing = n())
+nyc_arrests_combined3 <- nyc_arrests_combined2 %>%
+  group_by(ARREST_B) %>%
+  summarize(Total = n())
+nyc_arrests_combined4 <- nyc_arrests_combined2 %>%
+  group_by(ARREST_P) %>%
+  summarize(Total = n())
+nyc_arrests_borough <- inner_join(nyc_arrests_missing3, nyc_arrests_combined3, by = "ARREST_B")
+nyc_arrests_borough2 <- nyc_arrests_borough %>%
+  mutate(PCT_Missing = Number_Missing/Total)
+nyc_arrests_precinct <- inner_join(nyc_arrests_missing2, nyc_arrests_combined4, by = "ARREST_P")
+nyc_arrests_precinct2 <- nyc_arrests_precinct %>%
+  mutate(PCT_Missing = Number_Missing/Total)
+
+
+```
 
