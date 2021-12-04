@@ -4,6 +4,7 @@
 library(tidyverse)
 library(patchwork)
 library(lubridate)
+library(kableExtra)
 ```
 
 ```{r, echo = FALSE}
@@ -168,6 +169,22 @@ nyc_arrests_precinct <- inner_join(nyc_arrests_missing2, nyc_arrests_combined4, 
 nyc_arrests_precinct2 <- nyc_arrests_precinct %>%
   mutate(PCT_Missing = Number_Missing/Total)
 
+nyc_arrests_borough2 %>%
+  arrange(desc(PCT_Missing)) %>%
+  kable(align = "c") %>%
+  kable_styling(position = "center", latex_options=c('striped', 'hold_position'))
+
 
 ```
 
+We wanted to look to see if there were any patterns of missing data in terms of location of the arrest. We started by looking at the borough that the arrest occurred in to see if certain boroughs had more missing data than others. We found that Manhattan had the largest percentage of arrests with at least missing values, but still only 1 percent of Manhattan arrests were missing data. There was missing data in .7 percent of Bronx arrests and .6 percent of Queens arrests. Staten Island and Brooklyn had the lowest percent of arrests with missing data with only .3 percent. There is some small difference in missing data by borough, but does not seem to be a clear pattern in terms of the borough the arrest occurred in.
+
+```{r, echo = FALSE}
+nyc_arrests_precinct2 %>%
+  arrange(desc(PCT_Missing)) %>%
+  head(5) %>%
+  kable(align = "c") %>%
+  kable_styling(position = "center", latex_options=c('striped', 'hold_position'))
+```
+
+We also wanted to look to see if any precincts had more missing data than others. There were 77 different precincts in the dataset and the percentage of missing data ranged from 6 percent to .09 percent. The precinct with the highest proportion of missing data was precinct 5 while precincts 100 and 22 had the lowest proportion of missing data. Precinct 10 was missing data on 5.9 percent of its arrest which was the second highest, but precincts 5 and 10 were the only ones with more than 2.5 percent of entries missing data. Thus, it seems there does seem to be a few precincts that are much more likely to have missing data compared to others. Now that we have looked into our missing data, we are going to move on to analyzing our data in the results section.

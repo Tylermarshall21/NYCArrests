@@ -24,7 +24,7 @@
 <meta name="author" content="Ryan Rogers and Tyler Marshall" />
 
 
-<meta name="date" content="2021-12-03" />
+<meta name="date" content="2021-12-04" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -53,6 +53,8 @@
 
 <link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
 <script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
+<script src="libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
 
 
 
@@ -138,6 +140,202 @@
 <p><img src="finalproj_files/figure-html/missing%20values%202-1.png" width="672" /></p>
 <p>The patterns are the same as the plot above, but this plot emphasizes the limited amount of missing data in our dataset. The portion of missing data is very small for our dataset, which is a good sign for our analysis. If there is too much missing data, the analysis can be much more challenging, but this is not the case with the NYC arrests data.</p>
 <p>Before moving on to the results section, we wanted to look further into the missing values in our dataset to see if there were any patterns with values of other variables.</p>
+<table class="table" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:center;">
+ARREST_B
+</th>
+<th style="text-align:center;">
+Number_Missing
+</th>
+<th style="text-align:center;">
+Total
+</th>
+<th style="text-align:center;">
+PCT_Missing
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;">
+NA
+</td>
+<td style="text-align:center;">
+1
+</td>
+<td style="text-align:center;">
+1
+</td>
+<td style="text-align:center;">
+1.0000000
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+M
+</td>
+<td style="text-align:center;">
+9546
+</td>
+<td style="text-align:center;">
+870097
+</td>
+<td style="text-align:center;">
+0.0109712
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+B
+</td>
+<td style="text-align:center;">
+5431
+</td>
+<td style="text-align:center;">
+728168
+</td>
+<td style="text-align:center;">
+0.0074584
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+Q
+</td>
+<td style="text-align:center;">
+3873
+</td>
+<td style="text-align:center;">
+626991
+</td>
+<td style="text-align:center;">
+0.0061771
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+S
+</td>
+<td style="text-align:center;">
+435
+</td>
+<td style="text-align:center;">
+118914
+</td>
+<td style="text-align:center;">
+0.0036581
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+K
+</td>
+<td style="text-align:center;">
+2822
+</td>
+<td style="text-align:center;">
+904165
+</td>
+<td style="text-align:center;">
+0.0031211
+</td>
+</tr>
+</tbody>
+</table>
+<p>We wanted to look to see if there were any patterns of missing data in terms of location of the arrest. We started by looking at the borough that the arrest occurred in to see if certain boroughs had more missing data than others. We found that Manhattan had the largest percentage of arrests with at least missing values, but still only 1 percent of Manhattan arrests were missing data. There was missing data in .7 percent of Bronx arrests and .6 percent of Queens arrests. Staten Island and Brooklyn had the lowest percent of arrests with missing data with only .3 percent. There is some small difference in missing data by borough, but does not seem to be a clear pattern in terms of the borough the arrest occurred in.</p>
+<table class="table" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:center;">
+ARREST_P
+</th>
+<th style="text-align:center;">
+Number_Missing
+</th>
+<th style="text-align:center;">
+Total
+</th>
+<th style="text-align:center;">
+PCT_Missing
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;">
+5
+</td>
+<td style="text-align:center;">
+3187
+</td>
+<td style="text-align:center;">
+52517
+</td>
+<td style="text-align:center;">
+0.0606851
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+10
+</td>
+<td style="text-align:center;">
+1610
+</td>
+<td style="text-align:center;">
+27203
+</td>
+<td style="text-align:center;">
+0.0591846
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+84
+</td>
+<td style="text-align:center;">
+964
+</td>
+<td style="text-align:center;">
+41293
+</td>
+<td style="text-align:center;">
+0.0233454
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+113
+</td>
+<td style="text-align:center;">
+1484
+</td>
+<td style="text-align:center;">
+69306
+</td>
+<td style="text-align:center;">
+0.0214123
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+49
+</td>
+<td style="text-align:center;">
+591
+</td>
+<td style="text-align:center;">
+36564
+</td>
+<td style="text-align:center;">
+0.0161634
+</td>
+</tr>
+</tbody>
+</table>
+<p>We also wanted to look to see if any precincts had more missing data than others. There were 77 different precincts in the dataset and the percentage of missing data ranged from 6 percent to .09 percent. The precinct with the highest proportion of missing data was precinct 5 while precincts 100 and 22 had the lowest proportion of missing data. Precinct 10 was missing data on 5.9 percent of its arrest which was the second highest, but precincts 5 and 10 were the only ones with more than 2.5 percent of entries missing data. Thus, it seems there does seem to be a few precincts that are much more likely to have missing data compared to others. Now that we have looked into our missing data, we are going to move on to analyzing our data in the results section.</p>
 
 </div>
 </div>
