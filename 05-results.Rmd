@@ -244,3 +244,16 @@ chi_results
 ```
 
 The exact reason this pattern is present seems an interesting avenue for speculation, as it seems difficult to reason why older people of color, especially Black individuals, would be more likely to be arrested for marijuana crimes, relative to younger people of color.
+
+
+## Arrests near Elections
+
+We also want to look to see if the number of arrests typically changes around elections. The three Presidential elections in the past 10 years occurred on November 3rd, 2020, November 8th, 2016, and November 6th, 2012. First, we are going to look at the number of arrests on these days compared to the average number of arrests per day in each of these respective years.
+
+```{r}
+nyc_arrest_election <- nyc_arrests_combined %>%
+  mutate(ARREST_YEAR = format(ARREST_DATE, format = "%Y")) %>%
+  filter(ARREST_YEAR == 2020 | ARREST_YEAR == 2016 | ARREST_YEAR == 2012 )
+           
+
+```
