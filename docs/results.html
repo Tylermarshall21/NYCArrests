@@ -24,7 +24,7 @@
 <meta name="author" content="Ryan Rogers and Tyler Marshall" />
 
 
-<meta name="date" content="2021-12-03" />
+<meta name="date" content="2021-12-04" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -33,7 +33,7 @@
   
 <link rel="prev" href="missing-values.html"/>
 <link rel="next" href="interactive-component.html"/>
-<script src="libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="libs/header-attrs-2.10/header-attrs.js"></script>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -53,6 +53,8 @@
 
 <link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
 <script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
+<script src="libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
 
 
 <style type="text/css">
@@ -166,6 +168,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="5.1" data-path="results.html"><a href="results.html#initial-exploration"><i class="fa fa-check"></i><b>5.1</b> Initial Exploration</a></li>
 <li class="chapter" data-level="5.2" data-path="results.html"><a href="results.html#arrests-compared-to-crime"><i class="fa fa-check"></i><b>5.2</b> Arrests Compared to Crime</a></li>
 <li class="chapter" data-level="5.3" data-path="results.html"><a href="results.html#arrests-related-to-marijuana-over-time"><i class="fa fa-check"></i><b>5.3</b> Arrests Related to Marijuana over time</a></li>
+<li class="chapter" data-level="5.4" data-path="results.html"><a href="results.html#arrests-near-elections"><i class="fa fa-check"></i><b>5.4</b> Arrests near Elections</a></li>
 </ul></li>
 <li class="chapter" data-level="6" data-path="interactive-component.html"><a href="interactive-component.html"><i class="fa fa-check"></i><b>6</b> Interactive component</a></li>
 <li class="chapter" data-level="7" data-path="conclusion.html"><a href="conclusion.html"><i class="fa fa-check"></i><b>7</b> Conclusion</a></li>
@@ -243,6 +246,126 @@ In general, however, arrests seem to exhibit values similar to crime reports. On
 ## data:  Mat_mj_arrests_mosaic
 ## X-squared = 2606.6, df = 16, p-value &lt; 2.2e-16</code></pre>
 <p>The exact reason this pattern is present seems an interesting avenue for speculation, as it seems difficult to reason why older people of color, especially Black individuals, would be more likely to be arrested for marijuana crimes, relative to younger people of color.</p>
+</div>
+<div id="arrests-near-elections" class="section level2" number="5.4">
+<h2><span class="header-section-number">5.4</span> Arrests near Elections</h2>
+<p>We also want to look to see if the number of arrests typically changes around elections. The three Presidential elections in the past 10 years occurred on November 3rd, 2020, November 8th, 2016, and November 6th, 2012. First, we are going to look at the number of arrests on these days compared to the average number of arrests per day in each of these respective years.</p>
+<table class="table" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:center;">
+ARREST_YEAR
+</th>
+<th style="text-align:center;">
+Average_Arrests
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;">
+2012
+</td>
+<td style="text-align:center;">
+1082.7322
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+2016
+</td>
+<td style="text-align:center;">
+860.2842
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+2020
+</td>
+<td style="text-align:center;">
+383.6421
+</td>
+</tr>
+</tbody>
+</table>
+<table class="table" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:center;">
+ARREST_DATE
+</th>
+<th style="text-align:center;">
+Number_Arrests
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;">
+2012-11-03
+</td>
+<td style="text-align:center;">
+479
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+2016-11-08
+</td>
+<td style="text-align:center;">
+734
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+2020-11-06
+</td>
+<td style="text-align:center;">
+384
+</td>
+</tr>
+</tbody>
+</table>
+<p>When looking at the number of arrests on Presidential election days, the number of arrests on the 2012 election day was much lower than the average day that year. The average number of arrests on a day in 2012 was 1082.7, but only 479 arrests occurred on November 6th, 2012. In 2016, the average number of arrests was 860.3, but only 734 occurred on election day in 2016. This is not as a large of a drop in 2012, but it still is lower than the average day. This trend did not hold in 2020 as the average number of arrests was 383.6, and 384 arrests occurred on November 3rd, 2020.</p>
+<table class="table" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:center;">
+ARREST_DATE
+</th>
+<th style="text-align:center;">
+Number_Arrests
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;">
+2012-11-04
+</td>
+<td style="text-align:center;">
+439
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+2016-11-09
+</td>
+<td style="text-align:center;">
+868
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+2020-11-07
+</td>
+<td style="text-align:center;">
+364
+</td>
+</tr>
+</tbody>
+</table>
+<p>Not only do we want to look at the arrests on election day, but we also wanted to look at the day after the election. We want to see if the results of the election potentially lead to more arrests the next day. On November 4th 2012, 439 arrests occurred which is even fewer than the 479 that occurred on election day, and again well below the average for the year. In 2016, 868 arrests happened the day after the election, which was just barely above the daily average of 860.3 in that year. Finally, on November 8th 2020, 364 arrests were made which was slightly below the average of 383.6 arrests. There does not seem to be a major pattern in terms of arrest during election periods. It was interesting to see that the number of arrests was well below average in 2012 during these election days, but this pattern didn’t seem to hold in 2016 and 2020.</p>
 
 </div>
 </div>

@@ -12,6 +12,7 @@ library(lubridate)
 library(GGally)
 library(vcd)
 library(forcats)
+library(kableExtra)
 
 nyc_arrests <- read.table("https://data.cityofnewyork.us/api/views/uip8-fykc/rows.csv?accessType=DOWNLOAD",
                           header=TRUE,
@@ -253,7 +254,36 @@ We also want to look to see if the number of arrests typically changes around el
 ```{r}
 nyc_arrest_election <- nyc_arrests_combined %>%
   mutate(ARREST_YEAR = format(ARREST_DATE, format = "%Y")) %>%
-  filter(ARREST_YEAR == 2020 | ARREST_YEAR == 2016 | ARREST_YEAR == 2012 )
-           
+  filter(ARREST_YEAR == 2020 | ARREST_YEAR == 2016 | ARREST_YEAR == 2012 ) %>%
+  group_by(ARREST_YEAR) %>%
+  summarize(Average_Arrests = n()/366)
+
+nyc_arrest_election_days <- nyc_arrests_combined %>%
+  filter(ARREST_DATE == "2020-11-06" | ARREST_DATE == "2016-11-08" | ARREST_DATE == "2012-11-03") %>%
+  group_by(ARREST_DATE) %>%
+  summarize(Number_Arrests = n())
+nyc_arrests_elections <- cbind(nyc_arrest_election, nyc_arrest_election_days)
+nyc_arrest_election %>%
+  kable(align = "c") %>%
+  kable_styling(position = "center", latex_options=c('striped', 'hold_position'))
+nyc_arrest_election_days %>%
+  kable(align = "c") %>%
+  kable_styling(position = "center", latex_options=c('striped', 'hold_position'))
+
 
 ```
+
+When looking at the number of arrests on Presidential election days, the number of arrests on the 2012 election day was much lower than the average day that year. The average number of arrests on a day in 2012 was 1082.7, but only 479 arrests occurred on November 6th, 2012. In 2016, the average number of arrests was 860.3, but only 734 occurred on election day in 2016. This is not as a large of a drop in 2012, but it still is lower than the average day. This trend did not hold in 2020 as the average number of arrests was 383.6, and 384 arrests occurred on November 3rd, 2020.
+
+```{r}
+nyc_arrest_dayafter <- nyc_arrests_combined %>%
+  filter(ARREST_DATE == "2020-11-07" | ARREST_DATE == "2016-11-09" | ARREST_DATE == "2012-11-04") %>%
+  group_by(ARREST_DATE) %>%
+  summarize(Number_Arrests = n())
+nyc_arrest_dayafter %>%
+  kable(align = "c") %>%
+  kable_styling(position = "center", latex_options=c('striped', 'hold_position'))
+
+```
+
+Not only do we want to look at the arrests on election day, but we also wanted to look at the day after the election. We want to see if the results of the election potentially lead to more arrests the next day. On November 4th 2012, 439 arrests occurred which is even fewer than the 479 that occurred on election day, and again well below the average for the year. In 2016, 868 arrests happened the day after the election, which was just barely above the daily average of 860.3 in that year. Finally, on November 8th 2020, 364 arrests were made which was slightly below the average of 383.6 arrests. There does not seem to be a major pattern in terms of arrest during election periods. It was interesting to see that the number of arrests was well below average in 2012 during these election days, but this pattern didn't seem to hold in 2016 and 2020.
