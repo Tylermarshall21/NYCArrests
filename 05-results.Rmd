@@ -13,6 +13,9 @@ library(GGally)
 library(vcd)
 library(forcats)
 library(kableExtra)
+library(ggmap)
+
+register_google(Sys.getenv("API_TOKEN"))
 
 nyc_arrests <- read.table("https://data.cityofnewyork.us/api/views/uip8-fykc/rows.csv?accessType=DOWNLOAD",
                           header=TRUE,
@@ -287,3 +290,43 @@ nyc_arrest_dayafter %>%
 ```
 
 Not only do we want to look at the arrests on election day, but we also wanted to look at the day after the election. We want to see if the results of the election potentially lead to more arrests the next day. On November 4th 2012, 439 arrests occurred which is even fewer than the 479 that occurred on election day, and again well below the average for the year. In 2016, 868 arrests happened the day after the election, which was just barely above the daily average of 860.3 in that year. Finally, on November 8th 2020, 364 arrests were made which was slightly below the average of 383.6 arrests. There does not seem to be a major pattern in terms of arrest during election periods. It was interesting to see that the number of arrests was well below average in 2012 during these election days, but this pattern didn't seem to hold in 2016 and 2020.
+
+## Thanksgiving Day Parade - More arrests, or fewer?
+
+Many of the events discussed so far have been fairly prominent occurrences, with the ability to affect arrest rates over long periods of time. However, these are not the only events that occur in New York City. Many of these other events are smaller in scope, and less historical, but do provide another interesting perspective on how circumstance can impact numbers of arrests. Let us consider NYC's annual Thanksgiving Day parade. This annual event sees thousands of residents and tourists gather to spectate a common experience. Along with these throngs come an increased police presence, and possible opportunities for criminals. The question remains then, how does the Thanksgiving Thursday compare to any other November Thursday? See below a map of thefts in New York City on Thanksgiving Day (on the left), and the Thursdays prior (on the right) with the parade route shown in blue.
+
+```{r}
+nyc_thanksgiving_arrests <- (
+  nyc_arrests_combined %>%
+    filter(month(ARREST_DATE) %in% c(11) &
+             wday(ARREST_DATE) %in% c(5) &
+             day(ARREST_DATE) > 14 &
+             day(ARREST_DATE) < 29
+    ) %>%
+    mutate(THANKSGIVING = ifelse(day(ARREST_DATE) > 21, TRUE,FALSE)) %>%
+    mutate(THEFT = ifelse(grepl("THEFT",OFNS_DESC, fixed = TRUE), TRUE,
+                         ifelse(grepl("LARCENY",OFNS_DESC, fixed = TRUE), TRUE,
+                                ifelse(grepl("ROBBERY",OFNS_DESC, fixed = TRUE), TRUE,
+                                       ifelse(grepl("BURGLARY",OFNS_DESC, fixed = TRUE), TRUE, FALSE))))) %>%
+    filter(THEFT == TRUE)
+)
+
+leg_1 <- route(from = 'W 34th Street and 7th Avenue, Manhattan', to = 'W 34th Street and 6th Avenue, Manhattan', mode = 'walking')
+leg_2 <- route(from = 'W 34th Street and 6th Avenue, Manhattan', to = 'W 59th Street and 6th Avenue, Manhattan', mode = 'walking')
+leg_3 <- route(from = 'W 59th Street and 6th Avenue, Manhattan', to = 'Columbus Circle, Manhattan', mode = 'walking')
+leg_4 <- route(from = 'Columbus Circle, Manhattan', to = 'Central Park West and W 77th street, Manhattan', mode = 'walking')
+
+nyc <- get_map(location = c(-73.982, 40.764), zoom = 14, color = 'bw')
+
+ggmap(nyc, extent='device', legend='bottom') +
+  geom_leg(aes(x = start_lon, y = start_lat, xend = end_lon, yend = end_lat), size = 2, color = 'blue', data=leg_1) +
+  geom_leg(aes(x = start_lon, y = start_lat, xend = end_lon, yend = end_lat), size = 2, color = 'blue', data=leg_2) +
+  geom_leg(aes(x = start_lon, y = start_lat, xend = end_lon, yend = end_lat), size = 2, color = 'blue', data=leg_3) +
+  geom_leg(aes(x = start_lon, y = start_lat, xend = end_lon, yend = end_lat), size = 2, color = 'blue', data=leg_4) +
+  geom_density_2d_filled(data = nyc_thanksgiving_arrests, aes(x = Longitude, y=Latitude), alpha = 0.4) +
+  facet_wrap(~ THANKSGIVING)
+```
+
+The results are somewhat unexpected. It may seem intuitive to suspect elevated levels of crime around the parade route, but this does not seem to be the case. Many of the areas on the parade route, in fact, see little to no crime the day of the parade! We do note, however, a shift in the patterns of thefts on Thanksgiving day, with more thefts occurring on the Western side of the city than ordinary, with the area near Lincoln Center seeing a slightly higher increase. By contrast, many areas to the East of the parade route see a decline in thefts on Thanksgiving day. 
+
+
