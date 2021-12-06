@@ -2,7 +2,7 @@
 
 ## Initial Exploration
 
-In this section, we will be sharing the results of exploratory analysis with our data. We will be focusing on the findings that we found most interesting during this process while also trying to provide some insight into some of the questions of interest mentioned at the beginning of this project. To start, we made some basic bar charts to get a better understanding of the arrests occuring in New York City. First, we looked at how the number of arrests has changed over the past 10 years. 
+In this section, we will be sharing the results of exploratory analysis with our data. We will be focusing on the findings that we found most interesting during this process while also trying to provide some insight into some of the questions of interest mentioned at the beginning of this project. To start, we made some basic bar charts to get a better understanding of the arrests occurring in New York City. First, we looked at how the number of arrests has changed over the past 10 years. 
 
 ```{r setup}
 # Initial setup and dataset preparation.
@@ -117,6 +117,26 @@ ggplot(data = nyc_arrests_biggest_months, aes(x = ARREST_MONTH, y = Number_Arres
 ```
 
 One small pattern that we can see from this plot is that the number of arrests seems to drop off a little in December, with December 2014 being the most extreme example. The reasoning for this drop off is unclear, but it could potentially be related to the holiday season. It will be interesting to compare to the number of crimes in December to see if people commit fewer crimes at the end of the year. Another aspect of this plot that we found interesting is that the number of arrests really drops off in 2020 once COVID hit. April, June, and July all had very low arrest totals and this was likely due to the fact that most people were quarantining and not going out much. 
+
+We also wanted to look at individual days to see if there may be a reason certain days had such levels of crime. We created a Cleveland dot plot to look at the 30 days with the highest arrest totals in the past 10 years.
+
+```{r}
+nyc_arrest_biggest_days <- nyc_arrests_combined %>%
+  group_by(ARREST_DATE) %>%
+  summarize(Number_Arrests = n()) %>%
+  arrange(desc(Number_Arrests)) %>%
+  mutate(ARREST_DATE = as.factor(ARREST_DATE)) %>%
+  slice(1:30)
+
+ggplot(data = nyc_arrest_biggest_days, aes(x = Number_Arrests, y = fct_reorder(ARREST_DATE,Number_Arrests))) + 
+  geom_point() + labs(title = "30 Days with Most Arrests Past 10 Years",
+                      x = "Number of Arrests",
+                      y = "Date")
+
+```
+
+From the plot above, we see that the most arrests in one day over the past 10 years was 1750 on March 7th, 2012. There doesn't seem to be anything in particular that explains why there were so many arrests on this day since it was a random Wednesday in March. It is also interesting to see that all of these days were either in 2011, 2012, or 2013. This makes sense given what the bar plot above showed us in terms of arrests by year, but it is still interesting to see that there were no days recently that made it in the top 30. When looking at the days on this list, we also noticed that most of these days occurred earlier in the year. Only one of the 30 days occurred in the second half of the year which seems a bit odd considering that there wasn't a huge difference between the number of arrests by month. 
+
 
 We also want to look at the types of arrests that are occurring in New York City. The three types of arrests according to the data dictionary are felonies, misdemeanors, and violations. A bar plot showing how common each arrest type has been over the past 10 years is below. 
 
