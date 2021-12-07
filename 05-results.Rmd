@@ -129,13 +129,14 @@ nyc_arrest_biggest_days <- nyc_arrests_combined %>%
   slice(1:30)
 
 ggplot(data = nyc_arrest_biggest_days, aes(x = Number_Arrests, y = fct_reorder(ARREST_DATE,Number_Arrests))) + 
+  theme_bw() +
   geom_point() + labs(title = "30 Days with Most Arrests Past 10 Years",
                       x = "Number of Arrests",
                       y = "Date")
 
 ```
 
-From the plot above, we see that the most arrests in one day over the past 10 years was 1750 on March 7th, 2012. There doesn't seem to be anything in particular that explains why there were so many arrests on this day since it was a random Wednesday in March. It is also interesting to see that all of these days were either in 2011, 2012, or 2013. This makes sense given what the bar plot above showed us in terms of arrests by year, but it is still interesting to see that there were no days recently that made it in the top 30. When looking at the days on this list, we also noticed that most of these days occurred earlier in the year. Only one of the 30 days occurred in the second half of the year which seems a bit odd considering that there wasn't a huge difference between the number of arrests by month. 
+From the plot above, we see that the most arrests in one day over the past 10 years was 1750 on March 7th, 2012. There doesn't seem to be anything in particular that explains why there were so many arrests on this day since it was a random Wednesday in March. This was one of two days with more than 1700 arrests with the other being February 1st, 2012 which also happened to be a Wednesday. It is also interesting to see that all of these days were either in 2011, 2012, or 2013. This makes sense given what the bar plot above showed us in terms of arrests by year, but it is still interesting to see that there were no days recently that made it in the top 30. When looking at the days on this list, we also noticed that most of these days occurred earlier in the year. Only one of the 30 days occurred in the second half of the year which seems a bit odd considering that there wasn't a huge difference between the number of arrests by month. It would be interesting to see if this pattern continued for the top 50 or 100 days in terms of most arrests, and if there is a potential explanation for why this is the case.
 
 
 We also want to look at the types of arrests that are occurring in New York City. The three types of arrests according to the data dictionary are felonies, misdemeanors, and violations. A bar plot showing how common each arrest type has been over the past 10 years is below. 
@@ -155,7 +156,7 @@ ggplot(data = nyc_arrests_type, aes(x = fct_reorder(LAW_CAT_CD, Number_Arrests, 
 
 From the bar plot above, we can see that misdemeanor is the most common type of arrest in our dataset with over 2 million arrests that were related to misdemeanor charges. Felony is the next most common type of arrest with just under 1 million arrests while violations only account for around 200,000 arrests. There is also a small portion of arrests classified as `I`, but it is not exactly clear from the data dictionary what that stands for. There were also a small amount of arrests that did not have a `LAW_CAT_CD`, so these were categorized as `NA` in our plot. 
 
-Next, we made a parallel coordinates plot to get a better understanding of the arrests made in each borough. We categorized the types of arrests into five categories: Murder, Rape, Aggravated Assault, Motor Vehicle Theft, and Robbery. From the plot below, Richmond County (Staten Island) has had the fewest number of arrests in all of these categories over the past 10 years. This is not surprising since Staten Island is the least populated of the five boroughs. The Bronx has had the most arrests related to murder with over 3500 in the past 10 years, but did not have the most arrests in any of the other four categories. Kings County (Brooklyn) had the most arrests related to rape, aggravated assault, motor vehicle theft, and robbery since 2011. While Kings County had the most arrests in all of these categories, the number of arrests varied significantly. Aggravated assault had almost 50,000 arrests and robbery had around 35,000 while there were just over 5000 arrests for rape and 3500 for motor vehicle theft. Queens County did not have the most or fewest arrests in any category, but almost had as many motor vehicle thefts as Kings County. Finally, New York County had the second fewest arrests for murder, rape, aggravated assault, and motor vehicle theft.
+Next, we made a parallel coordinates plot to get a better understanding of the arrests made in each borough. We categorized the types of arrests into five categories: Murder, Rape, Aggravated Assault, Motor Vehicle Theft, and Robbery. 
 
 ```{r}
 nyc_coords <- nyc_arrests_categories_simple %>%
@@ -172,6 +173,8 @@ ggparcoord(data = nyc_coords, columns = 2:6, groupColumn = "County", scale = "gl
 
 
 ```
+
+From the parallel coordinates plot, Richmond County (Staten Island) has had the fewest number of arrests in all of these categories over the past 10 years. This is not surprising since Staten Island is the least populated of the five boroughs. The Bronx has had the most arrests related to murder with over 3500 in the past 10 years, but did not have the most arrests in any of the other four categories. Kings County (Brooklyn) had the most arrests related to rape, aggravated assault, motor vehicle theft, and robbery since 2011. While Kings County had the most arrests in all of these categories, the number of arrests varied significantly. Aggravated assault had almost 50,000 arrests and robbery had around 35,000 while there were just over 5000 arrests for rape and 3500 for motor vehicle theft. Queens County did not have the most or fewest arrests in any category, but almost had as many motor vehicle thefts as Kings County. Finally, New York County had the second fewest arrests for murder, rape, aggravated assault, and motor vehicle theft.
 
 ## Arrests Compared to Crime
 
@@ -349,4 +352,27 @@ ggmap(nyc, extent='device', legend='bottom') +
 
 The results are somewhat unexpected. It may seem intuitive to suspect elevated levels of crime around the parade route, but this does not seem to be the case. Many of the areas on the parade route, in fact, see little to no crime the day of the parade! We do note, however, a shift in the patterns of thefts on Thanksgiving day, with more thefts occurring on the Western side of the city than ordinary, with the area near Lincoln Center seeing a slightly higher increase. By contrast, many areas to the East of the parade route see a decline in thefts on Thanksgiving day. 
 
+## Have Drunk Driving Arrests Gone Down Recently
 
+Our next exploration is looking at arrests related to drunk driving. We wanted to see if the creation of apps like Uber and Lyft has helped limit the number of drunk driving arrests. To do this, we looked at the number of drunk driving arrests in each of the past 10 years.
+
+
+```{r}
+drunk_driving <- nyc_arrests_combined %>%
+  filter(OFNS_DESC == "INTOXICATED & IMPAIRED DRIVING" | OFNS_DESC == "INTOXICATED/IMPAIRED DRIVING") %>%
+  mutate(ARREST_YEAR = format(ARREST_DATE, format = "%Y")) %>%
+  group_by(ARREST_YEAR) %>%
+  summarize(Number_Arrests = n())
+
+ggplot(data = drunk_driving, aes(x = ARREST_YEAR, y = Number_Arrests)) + geom_col() +
+  theme_bw() +
+  geom_vline(xintercept = 2, color = "red") +
+  annotate(geom="text", x=1.35, y=8000, label="Lyft started",
+              color="red") +
+  labs(title = "Drunk Driving Arrests over Past 10 Years",
+       x = "Year",
+       y = "Number of Drunk Driving Arrests")
+
+```
+
+From the plot above, we can see an interesting trend in terms of drunk driving arrests over the past 10 years. There is a clear increase in arrests during 2013 and 2014 related to drunk driving before it drops off in subsequent years. There is a sharp drop in number of arrests in 2020 and so far in 2021 which is likely due to the pandemic. As noted on the plot, Lyft was started in 2012 while Uber was created in 2009. These apps didn't seem to have much impact on drunk driving arrests initially, but could have had some impact once they got larger and became more well-known. There has been a progressive decrease in drunk driving arrests since 2015/2016 which is likely due to a combination of the growth of these apps as well as more awareness towards drunk driving. Even if the reasoning for the drop off is not completely clear, it is a good sign that the number of drunk driving arrests has gone down in recent years.
