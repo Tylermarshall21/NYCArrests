@@ -1,5 +1,7 @@
 # Data sources
 
+This section contains information about where our data came from. We were able to find data regarding both arrests and crimes for New York City. We chose to focus on New York City data since we are currently studying in the city. 
+
 ## Arrest Data
 
 Arrest data from the city of New York from 2006 to the present will serve as our primary dataset. The data is obtained from these locations:
@@ -18,6 +20,6 @@ For this analysis, we will limit our data to the last 10 years, starting on Janu
 
 Data on crimes reported in New York City will serve as a check against our general assumption that crime correlates strongly with arrests. This data is obtained from https://data.ny.gov/Public-Safety/Index-Crimes-by-County-and-Agency-Beginning-1990/ca8h-8gjq , and is maintained by the New York State Division of Criminal Justice Services.
 
-This dataset, which spans the years 1990 to 2020, provides summary crime statistics for each New York county in each year. It provides aggregated values for the numbers of crimes committed in various categories over the given calendar year. One shortcoming with this dataset is its lack of granularity. Annual, county-level data is good, but it does limit the dataset's usefulness for considering crime demographics, and does not allow for comparing crime rates during particular times of the year.
+This dataset, which spans the years 1990 to 2020, provides summary crime statistics for each New York county in each year. It provides aggregated values for the numbers of crimes committed in various categories over the given calendar year. One shortcoming with this dataset is its lack of granularity. Annual, county-level data is good, but it does limit the dataset's usefulness for considering crime demographics, and does not allow for comparing crime rates during particular times of the year. Also, since we are still in the middle of 2021, the 2021 data is not yet available which means we will not be able to make any 2021 comparisons between crimes and arrests.
 
 Another point to note regarding this dataset is classification. The definition of rape applied to categorize these crimes was altered in the year 2015 (https://www.criminaljustice.ny.gov/crimnet/ojsa/stats.htm). As a result, comparisons made before and after 2015 should be mindful an uptick in crimes of this category is certainly related to some degree with this change in classification technique. Current definitions for the various crimes found in the dataset can be found here: https://ucr.fbi.gov/crime-in-the-u.s/2017/crime-in-the-u.s.-2017/topic-pages/offense-definitions

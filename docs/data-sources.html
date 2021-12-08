@@ -24,7 +24,7 @@
 <meta name="author" content="Ryan Rogers and Tyler Marshall" />
 
 
-<meta name="date" content="2021-11-27" />
+<meta name="date" content="2021-12-08" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -33,7 +33,7 @@
   
 <link rel="prev" href="index.html"/>
 <link rel="next" href="data-transformation.html"/>
-<script src="libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="libs/header-attrs-2.10/header-attrs.js"></script>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -84,18 +84,26 @@
 </ul></li>
 <li class="chapter" data-level="3" data-path="data-transformation.html"><a href="data-transformation.html"><i class="fa fa-check"></i><b>3</b> Data transformation</a>
 <ul>
-<li class="chapter" data-level="3.1" data-path="data-transformation.html"><a href="data-transformation.html#data-import---2021-data"><i class="fa fa-check"></i><b>3.1</b> Data Import - 2021 Data</a></li>
-<li class="chapter" data-level="3.2" data-path="data-transformation.html"><a href="data-transformation.html#data-import---2006-2021-data"><i class="fa fa-check"></i><b>3.2</b> Data Import - 2006-2021 Data</a></li>
-<li class="chapter" data-level="3.3" data-path="data-transformation.html"><a href="data-transformation.html#combining-old-and-new"><i class="fa fa-check"></i><b>3.3</b> Combining Old and New</a></li>
+<li class="chapter" data-level="3.1" data-path="data-transformation.html"><a href="data-transformation.html#crime-data-1"><i class="fa fa-check"></i><b>3.1</b> Crime Data</a>
+<ul>
+<li class="chapter" data-level="3.1.1" data-path="data-transformation.html"><a href="data-transformation.html#data-import---2021-data"><i class="fa fa-check"></i><b>3.1.1</b> Data Import - 2021 Data</a></li>
+<li class="chapter" data-level="3.1.2" data-path="data-transformation.html"><a href="data-transformation.html#data-import---2006-2021-data"><i class="fa fa-check"></i><b>3.1.2</b> Data Import - 2006-2021 Data</a></li>
+<li class="chapter" data-level="3.1.3" data-path="data-transformation.html"><a href="data-transformation.html#combining-old-and-new"><i class="fa fa-check"></i><b>3.1.3</b> Combining Old and New</a></li>
+<li class="chapter" data-level="3.1.4" data-path="data-transformation.html"><a href="data-transformation.html#aggregating-by-category"><i class="fa fa-check"></i><b>3.1.4</b> Aggregating by Category</a></li>
+</ul></li>
 </ul></li>
 <li class="chapter" data-level="4" data-path="missing-values.html"><a href="missing-values.html"><i class="fa fa-check"></i><b>4</b> Missing values</a>
 <ul>
-<li class="chapter" data-level="4.1" data-path="missing-values.html"><a href="missing-values.html#importing-the-arrests-dataset"><i class="fa fa-check"></i><b>4.1</b> Importing the Arrests Dataset</a></li>
-<li class="chapter" data-level="4.2" data-path="missing-values.html"><a href="missing-values.html#visualizing-the-missing-values"><i class="fa fa-check"></i><b>4.2</b> Visualizing the Missing Values</a></li>
+<li class="chapter" data-level="4.1" data-path="missing-values.html"><a href="missing-values.html#investigating-missing-values"><i class="fa fa-check"></i><b>4.1</b> Investigating Missing Values</a></li>
 </ul></li>
 <li class="chapter" data-level="5" data-path="results.html"><a href="results.html"><i class="fa fa-check"></i><b>5</b> Results</a>
 <ul>
-<li class="chapter" data-level="5.1" data-path="results.html"><a href="results.html#arrests-compared-to-crime"><i class="fa fa-check"></i><b>5.1</b> Arrests Compared to Crime</a></li>
+<li class="chapter" data-level="5.1" data-path="results.html"><a href="results.html#initial-exploration"><i class="fa fa-check"></i><b>5.1</b> Initial Exploration</a></li>
+<li class="chapter" data-level="5.2" data-path="results.html"><a href="results.html#arrests-compared-to-crime"><i class="fa fa-check"></i><b>5.2</b> Arrests Compared to Crime</a></li>
+<li class="chapter" data-level="5.3" data-path="results.html"><a href="results.html#arrests-related-to-marijuana-over-time"><i class="fa fa-check"></i><b>5.3</b> Arrests Related to Marijuana over time</a></li>
+<li class="chapter" data-level="5.4" data-path="results.html"><a href="results.html#arrests-near-elections"><i class="fa fa-check"></i><b>5.4</b> Arrests near Elections</a></li>
+<li class="chapter" data-level="5.5" data-path="results.html"><a href="results.html#thanksgiving-day-parade---more-arrests-or-fewer"><i class="fa fa-check"></i><b>5.5</b> Thanksgiving Day Parade - More arrests, or fewer?</a></li>
+<li class="chapter" data-level="5.6" data-path="results.html"><a href="results.html#have-drunk-driving-arrests-gone-down-recently"><i class="fa fa-check"></i><b>5.6</b> Have Drunk Driving Arrests Gone Down Recently</a></li>
 </ul></li>
 <li class="chapter" data-level="6" data-path="interactive-component.html"><a href="interactive-component.html"><i class="fa fa-check"></i><b>6</b> Interactive component</a></li>
 <li class="chapter" data-level="7" data-path="conclusion.html"><a href="conclusion.html"><i class="fa fa-check"></i><b>7</b> Conclusion</a></li>
@@ -120,6 +128,7 @@
             <section class="normal" id="section-">
 <div id="data-sources" class="section level1" number="2">
 <h1><span class="header-section-number">Chapter 2</span> Data sources</h1>
+<p>This section contains information about where our data came from. We were able to find data regarding both arrests and crimes for New York City. We chose to focus on New York City data since we are currently studying in the city.</p>
 <div id="arrest-data" class="section level2" number="2.1">
 <h2><span class="header-section-number">2.1</span> Arrest Data</h2>
 <p>Arrest data from the city of New York from 2006 to the present will serve as our primary dataset. The data is obtained from these locations:</p>
@@ -129,13 +138,13 @@
 </ol>
 <p>This data is collected by the NYPD and made available through New York City Open Data.</p>
 <p>This data has a number of interesting features, such as geographical data regarding where the arrest was made, crime related to the arrest, and various pieces of demographic data associated with the apprehended person. The various crime statistics, as well as location information, will allow us to plot out trends in arrests over various factors, and effectively connect these factors with other datasets.</p>
-<p>For this analysis, we will limit our data to the last 10 years, starting on January 1st, 2011.</p>
+<p>For this analysis, we will limit our data to the last 10 years, starting on January 1st, 2011. Since the entire dataset is quite large, focusing on a smaller time period made data cleaning and transformation quicker while also making the size of the data file smaller. We still wanted to look at an extended period of time to look for patterns in arrests, so we decided to use the last 10 years for our project. Even after limiting the dataset to the last 10 years, there are still over 3.2 million observations (3,248,336 to be exact). This is still a very large dataset, so we will still be able to use it to identify arrest trends in New York City.</p>
 </div>
 <div id="crime-data" class="section level2" number="2.2">
 <h2><span class="header-section-number">2.2</span> Crime Data</h2>
 <p>Data on crimes reported in New York City will serve as a check against our general assumption that crime correlates strongly with arrests. This data is obtained from <a href="https://data.ny.gov/Public-Safety/Index-Crimes-by-County-and-Agency-Beginning-1990/ca8h-8gjq" class="uri">https://data.ny.gov/Public-Safety/Index-Crimes-by-County-and-Agency-Beginning-1990/ca8h-8gjq</a> , and is maintained by the New York State Division of Criminal Justice Services.</p>
-<p>This dataset, which spans the years 1990 to 2020, provides summary crime statistics for each New York county in each year. It provides aggregated values for the numbers of crimes committed in various categories over the given calendar year. One shortcoming with this dataset is its lack of granularity. Annual, county-level data is good, but it does limit the dataset’s usefulness for considering crime demographics, and does not allow for comparing crime rates during particular times of the year.</p>
-<p>Another point to note regarding this dataset is classification. The definition of rape applied to categorize these crimes was altered in the year 2015 (<a href="https://www.criminaljustice.ny.gov/crimnet/ojsa/stats.htm" class="uri">https://www.criminaljustice.ny.gov/crimnet/ojsa/stats.htm</a>). As a result, comparisons made before and after 2015 should be mindful an uptick in crimes of this category is certainly related to some degree with this change in classification technique.</p>
+<p>This dataset, which spans the years 1990 to 2020, provides summary crime statistics for each New York county in each year. It provides aggregated values for the numbers of crimes committed in various categories over the given calendar year. One shortcoming with this dataset is its lack of granularity. Annual, county-level data is good, but it does limit the dataset’s usefulness for considering crime demographics, and does not allow for comparing crime rates during particular times of the year. Also, since we are still in the middle of 2021, the 2021 data is not yet available which means we will not be able to make any 2021 comparisons between crimes and arrests.</p>
+<p>Another point to note regarding this dataset is classification. The definition of rape applied to categorize these crimes was altered in the year 2015 (<a href="https://www.criminaljustice.ny.gov/crimnet/ojsa/stats.htm" class="uri">https://www.criminaljustice.ny.gov/crimnet/ojsa/stats.htm</a>). As a result, comparisons made before and after 2015 should be mindful an uptick in crimes of this category is certainly related to some degree with this change in classification technique. Current definitions for the various crimes found in the dataset can be found here: <a href="https://ucr.fbi.gov/crime-in-the-u.s/2017/crime-in-the-u.s.-2017/topic-pages/offense-definitions" class="uri">https://ucr.fbi.gov/crime-in-the-u.s/2017/crime-in-the-u.s.-2017/topic-pages/offense-definitions</a></p>
 
 </div>
 </div>
