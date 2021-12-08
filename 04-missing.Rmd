@@ -99,10 +99,6 @@ visna_na_plot <-
 ```
 
 
-## Importing the Arrests Dataset
-
-We are now ready to look out our dataset. The main dataset for our project is data on New York City arrests. For this particular analysis, we will focus only on the NYC arrest data for the current year (2021). 
-
 ```{r, echo = FALSE}
 nyc_arrests <- read.table("https://data.cityofnewyork.us/api/views/uip8-fykc/rows.csv?accessType=DOWNLOAD",
                           header=TRUE,
@@ -122,9 +118,9 @@ nyc_arrests_combined <- bind_rows(nyc_arrests, nyc_arrests_old)
 ```
 
 
-## Visualizing the Missing Values
+## Investigating Missing Values
 
-Now that we have imported our data in its original form, we will look at our dataset for missing values. Before visualizing our missing values, however, we noticed that some of the entries in the data had empty strings (""), but were not classified as NA in the dataset. Since we felt these empty strings were the equivalent of NA, we changed them in our dataset before plotting the missing values.
+The main dataset for our project is data on New York City arrests. For this particular analysis, we will focus only on the NYC arrest data for the past 10 years which is what we will be using for our analysis. Before visualizing our missing values, however, we noticed that some of the entries in the data had empty strings (""), but were not classified as NA in the dataset. Since we felt these empty strings were the equivalent of NA, we changed them in our dataset before plotting the missing values.
 
 ```{r missing values 1, echo = FALSE}
 #First replace "" with NA

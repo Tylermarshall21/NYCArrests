@@ -24,7 +24,7 @@
 <meta name="author" content="Ryan Rogers and Tyler Marshall" />
 
 
-<meta name="date" content="2021-12-04" />
+<meta name="date" content="2021-12-07" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -96,14 +96,16 @@
 </ul></li>
 <li class="chapter" data-level="4" data-path="missing-values.html"><a href="missing-values.html"><i class="fa fa-check"></i><b>4</b> Missing values</a>
 <ul>
-<li class="chapter" data-level="4.1" data-path="missing-values.html"><a href="missing-values.html#importing-the-arrests-dataset"><i class="fa fa-check"></i><b>4.1</b> Importing the Arrests Dataset</a></li>
-<li class="chapter" data-level="4.2" data-path="missing-values.html"><a href="missing-values.html#visualizing-the-missing-values"><i class="fa fa-check"></i><b>4.2</b> Visualizing the Missing Values</a></li>
+<li class="chapter" data-level="4.1" data-path="missing-values.html"><a href="missing-values.html#investigating-missing-values"><i class="fa fa-check"></i><b>4.1</b> Investigating Missing Values</a></li>
 </ul></li>
 <li class="chapter" data-level="5" data-path="results.html"><a href="results.html"><i class="fa fa-check"></i><b>5</b> Results</a>
 <ul>
 <li class="chapter" data-level="5.1" data-path="results.html"><a href="results.html#initial-exploration"><i class="fa fa-check"></i><b>5.1</b> Initial Exploration</a></li>
 <li class="chapter" data-level="5.2" data-path="results.html"><a href="results.html#arrests-compared-to-crime"><i class="fa fa-check"></i><b>5.2</b> Arrests Compared to Crime</a></li>
 <li class="chapter" data-level="5.3" data-path="results.html"><a href="results.html#arrests-related-to-marijuana-over-time"><i class="fa fa-check"></i><b>5.3</b> Arrests Related to Marijuana over time</a></li>
+<li class="chapter" data-level="5.4" data-path="results.html"><a href="results.html#arrests-near-elections"><i class="fa fa-check"></i><b>5.4</b> Arrests near Elections</a></li>
+<li class="chapter" data-level="5.5" data-path="results.html"><a href="results.html#thanksgiving-day-parade---more-arrests-or-fewer"><i class="fa fa-check"></i><b>5.5</b> Thanksgiving Day Parade - More arrests, or fewer?</a></li>
+<li class="chapter" data-level="5.6" data-path="results.html"><a href="results.html#have-drunk-driving-arrests-gone-down-recently"><i class="fa fa-check"></i><b>5.6</b> Have Drunk Driving Arrests Gone Down Recently</a></li>
 </ul></li>
 <li class="chapter" data-level="6" data-path="interactive-component.html"><a href="interactive-component.html"><i class="fa fa-check"></i><b>6</b> Interactive component</a></li>
 <li class="chapter" data-level="7" data-path="conclusion.html"><a href="conclusion.html"><i class="fa fa-check"></i><b>7</b> Conclusion</a></li>
@@ -128,13 +130,9 @@
             <section class="normal" id="section-">
 <div id="missing-values" class="section level1" number="4">
 <h1><span class="header-section-number">Chapter 4</span> Missing values</h1>
-<div id="importing-the-arrests-dataset" class="section level2" number="4.1">
-<h2><span class="header-section-number">4.1</span> Importing the Arrests Dataset</h2>
-<p>We are now ready to look out our dataset. The main dataset for our project is data on New York City arrests. For this particular analysis, we will focus only on the NYC arrest data for the current year (2021).</p>
-</div>
-<div id="visualizing-the-missing-values" class="section level2" number="4.2">
-<h2><span class="header-section-number">4.2</span> Visualizing the Missing Values</h2>
-<p>Now that we have imported our data in its original form, we will look at our dataset for missing values. Before visualizing our missing values, however, we noticed that some of the entries in the data had empty strings (""), but were not classified as NA in the dataset. Since we felt these empty strings were the equivalent of NA, we changed them in our dataset before plotting the missing values.</p>
+<div id="investigating-missing-values" class="section level2" number="4.1">
+<h2><span class="header-section-number">4.1</span> Investigating Missing Values</h2>
+<p>The main dataset for our project is data on New York City arrests. For this particular analysis, we will focus only on the NYC arrest data for the past 10 years which is what we will be using for our analysis. Before visualizing our missing values, however, we noticed that some of the entries in the data had empty strings (""), but were not classified as NA in the dataset. Since we felt these empty strings were the equivalent of NA, we changed them in our dataset before plotting the missing values.</p>
 <p><img src="finalproj_files/figure-html/missing%20values%201-1.png" width="672" /></p>
 <p>From the first plot, we can see that there are 6 different patterns in our data with the most common pattern being no missing data. The plot above shows that there isn’t too much missing data in our dataset, but there are still a few variables that had missing values. The most common pattern where there was missing data is for just <code>LAW_CA</code> to be missing, and this happened around 15000 times in our dataset. <code>LAW_CA</code> is the level of the offense (felony, misdemeanor or violation), so it seems this is not always documented when the arrest occurs. The second most common pattern where data was missing was for the data to be missing <code>KY_</code>, <code>OFN</code>, and <code>PD_D</code>. This pattern was far less common and occurred around 5000 times out of over 3.2 million observations in the data. <code>KY_</code> is an internal classification keycode, <code>OFN</code> is a description of internal classification, and <code>PD_D</code> is a description of internal classification that is more granular than <code>OFN</code>. It seems that on occasion these codes and descriptions were not filled in when the arrest was made. The next most common pattern contains <code>KY_</code>, <code>OFN</code>, <code>PD_D</code> again, but also contains <code>PD_C</code>. <code>PD_C</code> is another internal classification code that is more granular than <code>KY_</code>. This pattern is very similar to previous one, but contains another missing variable that is similar to the others. The next most common missing patterns has the most missing variables with <code>LAW_CA</code>, <code>KY_</code>, <code>OFN</code>, <code>PD_D</code>, <code>PD_C</code>, <code>LAW_CO</code> all missing. <code>LAW_CO</code> is the only variable in this group that hadn’t been in another pattern and this variable represents the law code charges which is a classification code to indicate the charge of the arrest. Our final missing pattern only had <code>ARREST_B</code> variable which is the borough that the arrest occurred in. This pattern was not very common which indicates that the arrest records do a good job keeping track of the location where the arrest happened. We also want to plot our missing data showing percentage missing instead of number of rows missing.</p>
 <p><img src="finalproj_files/figure-html/missing%20values%202-1.png" width="672" /></p>
