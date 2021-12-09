@@ -79,6 +79,13 @@ nyc_crime <- read.table("https://data.ny.gov/api/views/ca8h-8gjq/rows.csv?access
                         sep=",",
                         quote='"'
                         )
+
+nyc_crime_all_cats <- (
+  filter(nyc_crime, Region == "New York City", Year > 2010, Year < 2021) %>%
+    mutate(Category = "Crime Reports") %>%
+    rename(Count = Index.Total)
+)
+
 nyc_crime <- (
   filter(nyc_crime, Region == "New York City", Year > 2010) %>%
     select(c(County, Year, Murder, Rape, Aggravated.Assault, Motor.Vehicle.Theft)) %>%
@@ -178,7 +185,42 @@ From the parallel coordinates plot, Richmond County (Staten Island) has had the 
 
 ## Arrests Compared to Crime
 
-Earlier in this analysis, we mentioned how arrests can be considered a proxy for crime, but that this equivalence is not perfect. To begin, we will put this assumption to the test by comparing our data on arrests in New York City to our data on reported NYC crime. In the below visuals, we see reported crimes of several categories, paired with their associated arrests. Columns are grouped by their year and associated county (NY for New York, Kn for Kings, Rc for Richmond, Br for Brooklyn, and Qn for Queens).
+Earlier in this analysis, we mentioned how arrests can be considered a proxy for crime, but that this equivalence is not perfect. To begin, we will put this assumption to the test by comparing our data on arrests in New York City to our data on reported NYC crime. In the below visuals, we see reported crimes of several categories, paired with their associated arrests. We first look at general crime aggregates, compared to arrests.
+
+```{r}
+
+
+
+nyc_arrests_by_year <- (
+  nyc_arrests_combined %>%
+    drop_na(OFNS_DESC) %>%
+    filter(ARREST_BORO != "") %>%
+    mutate(ARREST_YEAR = year(ARREST_DATE)) %>%
+    filter(ARREST_YEAR < 2021) %>%
+    group_by(ARREST_YEAR, ARREST_BORO) %>%
+    summarize(Count = n()) %>%
+    mutate(Category = "Arrests") %>%
+    rename(Year = ARREST_YEAR) %>%
+    rename(County = ARREST_BORO)
+)
+
+nyc_arrests_by_year$County <- factor(nyc_arrests_by_year$County,
+                                     levels= c("B", "S", "K", "M", "Q"),
+                                     labels=c("Bronx", "Richmond", "Kings", "New York", "Queens")
+                                     )
+
+crime_vs_arrests_totals <- (
+  bind_rows(nyc_crime_all_cats, nyc_arrests_by_year)
+)
+
+ggplot(crime_vs_arrests_totals, aes(fill = Category, x = Year, y = Count)) +
+  geom_col(position="dodge") + 
+  scale_x_continuous(breaks=c(2011,2012,2013,2014,2015,2016,2017,2018,2019,2020))
+```
+
+This reveals a concerning discrepancy. According to our crime reports, indexed crimes have remained stable over the past 10 years. Arrests, however, have decreased steadily over time! This would suggest that police have been making fewer arrests, relative to crime. Many media sources (Ex: https://www.usatoday.com/story/opinion/policing/2021/04/09/violent-crime-surged-across-america-after-police-retreated-column/7137565002/), have suggested this decrease can be attributed to increased police caution following the highly publicized killings of several Black men, starting in 2013, and the rise of the Black Lives Matter Movement. Notably, one of these killings, the 2014 killing of Eric Garner, was the result of NYPD action. It is hard to gauge whether this decline can be solely attributed to this increased police caution, or if part of the decline in arrests was due to an ongoing pattern that extends further back in time. Regardless, it seems apparent that arrests have declined steadily over time, while the crimes included in the UCR's crime index have remained relatively steady.
+
+We have established that crimes and arrests are not equivalent, but how large is the discrepancy for individual categories of crime, and are these discrepancies consistent across boroughs? In the below visual, columns are grouped by their year and associated county (NY for New York, Kn for Kings, Rc for Richmond, Br for Brooklyn, and Qn for Queens).
 
 ```{r, echo=FALSE, warning = FALSE}
 crime_vs_arrests <- (
