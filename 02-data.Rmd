@@ -24,6 +24,3 @@ This dataset, which spans the years 1990 to 2020, provides summary crime statist
 
 Another point to note regarding this dataset is classification. The definition of rape applied to categorize these crimes was altered in the year 2015 (https://www.criminaljustice.ny.gov/crimnet/ojsa/stats.htm). As a result, comparisons made before and after 2015 should be mindful an uptick in crimes of this category is certainly related to some degree with this change in classification technique. Current definitions for the various crimes found in the dataset can be found here: https://ucr.fbi.gov/crime-in-the-u.s/2017/crime-in-the-u.s.-2017/topic-pages/offense-definitions
 
-## Madison Square Garden Data
-
-Data on the Rangers (Hockey) and Knicks (Basketball) 2019-2020 regular season home games have been collected to provide some insight as to how varying game outcomes may impact arrests in the nearby area. Data was collected from ESPN's website, which records the schedules and past records of both teams. Here is an example: https://www.espn.com/nhl/team/schedule/_/name/nyr/season/2020/seasontype/2 Data was manually transformed to some degree prior to loading, and the resulting file can be found in the project files.
