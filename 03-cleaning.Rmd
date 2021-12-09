@@ -84,3 +84,22 @@ nyc_arrests_by_category_year_boro <- (
 )
 ```
 
+
+## Sports Data
+
+As mentioned previously, data on home games has been collected for the Rangers and the Knicks, two teams that play regularly at Madison Square Garden. The resulting data file had to be transformed to some degree after load.
+
+```{r}
+msg_games <- read.table("MSG Regular Season Scores.csv",
+                          header=TRUE,
+                          sep=",",
+                          quote='"'
+                          )
+
+msg_games$ï..Date = as_date(msg_games$ï..Date, format="%b %d %Y")
+
+msg_games <- (
+  msg_games %>%
+    separate(Result, into=c('Result', 'Score'), sep=1)
+)
+```
