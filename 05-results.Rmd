@@ -188,9 +188,6 @@ From the parallel coordinates plot, Richmond County (Staten Island) has had the 
 Earlier in this analysis, we mentioned how arrests can be considered a proxy for crime, but that this equivalence is not perfect. To begin, we will put this assumption to the test by comparing our data on arrests in New York City to our data on reported NYC crime. In the below visuals, we see reported crimes of several categories, paired with their associated arrests. We first look at general crime aggregates, compared to arrests.
 
 ```{r}
-
-
-
 nyc_arrests_by_year <- (
   nyc_arrests_combined %>%
     drop_na(OFNS_DESC) %>%
@@ -215,10 +212,14 @@ crime_vs_arrests_totals <- (
 
 ggplot(crime_vs_arrests_totals, aes(fill = Category, x = Year, y = Count)) +
   geom_col(position="dodge") + 
-  scale_x_continuous(breaks=c(2011,2012,2013,2014,2015,2016,2017,2018,2019,2020))
+  scale_x_continuous(breaks=c(2011,2012,2013,2014,2015,2016,2017,2018,2019,2020)) +
+  labs(title="Yearly Arrests Compared to Indexed Crimes",
+       x="Year",
+       y="Count"
+       )
 ```
 
-This reveals a concerning discrepancy. According to our crime reports, indexed crimes have remained stable over the past 10 years. Arrests, however, have decreased steadily over time! This would suggest that police have been making fewer arrests, relative to crime. Many media sources (Ex: https://www.usatoday.com/story/opinion/policing/2021/04/09/violent-crime-surged-across-america-after-police-retreated-column/7137565002/), have suggested this decrease can be attributed to increased police caution following the highly publicized killings of several Black men, starting in 2013, and the rise of the Black Lives Matter Movement. Notably, one of these killings, the 2014 killing of Eric Garner, was the result of NYPD action. It is hard to gauge whether this decline can be solely attributed to this increased police caution, or if part of the decline in arrests was due to an ongoing pattern that extends further back in time. Regardless, it seems apparent that arrests have declined steadily over time, while the crimes included in the UCR's crime index have remained relatively steady.
+This reveals a concerning discrepancy. According to our crime reports, indexed crimes have remained stable over the past 10 years. Arrests, however, have decreased steadily over time! This would suggest that police have been making fewer arrests, relative to crime. Many media sources (Ex: https://www.usatoday.com/story/opinion/policing/2021/04/09/violent-crime-surged-across-america-after-police-retreated-column/7137565002/), have suggested this decrease can be attributed to increased police caution following the highly publicized killings of several Black men, starting in 2013, and the rise of the Black Lives Matter Movement. Notably, one of these killings, the 2014 killing of Eric Garner, was the result of NYPD action. Going further, it seems that there were changes in police policy after what seemed to be a retaliatory attack against the NYPD in December of 2014 (https://nypost.com/2014/12/29/arrests-plummet-following-execution-of-two-cops/). It is hard to gauge whether this decline can be solely attributed to this increased police caution, or if part of the decline in arrests was due to an ongoing pattern that extends further back in time. Regardless, it seems apparent that arrests have declined steadily over time, while the crimes included in the UCR's crime index have remained relatively steady.
 
 We have established that crimes and arrests are not equivalent, but how large is the discrepancy for individual categories of crime, and are these discrepancies consistent across boroughs? In the below visual, columns are grouped by their year and associated county (NY for New York, Kn for Kings, Rc for Richmond, Br for Brooklyn, and Qn for Queens).
 
@@ -236,7 +237,11 @@ ggplot(crime_vs_arrests, aes(fill = Category, y = YearCounty, x = Count)) +
   geom_bar(position="dodge", stat="identity") +
   facet_wrap(vars(Crime), scales = "free") +
   coord_flip() +
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+  labs(title="Yearly Arrests By NYC County Compared to Indexed Crimes 2017-2019",
+       y="Year and County",
+       x="Count"
+       )
 
 ```
 
@@ -262,16 +267,39 @@ nyc_mj_arrests_by_date <- (
     mutate(ARREST_YEAR = year(ARREST_DATE), ARREST_MONTH = month(ARREST_DATE)) %>%
     group_by(ARREST_YEAR, ARREST_MONTH) %>%
     summarize(COUNT_OF_ARRESTS = n()) %>%
+    mutate(month = make_date(year=ARREST_YEAR,month=ARREST_MONTH, day=15), ARREST_BORO = 'Total')
+)
+
+nyc_mj_arrests_by_date_boro <- (
+  nyc_arrests_combined %>%
+    filter(grepl("MARIJUANA", PD_DESC)) %>%
+    mutate(ARREST_YEAR = year(ARREST_DATE), ARREST_MONTH = month(ARREST_DATE)) %>%
+    group_by(ARREST_YEAR, ARREST_MONTH, ARREST_BORO) %>%
+    summarize(COUNT_OF_ARRESTS = n()) %>%
     mutate(month = make_date(year=ARREST_YEAR,month=ARREST_MONTH, day=15))
 )
 
-ggplot(nyc_mj_arrests_by_date,aes(x=month,y=COUNT_OF_ARRESTS)) +
+nyc_mj_arrests_by_date_boro$ARREST_BORO <- factor(nyc_mj_arrests_by_date_boro$ARREST_BORO,
+                                             levels= c("B", "S", "K", "M", "Q"),
+                                             labels=c("Bronx", "Richmond", "Kings", "New York", "Queens")
+                                             )
+
+nyc_mj_arrests_by_date <- (
+    bind_rows(nyc_mj_arrests_by_date, nyc_mj_arrests_by_date_boro)
+)
+
+ggplot(nyc_mj_arrests_by_date,aes(x=month,y=COUNT_OF_ARRESTS, color = ARREST_BORO)) +
   geom_line() +
   geom_vline(xintercept = make_date(year = 2014,month = 11, day = 19), color = 'red', size = 1.2, alpha = 0.3) +
   geom_vline(xintercept = make_date(year = 2018,month = 07, day = 31), color = 'red', size = 1.2, alpha = 0.3) +
   geom_vline(xintercept = make_date(year = 2018,month = 09, day = 01), color = 'red', size = 1.2, alpha = 0.3) +
   geom_vline(xintercept = make_date(year = 2019,month = 07, day = 29), color = 'red', size = 1.2, alpha = 0.3) +
-  geom_vline(xintercept = make_date(year = 2021,month = 03, day = 31), color = 'red', size = 1.2, alpha = 0.3)
+  geom_vline(xintercept = make_date(year = 2021,month = 03, day = 31), color = 'red', size = 1.2, alpha = 0.3) +
+  labs(title="Marijuana Arrests Over Time Aggregated by Month",
+       x="Month",
+       y="Count of Arrests",
+       color="Arrest Borough"
+       )
 ```
 
 There are some very interesting observations here. As can be observed, there was a tremendous drop in marijuana arrests after the launch of Mayor de Blasio's November 19th, 2014 policy initiative. However, this short-term decrease did not last. Though marijuana arrests show a marked decrease after the initiative as compared to before, arrests did see a rebound in 2015. The next largest decline appears to begin around January 2018, though the cause of this decline is not immediately obvious. It may be linked to a more widespread acceptance of marijuana that year, as evident in the commissioning of a study on the legalization of marijuana commissioned by Governor Cuomo that January (https://www.nysenate.gov/newsroom/press-releases/jamaal-t-bailey/marijuana-legalization-impact-assessment-study). Further developments later that year solidify this direction, such as the aforementioned end of prosecution in several boroughs, and the end of arrests for smoking. Unlike the previous decline, this second drop in arrests would not see a rebound, and arrests end entirely after the March 31st, 2021 legalization. The reasons for earlier declines in 2011 and 2012 are not as easy to explain, but it should be noted that 2011 was a high point in marijuana arrests. (https://gothamist.com/news/nyc-still-marijuana-arrest-capital-of-the-world-arrests-rose-again-last-year)
@@ -376,6 +404,11 @@ nyc_thanksgiving_arrests <- (
     filter(THEFT == TRUE)
 )
 
+nyc_thanksgiving_arrests$THANKSGIVING <- factor(nyc_thanksgiving_arrests$THANKSGIVING,
+                                               levels= c(TRUE, FALSE),
+                                               labels=c("Thanksgiving", "Thursday Before Thanksgiving")
+                                               )
+
 leg_1 <- route(from = 'W 34th Street and 7th Avenue, Manhattan', to = 'W 34th Street and 6th Avenue, Manhattan', mode = 'walking')
 leg_2 <- route(from = 'W 34th Street and 6th Avenue, Manhattan', to = 'W 59th Street and 6th Avenue, Manhattan', mode = 'walking')
 leg_3 <- route(from = 'W 59th Street and 6th Avenue, Manhattan', to = 'Columbus Circle, Manhattan', mode = 'walking')
@@ -389,7 +422,8 @@ ggmap(nyc, extent='device', legend='bottom') +
   geom_leg(aes(x = start_lon, y = start_lat, xend = end_lon, yend = end_lat), size = 2, color = 'blue', data=leg_3) +
   geom_leg(aes(x = start_lon, y = start_lat, xend = end_lon, yend = end_lat), size = 2, color = 'blue', data=leg_4) +
   geom_density_2d_filled(data = nyc_thanksgiving_arrests, aes(x = Longitude, y=Latitude), alpha = 0.4) +
-  facet_wrap(~ THANKSGIVING)
+  facet_wrap(~ THANKSGIVING) +
+  labs(title="Arrest Heatmap - Thanksgiving vs Week Before")
 ```
 
 The results are somewhat unexpected. It may seem intuitive to suspect elevated levels of crime around the parade route, but this does not seem to be the case. Many of the areas on the parade route, in fact, see little to no crime the day of the parade! We do note, however, a shift in the patterns of thefts on Thanksgiving day, with more thefts occurring on the Western side of the city than ordinary, with the area near Lincoln Center seeing a slightly higher increase. By contrast, many areas to the East of the parade route see a decline in thefts on Thanksgiving day. 
