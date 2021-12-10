@@ -129,21 +129,29 @@ We also wanted to look at individual days to see if there may be a reason certai
 
 ```{r}
 nyc_arrest_biggest_days <- nyc_arrests_combined %>%
-  group_by(ARREST_DATE) %>%
+  mutate(Weekday = wday(ARREST_DATE)) %>%
+  group_by(ARREST_DATE, Weekday) %>%
   summarize(Number_Arrests = n()) %>%
+  ungroup() %>%
   arrange(desc(Number_Arrests)) %>%
   mutate(ARREST_DATE = as.factor(ARREST_DATE)) %>%
   slice(1:30)
 
-ggplot(data = nyc_arrest_biggest_days, aes(x = Number_Arrests, y = fct_reorder(ARREST_DATE,Number_Arrests))) + 
+nyc_arrest_biggest_days$Weekday <- factor(nyc_arrest_biggest_days$Weekday,
+                                     levels= c(1,2,3,4,5,6,7),
+                                     labels=c("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday","Friday","Saturday")
+                                     )
+
+ggplot(data = nyc_arrest_biggest_days, aes(x = Number_Arrests, y = fct_reorder(ARREST_DATE,Number_Arrests),color=Weekday)) + 
   theme_bw() +
-  geom_point() + labs(title = "30 Days with Most Arrests Past 10 Years",
-                      x = "Number of Arrests",
-                      y = "Date")
+  geom_point() +
+  labs(title = "30 Days with Most Arrests Past 10 Years",
+       x = "Number of Arrests",
+       y = "Date")
 
 ```
 
-From the plot above, we see that the most arrests in one day over the past 10 years was 1750 on March 7th, 2012. There doesn't seem to be anything in particular that explains why there were so many arrests on this day since it was a random Wednesday in March. This was one of two days with more than 1700 arrests with the other being February 1st, 2012 which also happened to be a Wednesday. It is also interesting to see that all of these days were either in 2011, 2012, or 2013. This makes sense given what the bar plot above showed us in terms of arrests by year, but it is still interesting to see that there were no days recently that made it in the top 30. When looking at the days on this list, we also noticed that most of these days occurred earlier in the year. Only one of the 30 days occurred in the second half of the year which seems a bit odd considering that there wasn't a huge difference between the number of arrests by month. It would be interesting to see if this pattern continued for the top 50 or 100 days in terms of most arrests, and if there is a potential explanation for why this is the case.
+From the plot above, we see that the most arrests in one day over the past 10 years was 1750 on March 7th, 2012. There doesn't seem to be anything in particular that explains why there were so many arrests on this day since it was a seemingly ordinary Wednesday in March. This was one of two days with more than 1700 arrests, with the other being February 1st, 2012 which also happened to be a Wednesday. It is also interesting to see that all of these days were either in 2011, 2012, or 2013. This makes sense given what the bar plot above showed us in terms of arrests by year, but it is still interesting to see that there were no days recently that made it in the top 30. When looking at the days on this list, we also noticed that most of these days occurred earlier in the year. Only one of the 30 days occurred in the second half of the year which seems a bit odd considering that there wasn't a huge difference between the number of arrests by month. It would be interesting to see if this pattern continued for the top 50 or 100 days in terms of most arrests, and if there is a potential explanation for why this is the case. Another interesting point is the weekdays on which the most arrests occurred. As we can see, all of the top days were Wednesdays, Thursdays, and Fridays. It may be argued that Weekends typically see less activity, as they may see fewer people commuting into the city. It is quite curious, though, that Mondays and Tuesdays are under-represented.
 
 
 We also want to look at the types of arrests that are occurring in New York City. The three types of arrests according to the data dictionary are felonies, misdemeanors, and violations. A bar plot showing how common each arrest type has been over the past 10 years is below. 
@@ -161,7 +169,7 @@ ggplot(data = nyc_arrests_type, aes(x = fct_reorder(LAW_CAT_CD, Number_Arrests, 
                     y = "Number of Arrests (in Millions)")
 ```
 
-From the bar plot above, we can see that misdemeanor is the most common type of arrest in our dataset with over 2 million arrests that were related to misdemeanor charges. Felony is the next most common type of arrest with just under 1 million arrests while violations only account for around 200,000 arrests. There is also a small portion of arrests classified as `I`, but it is not exactly clear from the data dictionary what that stands for. There were also a small amount of arrests that did not have a `LAW_CAT_CD`, so these were categorized as `NA` in our plot. 
+From the bar plot above, we can see that misdemeanor is the most common type of arrest in our dataset with over 2 million arrests that were related to misdemeanor charges. Felony is the next most common type of arrest with just under 1 million arrests while violations only account for around 200,000 arrests. There is also a small portion of arrests classified as `I`, which denotes infractions. There were also a small amount of arrests that did not have a `LAW_CAT_CD`, so these were categorized as `NA` in our plot. 
 
 Next, we made a parallel coordinates plot to get a better understanding of the arrests made in each borough. We categorized the types of arrests into five categories: Murder, Rape, Aggravated Assault, Motor Vehicle Theft, and Robbery. 
 
@@ -288,7 +296,9 @@ nyc_mj_arrests_by_date <- (
     bind_rows(nyc_mj_arrests_by_date, nyc_mj_arrests_by_date_boro)
 )
 
-ggplot(nyc_mj_arrests_by_date,aes(x=ARREST_DATE,y=COUNT_OF_ARRESTS, color = ARREST_BORO)) +
+nyc_mj_arrests_by_date$ARREST_BORO <- factor(nyc_mj_arrests_by_date$ARREST_BORO)
+
+ggplot(nyc_mj_arrests_by_date,aes(x=ARREST_DATE,y=COUNT_OF_ARRESTS, color = fct_reorder(ARREST_BORO, COUNT_OF_ARRESTS, .desc=TRUE))) +
   geom_smooth(method="loess",span=.05,se=FALSE) +
   geom_vline(xintercept = make_date(year = 2014,month = 11, day = 19), color = 'red', size = 1.2, alpha = 0.3) +
   geom_vline(xintercept = make_date(year = 2018,month = 07, day = 31), color = 'red', size = 1.2, alpha = 0.3) +
