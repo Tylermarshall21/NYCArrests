@@ -264,19 +264,19 @@ Below is a time series graph depicting marijuana-related arrests, annotated with
 nyc_mj_arrests_by_date <- (
   nyc_arrests_combined %>%
     filter(grepl("MARIJUANA", PD_DESC)) %>%
-    mutate(ARREST_YEAR = year(ARREST_DATE), ARREST_MONTH = month(ARREST_DATE)) %>%
-    group_by(ARREST_YEAR, ARREST_MONTH) %>%
+    # mutate(ARREST_YEAR = year(ARREST_DATE), ARREST_MONTH = month(ARREST_DATE)) %>%
+    group_by(ARREST_DATE) %>%
     summarize(COUNT_OF_ARRESTS = n()) %>%
-    mutate(month = make_date(year=ARREST_YEAR,month=ARREST_MONTH, day=15), ARREST_BORO = 'Total')
+    mutate(ARREST_BORO = 'Total')
 )
 
 nyc_mj_arrests_by_date_boro <- (
   nyc_arrests_combined %>%
     filter(grepl("MARIJUANA", PD_DESC)) %>%
-    mutate(ARREST_YEAR = year(ARREST_DATE), ARREST_MONTH = month(ARREST_DATE)) %>%
-    group_by(ARREST_YEAR, ARREST_MONTH, ARREST_BORO) %>%
-    summarize(COUNT_OF_ARRESTS = n()) %>%
-    mutate(month = make_date(year=ARREST_YEAR,month=ARREST_MONTH, day=15))
+    # mutate(ARREST_YEAR = year(ARREST_DATE), ARREST_MONTH = month(ARREST_DATE)) %>%
+    group_by(ARREST_DATE, ARREST_BORO) %>%
+    summarize(COUNT_OF_ARRESTS = n()) #%>%
+    # mutate(month = make_date(year=ARREST_YEAR,month=ARREST_MONTH, day=15))
 )
 
 nyc_mj_arrests_by_date_boro$ARREST_BORO <- factor(nyc_mj_arrests_by_date_boro$ARREST_BORO,
@@ -288,14 +288,14 @@ nyc_mj_arrests_by_date <- (
     bind_rows(nyc_mj_arrests_by_date, nyc_mj_arrests_by_date_boro)
 )
 
-ggplot(nyc_mj_arrests_by_date,aes(x=month,y=COUNT_OF_ARRESTS, color = ARREST_BORO)) +
-  geom_line() +
+ggplot(nyc_mj_arrests_by_date,aes(x=ARREST_DATE,y=COUNT_OF_ARRESTS, color = ARREST_BORO)) +
+  geom_smooth(method="loess",span=.05,se=FALSE) +
   geom_vline(xintercept = make_date(year = 2014,month = 11, day = 19), color = 'red', size = 1.2, alpha = 0.3) +
   geom_vline(xintercept = make_date(year = 2018,month = 07, day = 31), color = 'red', size = 1.2, alpha = 0.3) +
   geom_vline(xintercept = make_date(year = 2018,month = 09, day = 01), color = 'red', size = 1.2, alpha = 0.3) +
   geom_vline(xintercept = make_date(year = 2019,month = 07, day = 29), color = 'red', size = 1.2, alpha = 0.3) +
   geom_vline(xintercept = make_date(year = 2021,month = 03, day = 31), color = 'red', size = 1.2, alpha = 0.3) +
-  labs(title="Marijuana Arrests Over Time Aggregated by Month",
+  labs(title="Marijuana Arrests Over Time",
        x="Month",
        y="Count of Arrests",
        color="Arrest Borough"
@@ -406,8 +406,14 @@ nyc_thanksgiving_arrests <- (
 
 nyc_thanksgiving_arrests$THANKSGIVING <- factor(nyc_thanksgiving_arrests$THANKSGIVING,
                                                levels= c(TRUE, FALSE),
-                                               labels=c("Thanksgiving", "Thursday Before Thanksgiving")
+                                               labels=c("Thanksgivings", "Thursdays Before Thanksgiving")
                                                )
+
+nyc_thanksgiving_arrests_aggregated <- (
+  nyc_thanksgiving_arrests %>%
+    group_by(ARREST_DATE, THANKSGIVING) %>%
+    summarize(ARREST_COUNT = n())
+)
 
 leg_1 <- route(from = 'W 34th Street and 7th Avenue, Manhattan', to = 'W 34th Street and 6th Avenue, Manhattan', mode = 'walking')
 leg_2 <- route(from = 'W 34th Street and 6th Avenue, Manhattan', to = 'W 59th Street and 6th Avenue, Manhattan', mode = 'walking')
@@ -416,14 +422,22 @@ leg_4 <- route(from = 'Columbus Circle, Manhattan', to = 'Central Park West and 
 
 nyc <- get_map(location = c(-73.982, 40.764), zoom = 14, color = 'bw')
 
-ggmap(nyc, extent='device', legend='bottom') +
-  geom_leg(aes(x = start_lon, y = start_lat, xend = end_lon, yend = end_lat), size = 2, color = 'blue', data=leg_1) +
-  geom_leg(aes(x = start_lon, y = start_lat, xend = end_lon, yend = end_lat), size = 2, color = 'blue', data=leg_2) +
-  geom_leg(aes(x = start_lon, y = start_lat, xend = end_lon, yend = end_lat), size = 2, color = 'blue', data=leg_3) +
-  geom_leg(aes(x = start_lon, y = start_lat, xend = end_lon, yend = end_lat), size = 2, color = 'blue', data=leg_4) +
-  geom_density_2d_filled(data = nyc_thanksgiving_arrests, aes(x = Longitude, y=Latitude), alpha = 0.4) +
-  facet_wrap(~ THANKSGIVING) +
-  labs(title="Arrest Heatmap - Thanksgiving vs Week Before")
+  ggmap(nyc, extent='device', legend='bottom') +
+    geom_leg(aes(x = start_lon, y = start_lat, xend = end_lon, yend = end_lat), size = 2, color = 'blue', data=leg_1) +
+    geom_leg(aes(x = start_lon, y = start_lat, xend = end_lon, yend = end_lat), size = 2, color = 'blue', data=leg_2) +
+    geom_leg(aes(x = start_lon, y = start_lat, xend = end_lon, yend = end_lat), size = 2, color = 'blue', data=leg_3) +
+    geom_leg(aes(x = start_lon, y = start_lat, xend = end_lon, yend = end_lat), size = 2, color = 'blue', data=leg_4) +
+    geom_density_2d_filled(data = nyc_thanksgiving_arrests, aes(x = Longitude, y=Latitude), alpha = 0.4) +
+    facet_wrap(~ THANKSGIVING) +
+    labs(title="Arrest Heatmap - Thanksgivings vs Week Before")
+
+
+
+  ggplot(nyc_thanksgiving_arrests_aggregated) + 
+    geom_boxplot(aes(y=ARREST_COUNT)) +
+    facet_wrap(~ THANKSGIVING)
+
+
 ```
 
 The results are somewhat unexpected. It may seem intuitive to suspect elevated levels of crime around the parade route, but this does not seem to be the case. Many of the areas on the parade route, in fact, see little to no crime the day of the parade! We do note, however, a shift in the patterns of thefts on Thanksgiving day, with more thefts occurring on the Western side of the city than ordinary, with the area near Lincoln Center seeing a slightly higher increase. By contrast, many areas to the East of the parade route see a decline in thefts on Thanksgiving day. 
