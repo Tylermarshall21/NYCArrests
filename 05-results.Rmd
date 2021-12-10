@@ -396,12 +396,12 @@ nyc_thanksgiving_arrests <- (
              day(ARREST_DATE) > 14 &
              day(ARREST_DATE) < 29
     ) %>%
-    mutate(THANKSGIVING = ifelse(day(ARREST_DATE) > 21, TRUE,FALSE)) %>%
-    mutate(THEFT = ifelse(grepl("THEFT",OFNS_DESC, fixed = TRUE), TRUE,
-                         ifelse(grepl("LARCENY",OFNS_DESC, fixed = TRUE), TRUE,
-                                ifelse(grepl("ROBBERY",OFNS_DESC, fixed = TRUE), TRUE,
-                                       ifelse(grepl("BURGLARY",OFNS_DESC, fixed = TRUE), TRUE, FALSE))))) %>%
-    filter(THEFT == TRUE)
+    mutate(THANKSGIVING = ifelse(day(ARREST_DATE) > 21, TRUE,FALSE))# %>%
+    #mutate(THEFT = ifelse(grepl("THEFT",OFNS_DESC, fixed = TRUE), TRUE,
+     #                    ifelse(grepl("LARCENY",OFNS_DESC, fixed = TRUE), TRUE,
+      #                          ifelse(grepl("ROBBERY",OFNS_DESC, fixed = TRUE), TRUE,
+       #                                ifelse(grepl("BURGLARY",OFNS_DESC, fixed = TRUE), TRUE, FALSE))))) %>%
+    #filter(THEFT == TRUE)
 )
 
 nyc_thanksgiving_arrests$THANKSGIVING <- factor(nyc_thanksgiving_arrests$THANKSGIVING,
@@ -427,11 +427,16 @@ nyc <- get_map(location = c(-73.982, 40.764), zoom = 14, color = 'bw')
     geom_leg(aes(x = start_lon, y = start_lat, xend = end_lon, yend = end_lat), size = 2, color = 'blue', data=leg_2) +
     geom_leg(aes(x = start_lon, y = start_lat, xend = end_lon, yend = end_lat), size = 2, color = 'blue', data=leg_3) +
     geom_leg(aes(x = start_lon, y = start_lat, xend = end_lon, yend = end_lat), size = 2, color = 'blue', data=leg_4) +
-    geom_density_2d_filled(data = nyc_thanksgiving_arrests, aes(x = Longitude, y=Latitude), alpha = 0.4) +
+    geom_jitter(data = nyc_thanksgiving_arrests, aes(x = Longitude, y=Latitude), alpha = 0.2, color = 'red', size = 2, width=0.0005, height=0.0005) +
     facet_wrap(~ THANKSGIVING) +
     labs(title="Arrest Heatmap - Thanksgivings vs Week Before")
 
+```
 
+
+The results are somewhat unexpected. It may seem intuitive to suspect elevated levels of crime, and therefore arrests around the parade route, but this does not seem to be the case. Many of the areas on the parade route, in fact, see little to no arrests the day of the parade! In fact, it appears that arrests in general are significantly lower on Thanksgiving day compared to the Thursday prior. If more evidence was needed, look at the following box plot, which compares the numbers of arrests on Thanksgiving days, compared to the Thursday prior.
+
+```{r}
 
   ggplot(nyc_thanksgiving_arrests_aggregated) + 
     geom_boxplot(aes(y=ARREST_COUNT)) +
@@ -439,8 +444,6 @@ nyc <- get_map(location = c(-73.982, 40.764), zoom = 14, color = 'bw')
 
 
 ```
-
-The results are somewhat unexpected. It may seem intuitive to suspect elevated levels of crime around the parade route, but this does not seem to be the case. Many of the areas on the parade route, in fact, see little to no crime the day of the parade! We do note, however, a shift in the patterns of thefts on Thanksgiving day, with more thefts occurring on the Western side of the city than ordinary, with the area near Lincoln Center seeing a slightly higher increase. By contrast, many areas to the East of the parade route see a decline in thefts on Thanksgiving day. 
 
 ## Have Drunk Driving Arrests Gone Down Recently
 
