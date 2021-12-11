@@ -100,8 +100,8 @@ nyc_arrests_year <- nyc_arrests_combined %>%
   summarize(Number_Arrests = n()) %>%
   mutate(Number_Arrests = Number_Arrests/100000)
 
-ggplot(data = nyc_arrests_year, aes(x = ARREST_YEAR, y = Number_Arrests)) + geom_col() +
-  labs(title = "Number of Arrests by Year",
+ggplot(data = nyc_arrests_year, aes(x = ARREST_YEAR, y = Number_Arrests)) + geom_col(fill = "black") +
+  labs(title = "Arrest Have Been Decreasing Each Year Since 2011",
        x = "Year",
        y = "Number of Arrests (in Hundred Thousands)")
 ```
@@ -117,7 +117,7 @@ nyc_arrests_biggest_months <- nyc_arrests_combined %>%
   mutate(Number_Arrests = Number_Arrests/1000)
 
 
-ggplot(data = nyc_arrests_biggest_months, aes(x = ARREST_MONTH, y = Number_Arrests)) + geom_col() + facet_wrap(~ ARREST_YEAR) +
+ggplot(data = nyc_arrests_biggest_months, aes(x = ARREST_MONTH, y = Number_Arrests)) + geom_col(fill = "black") + facet_wrap(~ ARREST_YEAR) +
   labs(title = "Number of Arrests by Month Over Past 10 Years",
        x = "Month",
        y = "Number of Arrests (in Thousands)")
@@ -163,7 +163,7 @@ nyc_arrests_type <- nyc_arrests_combined %>%
   mutate(Number_Arrests = Number_Arrests/1000000)
 
 ggplot(data = nyc_arrests_type, aes(x = fct_reorder(LAW_CAT_CD, Number_Arrests, .desc = TRUE), y = Number_Arrests)) + 
-  geom_col() + labs(title = "Number of Arrests by Arrest Type",
+  geom_col(fill = "black") + labs(title = "Number of Arrests by Arrest Type",
                     x = "Arrest Type",
                     y = "Number of Arrests (in Millions)")
 ```
@@ -213,16 +213,19 @@ nyc_arrests_by_year$County <- factor(nyc_arrests_by_year$County,
                                      labels=c("Bronx", "Richmond", "Kings", "New York", "Queens")
                                      )
 
+
 crime_vs_arrests_totals <- (
   bind_rows(nyc_crime_all_cats, nyc_arrests_by_year)
 )
+crime_vs_arrests_totals2 <- crime_vs_arrests_totals %>%
+  mutate(Count = Count/1000)
 
-ggplot(crime_vs_arrests_totals, aes(fill = Category, x = Year, y = Count)) +
+ggplot(crime_vs_arrests_totals2, aes(fill = Category, x = Year, y = Count)) +
   geom_col(position="dodge") + 
   scale_x_continuous(breaks=c(2011,2012,2013,2014,2015,2016,2017,2018,2019,2020)) +
   labs(title="Yearly Arrests Compared to Indexed Crimes",
        x="Year",
-       y="Count"
+       y="Number of Arrests (in thousands)"
        )
 ```
 
@@ -306,7 +309,7 @@ ggplot(nyc_mj_arrests_by_date,aes(x=ARREST_DATE,y=COUNT_OF_ARRESTS, color = fct_
   geom_vline(xintercept = make_date(year = 2021,month = 03, day = 31), color = 'red', size = 1.2, alpha = 0.3) +
   labs(title="Marijuana Arrests Over Time",
        x="Month",
-       y="Count of Arrests",
+       y="Number of Arrests",
        color="Arrest Borough"
        )
 ```
@@ -449,7 +452,10 @@ The results are somewhat unexpected. It may seem intuitive to suspect elevated l
 
   ggplot(nyc_thanksgiving_arrests_aggregated) + 
     geom_boxplot(aes(y=ARREST_COUNT)) +
-    facet_wrap(~ THANKSGIVING)
+    facet_wrap(~ THANKSGIVING) +
+  labs(title = "Fewer Arrests on Thanksgiving?",
+       x = "",
+       y = "Number of Arrests")
 
 
 ```
@@ -466,8 +472,7 @@ drunk_driving <- nyc_arrests_combined %>%
   group_by(ARREST_YEAR) %>%
   summarize(Number_Arrests = n())
 
-ggplot(data = drunk_driving, aes(x = ARREST_YEAR, y = Number_Arrests)) + geom_col() +
-  theme_bw() +
+ggplot(data = drunk_driving, aes(x = ARREST_YEAR, y = Number_Arrests)) + geom_col(fill = "black") +
   geom_vline(xintercept = 2, color = "red") +
   annotate(geom="text", x=1.35, y=8000, label="Lyft started",
               color="red") +
