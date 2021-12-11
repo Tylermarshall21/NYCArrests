@@ -17,9 +17,36 @@
     <p id="remove_right">Remove bar (right)</p>
 
   <script>
+  
+  // Setup and other initialization
+  
+  var w = 1500;
+  var h = 700;
+  
+  var barchartMargin = {top: 25, right: 700, bottom: 25, left: 25};
+  var barchartWidth = w - barchartMargin.left - barchartMargin.right;
+  var barchartHeight = h - barchartMargin.top - barchartMargin.bottom;
+  var dur = 500;
+
+  // Initialize SVG and Background
+
+  var svg = d3.select("body")
+    .append("svg")
+    .attr("width", w)
+    .attr("height", h);
+
+  svg.append("rect")
+      .attr("x", 0)
+      .attr("y", 0)
+      .attr("width", w)
+      .attr("height", h)
+      .attr("fill", "lightgray");
+
+  // Initialize Row Converter Function
 
   var rowConverter = function (d) {
     return {
+      ranking: +d.Ranking,
       date: d.ARREST_DATE,
       weekday: d.Weekday,
       arrest_count: +d.Number_Arrests
@@ -27,30 +54,13 @@
     }
     
   };
-      
+
+  // Data Import Function
+
   d3.csv("https://raw.githubusercontent.com/Tylermarshall21/NYCArrests/main/interactive_testing/tophundred.csv", rowConverter)
   .then(function(arrestdata) {
     
-    var w = 1500;
-    var h = 700;
-    var margin = {top: 25, right: 700, bottom: 25, left: 25};
-    var barchartWidth = w - margin.left - margin.right;
-    var barchartHeight = h - margin.top - margin.bottom;
-    var dur = 500;
-    
-    var svg = d3.select("body")
-    .append("svg")
-      .attr("width", w)
-      .attr("height", h);
-
-    svg.append("rect")
-      .attr("x", 0)
-      .attr("y", 0)
-      .attr("width", w)
-      .attr("height", h)
-      .attr("fill", "lightgray");
-    
-    console.log("Nothing to see here!")
+    // Initialize Barchart Scale, Axes
     
     var xScale = d3.scaleLinear()
       .domain([0, d3.max(arrestdata, d => d.arrest_count)])
@@ -67,28 +77,30 @@
       
     var yAxis = d3.axisLeft()
       .scale(yScale);
+      
+    // Create Bars
     
     var arrestBars = svg.selectAll("rect")
     .data(arrestdata);
     
     arrestBars.enter().append("rect")
-      .attr("x", d => 0 + margin.left)
-      .attr("y", (d, i) => yScale(i) + margin.top)
+      .attr("x", d => 0 + barchartMargin.left)
+      .attr("y", (d, i) => yScale(d.ranking) + barchartMargin.top)
       .attr("width", d => xScale(d.arrest_count))
       .attr("height", yScale.bandwidth())
       .attr("fill","green");
       
     svg.append("g")
       .attr("class", "xAxis")
-      .attr("transform", `translate (${margin.left}, ${h - margin.bottom})`)
+      .attr("transform", `translate (${barchartMargin.left}, ${h - barchartMargin.bottom})`)
       .call(xAxis);
       
     svg.append("g")
       .attr("class", "yAxis")
-      .attr("transform", `translate (${margin.left}, ${margin.top})`)
+      .attr("transform", `translate (${barchartMargin.left}, ${barchartMargin.top})`)
       .call(yAxis);
 
-    
+    console.log("Nothing to see here!")    
 
   })
   .catch(function(error) {
