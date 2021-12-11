@@ -23,3 +23,5 @@ thanksgiving-day-parade---more-arrests-or-fewer
 have-drunk-driving-arrests-gone-down-recently
 investigating-missing-values
 arrest-data-1
+weather-data
+weather-data-1
