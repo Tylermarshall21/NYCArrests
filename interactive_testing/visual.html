@@ -67,10 +67,9 @@
       .range([0, barchartWidth]);
       
     var yScale = d3.scaleBand()
-      .domain(d3.range(1,arrestdata.length))
+      .domain(d3.range(1,arrestdata.length+1))
       .range([0, barchartHeight])
       .paddingInner(.1);
-      
     
     var xAxis = d3.axisBottom()
       .scale(xScale);
@@ -80,8 +79,10 @@
       
     // Create Bars
     
-    var arrestBars = svg.selectAll("rect")
-    .data(arrestdata);
+    var arrestBars = svg.append("g")
+      .attr("id", "bars")
+      .selectAll("rect")
+      .data(arrestdata);
     
     arrestBars.enter().append("rect")
       .attr("x", d => 0 + barchartMargin.left)
@@ -89,7 +90,16 @@
       .attr("width", d => xScale(d.arrest_count))
       .attr("height", yScale.bandwidth())
       .attr("fill","green");
-      
+    
+    var arrestQuestions = svg.append("g")
+      .attr("id", "question_panels")
+      .append("rect")
+      .attr("x", barchartWidth + barchartMargin.left + 50)
+      .attr("y", barchartMargin.top)
+      .attr("width", 20)
+      .attr("height", 20)
+      .attr("fill","yellow");
+    
     svg.append("g")
       .attr("class", "xAxis")
       .attr("transform", `translate (${barchartMargin.left}, ${h - barchartMargin.bottom})`)
@@ -111,9 +121,9 @@
 
   
 
-// General Update Pattern
+  // Update Function
 
-  function update(data, exitpos) {
+  function update(arrestdata) {
 
     xScale.domain(d3.range(data.length));
 
