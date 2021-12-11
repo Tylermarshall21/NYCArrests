@@ -105,3 +105,46 @@ nyc_crime <- (
 )
 ```
 
+## Weather Data
+
+Our weather data was stored in csv files, which we then transformed to form a cleaner data set. In our original dataset, there were some values marked as T, representing precipitation less than 0.01 inches. For the sake of simplicity, we translated 'Trace' precipitation as 0.001. This will show that there was precipitation less than the threshold of 0.01, while not overstating the quantity of rain. For our uses, this will not make the data misleading when presented. On days where equipment malfunctioned, we set the value to NA.
+
+```{r}
+# Precipitation Data Import
+nyc_weather <- read.table("./Precip_Data.csv",
+                        header=TRUE,
+                        sep=",",
+                        quote='"'
+                        )
+
+nyc_weather <- (
+  nyc_weather %>%
+    pivot_longer(cols = !Day,
+                 names_to = "Month",
+                 values_to = "Precipitation"
+                 ) %>%
+    unite(Date, c(Month, Day))
+)
+
+nyc_weather$Date <- as_date(nyc_weather$Date, format="%b.%y_%d")
+
+nyc_temp <- read.table("./Temp_Data.csv",
+                        header=TRUE,
+                        sep=",",
+                        quote='"'
+                        )
+
+nyc_temp <- (
+  nyc_temp %>%
+    pivot_longer(cols = !Day,
+                 names_to = "Month",
+                 values_to = "Mean_Temperature"
+                 ) %>%
+    unite(Date, c(Month, Day))
+)
+
+nyc_temp$Date <- as_date(nyc_temp$Date, format="%b.%y_%d")
+
+nyc_weather <- full_join(nyc_weather, nyc_temp)
+```
+

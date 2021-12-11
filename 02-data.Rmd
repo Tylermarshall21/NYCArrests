@@ -24,3 +24,7 @@ This dataset, which spans the years 1990 to 2020, provides summary crime statist
 
 Another point to note regarding this dataset is classification. The definition of rape applied to categorize these crimes was altered in the year 2015 (https://www.criminaljustice.ny.gov/crimnet/ojsa/stats.htm). As a result, comparisons made before and after 2015 should be mindful an uptick in crimes of this category is certainly related to some degree with this change in classification technique. Current definitions for the various crimes found in the dataset can be found here: https://ucr.fbi.gov/crime-in-the-u.s/2017/crime-in-the-u.s.-2017/topic-pages/offense-definitions
 
+## Weather Data
+
+For our interactive component, we incorporated some weather data. This data was taken from the NOAA records for LaGuardia Ariport (roughly central location) from 2011 to 2014. This data can be acquired here: https://www.weather.gov/wrh/Climate?wfo=okx . An API would have been preferred, but we encountered some issues with access. Data collected was Mean Precipitation and Temperature data.
+
