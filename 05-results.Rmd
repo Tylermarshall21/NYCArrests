@@ -143,7 +143,6 @@ nyc_arrest_biggest_days$Weekday <- factor(nyc_arrest_biggest_days$Weekday,
                                      )
 
 ggplot(data = nyc_arrest_biggest_days, aes(x = Number_Arrests, y = fct_reorder(ARREST_DATE,Number_Arrests),color=Weekday)) + 
-  theme_bw() +
   geom_point() +
   labs(title = "30 Days with Most Arrests Past 10 Years",
        x = "Number of Arrests",
@@ -362,7 +361,7 @@ nyc_arrest_election <- nyc_arrests_combined %>%
   mutate(ARREST_YEAR = format(ARREST_DATE, format = "%Y")) %>%
   filter(ARREST_YEAR == 2020 | ARREST_YEAR == 2016 | ARREST_YEAR == 2012 ) %>%
   group_by(ARREST_YEAR) %>%
-  summarize(Average_Arrests = n()/366)
+  summarize(Average_Arrests = round(n()/366,2))
 
 nyc_arrest_election_days <- nyc_arrests_combined %>%
   filter(ARREST_DATE == "2020-11-06" | ARREST_DATE == "2016-11-08" | ARREST_DATE == "2012-11-03") %>%
@@ -370,10 +369,10 @@ nyc_arrest_election_days <- nyc_arrests_combined %>%
   summarize(Number_Arrests = n())
 nyc_arrests_elections <- cbind(nyc_arrest_election, nyc_arrest_election_days)
 nyc_arrest_election %>%
-  kable(align = "c") %>%
+  kable(align = "c", col.names = c("Arrest Year", "Average Number of Arrests per day")) %>%
   kable_styling(position = "center", latex_options=c('striped', 'hold_position'))
 nyc_arrest_election_days %>%
-  kable(align = "c") %>%
+  kable(align = "c", col.names = c("Arrest Date", "Number of Arrests")) %>%
   kable_styling(position = "center", latex_options=c('striped', 'hold_position'))
 
 
@@ -387,7 +386,7 @@ nyc_arrest_dayafter <- nyc_arrests_combined %>%
   group_by(ARREST_DATE) %>%
   summarize(Number_Arrests = n())
 nyc_arrest_dayafter %>%
-  kable(align = "c") %>%
+  kable(align = "c", col.names = c("Arrest Date", "Number of Arrests")) %>%
   kable_styling(position = "center", latex_options=c('striped', 'hold_position'))
 
 ```
