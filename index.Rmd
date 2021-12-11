@@ -9,7 +9,8 @@ site: bookdown::bookdown_site
 
 ## Overview of analysis:
 
-We plan to explore the arrests that occur in New York City, and how these correspond to various factors. 
+In this project, we plan to explore the arrests that occur in New York City, and how these correspond to various factors. We have a variety of questions that we want to look in to, and we are interested in this because it is an opportunity to learn more about the city we are living in. There is always a lot going on in New York, so we wanted to see how different events impact the city. Additionally, we wanted to get a better understanding of how things have changed over the past 10 years. 
+
 Here are some areas we will explore:
 
 1. The past fifteen years have heralded a whirlwind of events. Since 2006, we have had a major economic recession and recovery, a worldwide pandemic, and many legislative developments, such as the legalization of marijuana and same-sex marriage. These are events that impact people’s lives – and we would like to explore how this impact manifests itself specifically in the form of arrests. It might be reasoned that ‘positive’ events, economic or otherwise, would lead to fewer arrests – is this the case?
@@ -20,3 +21,5 @@ Here are some areas we will explore:
 3. It is certain that every crime committed does not correspond to exactly one arrest. We are interested to explore any patterns in discrepancies between crimes committed and arrests made
   a. Which crimes have the highest arrest rates, relative to the number of crimes of the type committed?
   b. Are there clear patterns of bias present in the arrests made in NYC?
+  
+Now that we've given some background on what we want to do with this project, let's dive in to the data that we'll be using.
