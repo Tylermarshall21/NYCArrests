@@ -18,42 +18,77 @@
 
   <script>
 
-// Create svg and initial bars
-
-  var w = 500;
-  var h = 800;
-  var margin = {top: 25, right: 0, bottom: 425, left: 25};
-  var innerWidth = w - margin.left - margin.right;
-  var innerHeight = h - margin.top - margin.bottom;
-  var dur = 500;
-  
   var rowConverter = function (d) {
-    console.log("Got here...")
     return {
-      ARREST_DATE: d.date,
-      Weekday: d.weekday,
-      Number_Arrests: d.arrest_count
+      date: d.ARREST_DATE,
+      weekday: d.Weekday,
+      arrest_count: +d.Number_Arrests
       
     }
     
   };
-
-  var svg = d3.select("body")
+      
+  d3.csv("https://raw.githubusercontent.com/Tylermarshall21/NYCArrests/main/interactive_testing/tophundred.csv", rowConverter)
+  .then(function(arrestdata) {
+    
+    var w = 1500;
+    var h = 700;
+    var margin = {top: 25, right: 700, bottom: 25, left: 25};
+    var barchartWidth = w - margin.left - margin.right;
+    var barchartHeight = h - margin.top - margin.bottom;
+    var dur = 500;
+    
+    var svg = d3.select("body")
     .append("svg")
       .attr("width", w)
       .attr("height", h);
 
-  svg.append("rect")
+    svg.append("rect")
       .attr("x", 0)
       .attr("y", 0)
       .attr("width", w)
       .attr("height", h)
-      .attr("fill", "lightblue");
-      
-  d3.csv("https://raw.githubusercontent.com/Tylermarshall21/NYCArrests/main/interactive_testing/tophundred.csv", rowConverter)
-  .then(function(data) {
-    // stuff that requires the loaded data
+      .attr("fill", "lightgray");
+    
     console.log("Nothing to see here!")
+    
+    var xScale = d3.scaleLinear()
+      .domain([0, d3.max(arrestdata, d => d.arrest_count)])
+      .range([0, barchartWidth]);
+      
+    var yScale = d3.scaleBand()
+      .domain(d3.range(1,arrestdata.length))
+      .range([0, barchartHeight])
+      .paddingInner(.1);
+      
+    
+    var xAxis = d3.axisBottom()
+      .scale(xScale);
+      
+    var yAxis = d3.axisLeft()
+      .scale(yScale);
+    
+    var arrestBars = svg.selectAll("rect")
+    .data(arrestdata);
+    
+    arrestBars.enter().append("rect")
+      .attr("x", d => 0 + margin.left)
+      .attr("y", (d, i) => yScale(i) + margin.top)
+      .attr("width", d => xScale(d.arrest_count))
+      .attr("height", yScale.bandwidth())
+      .attr("fill","green");
+      
+    svg.append("g")
+      .attr("class", "xAxis")
+      .attr("transform", `translate (${margin.left}, ${h - margin.bottom})`)
+      .call(xAxis);
+      
+    svg.append("g")
+      .attr("class", "yAxis")
+      .attr("transform", `translate (${margin.left}, ${margin.top})`)
+      .call(yAxis);
+
+    
 
   })
   .catch(function(error) {
@@ -62,46 +97,7 @@
   
   });
 
-  var bardata = [300, 100, 150, 220, 70, 270]
-      .map((value, key) => ({key, value}));
-  var xScale = d3.scaleBand()
-      .domain(d3.range(bardata.length))
-      .range([0, innerWidth])
-      .paddingInner(.1);
-
-  var yScale = d3.scaleLinear()
-      .domain([0, d3.max(bardata, d => d.value)])
-      .range([innerHeight, 0]);
-
-  var xAxis = d3.axisBottom()
-      .scale(xScale);
-
-  var yAxis = d3.axisLeft()
-      .scale(yScale);
-
-  var bars = svg.append("g")
-      .attr("id", "plot")
-      .attr("transform", `translate (${margin.left}, ${margin.top})`)
-    .selectAll("rect")
-      .data(bardata, d => d.key);
-
-  bars.enter().append("rect")
-      .attr("class", "bar")
-      .attr("x", (d, i) => xScale(i))
-      .attr("y", d => yScale(d.value))
-      .attr("width", xScale.bandwidth())
-      .attr("height", d => innerHeight - yScale(d.value))
-      .attr("fill","blue");
-
-  svg.append("g")
-      .attr("class", "xAxis")
-      .attr("transform", `translate (${margin.left}, ${h - margin.bottom})`)
-      .call(xAxis);
-
-  svg.append("g")
-      .attr("class", "yAxis")
-      .attr("transform", `translate (${margin.left}, ${margin.top})`)
-      .call(yAxis);
+  
 
 // General Update Pattern
 
