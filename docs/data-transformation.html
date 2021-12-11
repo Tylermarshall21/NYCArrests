@@ -24,7 +24,7 @@
 <meta name="author" content="Ryan Rogers and Tyler Marshall" />
 
 
-<meta name="date" content="2021-11-27" />
+<meta name="date" content="2021-12-10" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -33,7 +33,7 @@
   
 <link rel="prev" href="data-sources.html"/>
 <link rel="next" href="missing-values.html"/>
-<script src="libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="libs/header-attrs-2.10/header-attrs.js"></script>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -148,22 +148,27 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="3" data-path="data-transformation.html"><a href="data-transformation.html"><i class="fa fa-check"></i><b>3</b> Data transformation</a>
 <ul>
-<li class="chapter" data-level="3.1" data-path="data-transformation.html"><a href="data-transformation.html#crime-data-1"><i class="fa fa-check"></i><b>3.1</b> Crime Data</a>
+<li class="chapter" data-level="3.1" data-path="data-transformation.html"><a href="data-transformation.html#arrest-data-1"><i class="fa fa-check"></i><b>3.1</b> Arrest Data</a>
 <ul>
 <li class="chapter" data-level="3.1.1" data-path="data-transformation.html"><a href="data-transformation.html#data-import---2021-data"><i class="fa fa-check"></i><b>3.1.1</b> Data Import - 2021 Data</a></li>
 <li class="chapter" data-level="3.1.2" data-path="data-transformation.html"><a href="data-transformation.html#data-import---2006-2021-data"><i class="fa fa-check"></i><b>3.1.2</b> Data Import - 2006-2021 Data</a></li>
 <li class="chapter" data-level="3.1.3" data-path="data-transformation.html"><a href="data-transformation.html#combining-old-and-new"><i class="fa fa-check"></i><b>3.1.3</b> Combining Old and New</a></li>
 <li class="chapter" data-level="3.1.4" data-path="data-transformation.html"><a href="data-transformation.html#aggregating-by-category"><i class="fa fa-check"></i><b>3.1.4</b> Aggregating by Category</a></li>
 </ul></li>
+<li class="chapter" data-level="3.2" data-path="data-transformation.html"><a href="data-transformation.html#crime-data-1"><i class="fa fa-check"></i><b>3.2</b> Crime Data</a></li>
 </ul></li>
 <li class="chapter" data-level="4" data-path="missing-values.html"><a href="missing-values.html"><i class="fa fa-check"></i><b>4</b> Missing values</a>
 <ul>
-<li class="chapter" data-level="4.1" data-path="missing-values.html"><a href="missing-values.html#importing-the-arrests-dataset"><i class="fa fa-check"></i><b>4.1</b> Importing the Arrests Dataset</a></li>
-<li class="chapter" data-level="4.2" data-path="missing-values.html"><a href="missing-values.html#visualizing-the-missing-values"><i class="fa fa-check"></i><b>4.2</b> Visualizing the Missing Values</a></li>
+<li class="chapter" data-level="4.1" data-path="missing-values.html"><a href="missing-values.html#investigating-missing-values"><i class="fa fa-check"></i><b>4.1</b> Investigating Missing Values</a></li>
 </ul></li>
 <li class="chapter" data-level="5" data-path="results.html"><a href="results.html"><i class="fa fa-check"></i><b>5</b> Results</a>
 <ul>
-<li class="chapter" data-level="5.1" data-path="results.html"><a href="results.html#arrests-compared-to-crime"><i class="fa fa-check"></i><b>5.1</b> Arrests Compared to Crime</a></li>
+<li class="chapter" data-level="5.1" data-path="results.html"><a href="results.html#initial-exploration"><i class="fa fa-check"></i><b>5.1</b> Initial Exploration</a></li>
+<li class="chapter" data-level="5.2" data-path="results.html"><a href="results.html#arrests-compared-to-crime"><i class="fa fa-check"></i><b>5.2</b> Arrests Compared to Crime</a></li>
+<li class="chapter" data-level="5.3" data-path="results.html"><a href="results.html#arrests-related-to-marijuana-over-time"><i class="fa fa-check"></i><b>5.3</b> Arrests Related to Marijuana over time</a></li>
+<li class="chapter" data-level="5.4" data-path="results.html"><a href="results.html#arrests-near-elections"><i class="fa fa-check"></i><b>5.4</b> Arrests near Elections</a></li>
+<li class="chapter" data-level="5.5" data-path="results.html"><a href="results.html#thanksgiving-day-parade---more-arrests-or-fewer"><i class="fa fa-check"></i><b>5.5</b> Thanksgiving Day Parade - More arrests, or fewer?</a></li>
+<li class="chapter" data-level="5.6" data-path="results.html"><a href="results.html#have-drunk-driving-arrests-gone-down-recently"><i class="fa fa-check"></i><b>5.6</b> Have Drunk Driving Arrests Gone Down Recently</a></li>
 </ul></li>
 <li class="chapter" data-level="6" data-path="interactive-component.html"><a href="interactive-component.html"><i class="fa fa-check"></i><b>6</b> Interactive component</a></li>
 <li class="chapter" data-level="7" data-path="conclusion.html"><a href="conclusion.html"><i class="fa fa-check"></i><b>7</b> Conclusion</a></li>
@@ -188,8 +193,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
             <section class="normal" id="section-">
 <div id="data-transformation" class="section level1" number="3">
 <h1><span class="header-section-number">Chapter 3</span> Data transformation</h1>
-<div id="crime-data-1" class="section level2" number="3.1">
-<h2><span class="header-section-number">3.1</span> Crime Data</h2>
+<div id="arrest-data-1" class="section level2" number="3.1">
+<h2><span class="header-section-number">3.1</span> Arrest Data</h2>
 <div id="data-import---2021-data" class="section level3" number="3.1.1">
 <h3><span class="header-section-number">3.1.1</span> Data Import - 2021 Data</h3>
 <p>We begin by importing our data source as-is. This will give us a starting point for our data adjustment and cleaning. We save this data as ‘nyc_arrests’.</p>
@@ -204,7 +209,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div id="data-import---2006-2021-data" class="section level3" number="3.1.2">
 <h3><span class="header-section-number">3.1.2</span> Data Import - 2006-2021 Data</h3>
-<p>We now repeat this transformation on our older data. We save this data as ‘nyc_arrests_old’. One issue with this dataset is its size. Weighing in at over one Gigabyte, this dataset in its unmodified form takes a very long time to download and modify. As a result, we have decided to utilize a reduced version of this dataset. The transformations used to create this historical dataset are seen below:</p>
+<p>We now repeat this transformation on our older data. We save this data as ‘nyc_arrests_old’. One issue with this dataset is its size. Weighing in at over one Gigabyte, this dataset in its unmodified form takes a very long time to download and modify. As a result, we have decided to utilize a reduced version of this dataset that only includes data starting in 2011. The transformations used to create this historical dataset are seen below:</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="data-transformation.html#cb3-1" aria-hidden="true" tabindex="-1"></a>nyc_arrests <span class="ot">&lt;-</span> <span class="fu">read.table</span>(<span class="st">&quot;D:/Documents/R Projects/Final Project Proposal/NYPD_Arrests_Data__Historic_.csv&quot;</span>,</span>
 <span id="cb3-2"><a href="data-transformation.html#cb3-2" aria-hidden="true" tabindex="-1"></a>                           <span class="at">header=</span><span class="cn">TRUE</span>,</span>
 <span id="cb3-3"><a href="data-transformation.html#cb3-3" aria-hidden="true" tabindex="-1"></a>                           <span class="at">sep=</span><span class="st">&quot;,&quot;</span>,</span>
@@ -229,8 +234,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div id="combining-old-and-new" class="section level3" number="3.1.3">
 <h3><span class="header-section-number">3.1.3</span> Combining Old and New</h3>
-<p>If we need a combined dataset, we can append the historical data to the 2021 data like so:</p>
+<p>For a lot of our analysis we will want a combined dataset, so we can append the historical data to the 2021 data like so:</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="data-transformation.html#cb5-1" aria-hidden="true" tabindex="-1"></a>nyc_arrests_combined <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(nyc_arrests, nyc_arrests_old)</span></code></pre></div>
+<p>This is the main dataset we will be using throughout our analysis, but for certain visualizations we will want our data by category of arrest. The transformation to get the data in that form is below.</p>
 </div>
 <div id="aggregating-by-category" class="section level3" number="3.1.4">
 <h3><span class="header-section-number">3.1.4</span> Aggregating by Category</h3>
@@ -243,8 +249,24 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb6-6"><a href="data-transformation.html#cb6-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(ARREST_YEAR, OFNS_DESC, ARREST_BORO) <span class="sc">%&gt;%</span></span>
 <span id="cb6-7"><a href="data-transformation.html#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarize</span>(<span class="at">COUNT_OF_ARRESTS =</span> <span class="fu">n</span>())</span>
 <span id="cb6-8"><a href="data-transformation.html#cb6-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
-
 </div>
+</div>
+<div id="crime-data-1" class="section level2" number="3.2">
+<h2><span class="header-section-number">3.2</span> Crime Data</h2>
+<p>The other dataset that we will be using in our analysis is a dataset looking at crime in New York. This dataset gives aggregated crime numbers for each New York county, and this data is from 2010-2020. We will be using this to compare to arrest levels in our analysis, so we did the following transformation below to get data by borough.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="data-transformation.html#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Crime Data Import</span></span>
+<span id="cb7-2"><a href="data-transformation.html#cb7-2" aria-hidden="true" tabindex="-1"></a>nyc_crime <span class="ot">&lt;-</span> <span class="fu">read.table</span>(<span class="st">&quot;https://data.ny.gov/api/views/ca8h-8gjq/rows.csv?accessType=DOWNLOAD&amp;sorting=true&quot;</span>,</span>
+<span id="cb7-3"><a href="data-transformation.html#cb7-3" aria-hidden="true" tabindex="-1"></a>                        <span class="at">header=</span><span class="cn">TRUE</span>,</span>
+<span id="cb7-4"><a href="data-transformation.html#cb7-4" aria-hidden="true" tabindex="-1"></a>                        <span class="at">sep=</span><span class="st">&quot;,&quot;</span>,</span>
+<span id="cb7-5"><a href="data-transformation.html#cb7-5" aria-hidden="true" tabindex="-1"></a>                        <span class="at">quote=</span><span class="st">&#39;&quot;&#39;</span></span>
+<span id="cb7-6"><a href="data-transformation.html#cb7-6" aria-hidden="true" tabindex="-1"></a>                        )</span>
+<span id="cb7-7"><a href="data-transformation.html#cb7-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-8"><a href="data-transformation.html#cb7-8" aria-hidden="true" tabindex="-1"></a>nyc_crime <span class="ot">&lt;-</span> (</span>
+<span id="cb7-9"><a href="data-transformation.html#cb7-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(nyc_crime, Region <span class="sc">==</span> <span class="st">&quot;New York City&quot;</span>, Year <span class="sc">&gt;</span> <span class="dv">2010</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb7-10"><a href="data-transformation.html#cb7-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(<span class="fu">c</span>(County, Year, Murder, Rape, Aggravated.Assault, Motor.Vehicle.Theft)) <span class="sc">%&gt;%</span></span>
+<span id="cb7-11"><a href="data-transformation.html#cb7-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">Category =</span> <span class="st">&quot;Crime Reports&quot;</span>)</span>
+<span id="cb7-12"><a href="data-transformation.html#cb7-12" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+
 </div>
 </div>
             </section>
