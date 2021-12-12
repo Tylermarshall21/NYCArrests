@@ -21,6 +21,10 @@
   var barchartWidth = w - barchartMargin.left - barchartMargin.right;
   var barchartHeight = h - barchartMargin.top - barchartMargin.bottom;
   var dur = 500;
+  
+  var questionMargin = {top: 50, right: 50, bottom: 50, left: 750};
+  var questionWidth = w - questionMargin.left - questionMargin.right;
+  var questionHeight = h - questionMargin.top - questionMargin.bottom;
 
   // Initialize SVG and Background
 
@@ -50,11 +54,18 @@
     .scale(yScale);
     
   var chartTitle = svg.append("g")
-    .attr("id", "titles")
-    .attr("transform", `translate (${barchartWidth / 2}, ${barchartMargin.top / 2})`)
+    .attr("id", "chartTitles")
+    .attr("transform", `translate (${barchartWidth / 2}, ${barchartMargin.top / 1.5}) scale(1.5)`)
     .append("text")
     .attr('text-anchor', 'middle')
     .text("Days with Highest Arrests - 2011-2021")
+    
+  var questionTitle = svg.append("g")
+    .attr("id", "qTitles")
+    .attr("transform", `translate (${barchartWidth + (questionWidth / 2)}, ${questionMargin.top / 1.5}) scale(1.5)`)
+    .append("text")
+    .attr('text-anchor', 'middle')
+    .text("Questions")
   
   var xLabel = svg.append("g")
     .attr("id", "xLabs")
@@ -70,7 +81,39 @@
     .attr('text-anchor', 'middle')
     .attr("transform", 'rotate(-90)')
     .text("Ranking")
+  
+  // Arrest Questions
+  
+  var q1answers = ["Tuesday","Wednesday","Thursday","Friday"]
+    .map((value, key) => ({key, value}))
     
+  var arrestQuestions = svg.append("g")
+      .attr("id", "question_panels")
+      .selectAll("rect")
+      .data(q1answers, d => d.key)
+      .enter()
+      .append("rect")
+      .attr("x", barchartWidth + barchartMargin.left + 50)
+      .attr("y", (d, i) => barchartMargin.top + 200 + i * 100)
+      .attr("width", questionWidth - 100)
+      .attr("height", questionHeight / 10)
+      .attr("fill","white")
+      .attr("text",d => d.value)
+      .on("click", function ()
+					{
+						question1update(d3.select(this).attr("text"))
+						});
+						
+	svg.select("g#question_panels")
+			.selectAll("text")
+      .data(q1answers, d => d.key)
+      .enter()
+      .append("text")
+      .attr("x", barchartWidth + barchartMargin.left + (questionWidth - 100)/2)
+      .attr("y", (d, i) => barchartMargin.top + 200 + i * 100 + (questionHeight / 20))
+      .text(d => d.value);  
+  
+  
   // Initialize Row Converter Function
 
   var rowConverter = function (d) {
@@ -124,28 +167,6 @@
       .attr("height", yScale.bandwidth())
       .attr("fill","green")
       .text(d => `key: ${d.key}`);
-    
-    var arrestQuestions = svg.append("g")
-      .attr("id", "question_panels")
-      .append("rect")
-      .attr("x", barchartWidth + barchartMargin.left + 50)
-      .attr("y", barchartMargin.top)
-      .attr("width", 20)
-      .attr("height", 20)
-      .attr("fill","yellow")
-      .on("click", function ()
-					{
-						var arrestBars = d3.select("g#bars")
-						.selectAll("rect");
-
-						var newarrestdata = arrestBars
-						  .data().filter(d => d.key < 50);
-						//var samenabe_sorted = samenabe.slice().sort((a, b) => d3.descending(a.students, b.students))
-						
-						console.log(newarrestdata)
-						
-						update(newarrestdata)
-						});
     
     svg.append("g")
       .attr("class", "xAxis")
@@ -228,27 +249,19 @@
 
   }
 
-      d3.selectAll("p")
-        .on("click", function () {
+  function question1update(weekday){
+    console.log(weekday)
+    
+			var arrestBars = d3.select("g#bars")
+			.selectAll("rect");
 
-      var paraID = d3.select(this).attr("id");
+			var newarrestdata = arrestBars
+				.data().filter(d => d.weekday == weekday);
 
-      if (paraID == "add") {
-          var newvalue = Math.floor(Math.random()*400);
-          if (bardata.length == 0) {var newkey = 0;}
-          else {var newkey = bardata[bardata.length-1].key + 1;}
-          bardata.push({key: newkey, value: newvalue } );
-      } else if (paraID == "remove_left") {
-          bardata.shift();
-          var exitpos = -xScale.bandwidth();
-      } else {
-          bardata.pop();
-          var exitpos = w;
-      };
-
-      update(bardata);
-
-    });
+				console.log(newarrestdata)
+						
+				update(newarrestdata)
+		};
 
     </script>
 
