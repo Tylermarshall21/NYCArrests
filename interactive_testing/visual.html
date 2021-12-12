@@ -10,12 +10,6 @@
 
   <h2>Can you guess the highest crime date?</h2>
 
-    <p id="add">Add bar</p>
-
-    <p id="remove_left">Remove bar (left)</p>
-
-    <p id="remove_right">Remove bar (right)</p>
-
   <script>
   
   // Setup and other initialization
@@ -23,7 +17,7 @@
   var w = 1500;
   var h = 700;
   
-  var barchartMargin = {top: 25, right: 700, bottom: 25, left: 25};
+  var barchartMargin = {top: 50, right: 700, bottom: 50, left: 50};
   var barchartWidth = w - barchartMargin.left - barchartMargin.right;
   var barchartHeight = h - barchartMargin.top - barchartMargin.bottom;
   var dur = 500;
@@ -51,8 +45,32 @@
     .paddingInner(.1);
   
   var xAxis = d3.axisBottom()
+    .scale(xScale);
   var yAxis = d3.axisLeft()
-
+    .scale(yScale);
+    
+  var chartTitle = svg.append("g")
+    .attr("id", "titles")
+    .attr("transform", `translate (${barchartWidth / 2}, ${barchartMargin.top / 2})`)
+    .append("text")
+    .attr('text-anchor', 'middle')
+    .text("Days with Highest Arrests - 2011-2021")
+  
+  var xLabel = svg.append("g")
+    .attr("id", "xLabs")
+    .attr("transform", `translate (${barchartWidth / 2}, ${h - barchartMargin.bottom / 3})`)
+    .append("text")
+    .attr('text-anchor', 'middle')
+    .text("Arrest Count")
+  
+  var yLabel = svg.append("g")
+    .attr("id", "yLabs")
+    .attr("transform", `translate (${barchartMargin.left / 2}, ${h / 2})`)
+    .append("text")
+    .attr('text-anchor', 'middle')
+    .attr("transform", 'rotate(-90)')
+    .text("Ranking")
+    
   // Initialize Row Converter Function
 
   var rowConverter = function (d) {
@@ -154,7 +172,7 @@
 
     xScale.domain([0, d3.max(arrestdata, d => d.arrest_count)]);
 
-    yScale.domain(d3.range(1,arrestdata.length+1));
+    yScale.domain(d3.range(d3.min(arrestdata, d => d.key),d3.max(arrestdata, d => d.key)+1));
 
     var arrestBars = d3.select("g#bars")
 				.selectAll("rect")
@@ -172,6 +190,8 @@
       .merge(arrestBars)
         .transition()
         .duration(dur)
+        .transition()
+        .duration(dur)
         .ease(d3.easeLinear)
         .attr("x", d => 0 + barchartMargin.left)
         .attr("y", (d, i) => yScale(d.key) + barchartMargin.top)
@@ -182,20 +202,25 @@
     arrestBars.exit()
       .transition()
         .duration(dur)
-        .attr("x", d => 0 + barchartMargin.left)
+        .attr("fill", "red")
+        .attr("width", d => 0)
         .remove();
 
-    //svg.select(".xAxis")
-    //  .transition()
-    //    .duration(dur)
-    //    .ease(d3.easeLinear)
-    //    .call(xAxis);
+    svg.select(".xAxis")
+      .transition()
+        .duration(dur)
+        .transition()
+        .duration(dur)
+        .ease(d3.easeLinear)
+        .call(xAxis);
 
-    //svg.select(".yAxis")
-    //  .transition()
-    //    .duration(dur)
-    //    .ease(d3.easeLinear)
-    //    .call(yAxis);
+    svg.select(".yAxis")
+      .transition()
+        .duration(dur)
+        .transition()
+        .duration(dur)
+        .ease(d3.easeLinear)
+        .call(yAxis);
 
   }
 
