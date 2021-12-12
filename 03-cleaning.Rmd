@@ -2,9 +2,7 @@
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, eval=FALSE)
-library(ggplot2)
-library(tidyr)
-library(dplyr)
+library(tidyverse)
 library(lubridate)
 ```
 
@@ -105,7 +103,51 @@ nyc_crime <- (
 )
 ```
 
-## Weather Data
+## Interactive Component
+
+Some data was assembled and formatted for use in our interactive visual. This included a list of the top 100 days with the most arrests and weather in NYC.
+
+### Top 100 Days
+
+First, we assembled the top 100 days with the highest arrests and stored this as a dataframe.
+
+```{r}
+nyc_arrest_top_hundred <- nyc_arrests_combined %>%
+  mutate(Weekday = wday(ARREST_DATE)) %>%
+  group_by(ARREST_DATE, Weekday) %>%
+  summarize(Number_Arrests = n()) %>%
+  ungroup() %>%
+  arrange(desc(Number_Arrests)) %>%
+  mutate(ARREST_YEAR = year(ARREST_DATE),
+         ARREST_MONTH = month(ARREST_DATE),
+         ARREST_MONTH_TEXT = month(ARREST_DATE)) %>%
+  slice(1:100)
+
+nyc_arrest_top_hundred$Weekday <- factor(nyc_arrest_top_hundred$Weekday,
+                                     levels= c(1,2,3,4,5,6,7),
+                                     labels=c("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday","Friday","Saturday")
+                                     )
+nyc_arrest_top_hundred$ARREST_MONTH_TEXT <- factor(nyc_arrest_top_hundred$ARREST_MONTH_TEXT,
+                                                   levels= c(1,2,3,4,5,6,7,8,9,10,11,12),
+                                                   labels=c("January",
+                                                            "February",
+                                                            "March",
+                                                            "April",
+                                                            "May",
+                                                            "June",
+                                                            "July",
+                                                            "August",
+                                                            "September",
+                                                            "October",
+                                                            "November",
+                                                            "December")
+                                                   )
+
+
+```
+
+
+### Weather Data
 
 Our weather data was stored in csv files, which we then transformed to form a cleaner data set. In our original dataset, there were some values marked as T, representing precipitation less than 0.01 inches. For the sake of simplicity, we translated 'Trace' precipitation as 0.001. This will show that there was precipitation less than the threshold of 0.01, while not overstating the quantity of rain. For our uses, this will not make the data misleading when presented. On days where equipment malfunctioned, we set the value to NA.
 
@@ -146,5 +188,17 @@ nyc_temp <- (
 nyc_temp$Date <- as_date(nyc_temp$Date, format="%b.%y_%d")
 
 nyc_weather <- full_join(nyc_weather, nyc_temp)
+```
+
+### Combining Weather and Top 100
+
+A simple join combines the two datasets, which are then stored as a file.
+
+```{r}
+combined_hundred <- left_join(nyc_arrest_top_hundred, nyc_weather, by = c("ARREST_DATE" = "Date"))
+
+combined_hundred$Ranking <- 1:nrow(combined_hundred)
+
+write.csv(combined_hundred, file="interactive_testing/tophundred.csv")
 ```
 
