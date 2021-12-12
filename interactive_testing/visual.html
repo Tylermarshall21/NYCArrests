@@ -82,7 +82,32 @@
     .attr("transform", 'rotate(-90)')
     .text("Ranking")
   
-  // Arrest Questions
+  // Arrest Initial Questions
+  
+  var question = svg.append("g")
+      .attr("id", "question")
+      .append("rect")
+      .attr("x", barchartWidth + barchartMargin.left + 50)
+      .attr("y", barchartMargin.top + 20)
+      .attr("width", questionWidth - 100)
+      .attr("height", questionHeight / 5)
+      .attr("fill","ivory");
+						
+	svg.select("g#question")
+      .append("text")
+      .attr("x", barchartWidth + barchartMargin.left + 60)
+      .attr("y", barchartMargin.top + 50)
+      .text("Which day of the week do you think sees the most arrests?");
+  svg.select("g#question")
+      .append("text")
+      .attr("x", barchartWidth + barchartMargin.left + 60)
+      .attr("y", barchartMargin.top + 110)
+      .text("Fun Fact: Only one day in the top 100 does not fall on one of these weekdays!");
+  svg.select("g#question")
+      .append("text")
+      .attr("x", barchartWidth + barchartMargin.left + 60)
+      .attr("y", barchartMargin.top + 130)
+      .text("It is Saturday, April 2nd, 2011, ranked 58th.");
   
   var q1answers = ["Tuesday","Wednesday","Thursday","Friday"]
     .map((value, key) => ({key, value}))
@@ -258,9 +283,85 @@
 			var newarrestdata = arrestBars
 				.data().filter(d => d.weekday == weekday);
 
-				console.log(newarrestdata)
-						
 				update(newarrestdata)
+				createq2()
+		};
+		
+		function question2update(year){
+    console.log(year)
+    
+			var arrestBars = d3.select("g#bars")
+			.selectAll("rect");
+			
+			console.log(arrestBars.data())
+
+			var newarrestdata = arrestBars
+				.data().filter(d => d.year == year);
+
+				update(newarrestdata)
+				//createq3()
+		};
+		
+		function createq2(){
+		  
+		  // Arrest Second Round Questions
+		  
+		  svg.select("g#question").selectAll("text").remove();
+		  svg.select("g#question").selectAll("rect").remove();
+
+		  svg.select("g#question_panels").selectAll("rect").remove();
+		  svg.select("g#question_panels").selectAll("text").remove();
+
+  
+  var question = svg.select("g#question")
+      .append("rect")
+      .attr("x", barchartWidth + barchartMargin.left + 50)
+      .attr("y", barchartMargin.top + 20)
+      .attr("width", questionWidth - 100)
+      .attr("height", questionHeight / 5)
+      .attr("fill","ivory");
+						
+	svg.select("g#question")
+      .append("text")
+      .attr("x", barchartWidth + barchartMargin.left + 60)
+      .attr("y", barchartMargin.top + 50)
+      .text("In which year do you think the highest arrest day is located?");
+  svg.select("g#question")
+      .append("text")
+      .attr("x", barchartWidth + barchartMargin.left + 60)
+      .attr("y", barchartMargin.top + 110)
+      .text("Looking for other years? Believe it or not, none of them are represented in the top 100!");
+  
+  var q2answers = ['2011','2012','2013','2014']
+    .map((value, key) => ({key, value}))
+    
+  var arrestQuestions = svg.select("g#question_panels")
+      .selectAll("rect")
+      .data(q2answers, d => d.key)
+      .enter()
+      .append("rect")
+      .attr("x", barchartWidth + barchartMargin.left + 50)
+      .attr("y", (d, i) => barchartMargin.top + 200 + i * 100)
+      .attr("width", questionWidth - 100)
+      .attr("height", questionHeight / 10)
+      .attr("fill","white")
+      .attr("text",d => d.value)
+      .on("click", function ()
+					{
+						question1update(d3.select(this).attr("text"))
+						});
+						
+	svg.select("g#question_panels")
+			.selectAll("text")
+      .data(q2answers, d => d.key)
+      .enter()
+      .append("text")
+      .attr("x", barchartWidth + barchartMargin.left + (questionWidth - 100)/2)
+      .attr("y", (d, i) => barchartMargin.top + 200 + i * 100 + (questionHeight / 20))
+      .text(d => d.value);
+		  
+
+			
 		};
 
     </script>
