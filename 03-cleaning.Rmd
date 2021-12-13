@@ -29,7 +29,7 @@ nyc_arrests <- nyc_arrests %>% select(-c(New.Georeferenced.Column, X_COORD_CD, Y
 
 ### Data Import - 2006-2021 Data
 
-We now repeat this transformation on our older data. We save this data as 'nyc_arrests_old'. One issue with this dataset is its size. Weighing in at over one Gigabyte, this dataset in its unmodified form takes a very long time to download and modify. As a result, we have decided to utilize a reduced version of this dataset that only includes data starting in 2011. The transformations used to create this historical dataset are seen below:
+We now repeat this transformation on our older data. We save this data as 'nyc_arrests_old'. One issue with this dataset is its size. Weighing in at over one Gigabyte, this dataset in its unmodified form takes a very long time to download and modify. As a result, we have decided to utilize a reduced version of this dataset that only includes data starting in 2011. The transformations used to create this historical dataset are seen below, with the file specified being the file obtained from the source:
 
 ```{r, eval=FALSE}
 nyc_arrests <- read.table("D:/Documents/R Projects/Final Project Proposal/NYPD_Arrests_Data__Historic_.csv",
@@ -86,7 +86,7 @@ nyc_arrests_by_category_year_boro <- (
 
 ## Crime Data
 
-The other dataset that we will be using in our analysis is a dataset looking at crime in New York. This dataset gives aggregated crime numbers for each New York county, and this data is from 2010-2020. We will be using this to compare to arrest levels in our analysis, so we did the following transformation below to get data by borough.
+The other dataset that we will be using in our analysis is a dataset looking at crime in New York. This dataset gives aggregated crime numbers for each New York county, and this data is from 2010-2020. We will be using this to compare to arrest levels in our analysis, so we did the following transformation below to get data by New York City borough.
 
 ```{r}
 # Crime Data Import
