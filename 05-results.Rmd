@@ -108,7 +108,9 @@ ggplot(data = nyc_arrests_year, aes(x = ARREST_YEAR, y = Number_Arrests)) + geom
   theme_grey(14)
 ```
 
-From the plot above, we can see that the number of arrests has decreased each year for the past 10 years. The decrease in arrests is very significant as well since there were over 400,000 arrests in 2011 while there were under 150,000 arrests in 2020 and just over 100,000 arrests so far in 2021. It seems likely that the impact of COVID-19 has helped decrease the number of arrests in 2020 and 2021, especially in 2020 with so many things being shutdown. It will be interesting to see if the number of arrests in 2021 is larger than the 2020 which would be a deviation from the trend of arrests going down. While this plot indicates progress in terms of safety in New York, it will be interesting to see if the number of crimes has dropped significantly as well. If arrests are going down, but crimes are not, then this would indicate that the city is not actually safer, but instead people are getting away with more crimes. We were also interested in looking at the distribution of arrests by month to see if this varied throughout the year. From the plot below, we see that there doesn't seem to be significant variation from month to month in terms of arrests over the past 10 years.
+From the plot above, we can see that the number of arrests has decreased each year for the past 10 years. The decrease in arrests is very significant as well since there were over 400,000 arrests in 2011 while there were under 150,000 arrests in 2020 and just over 100,000 arrests so far in 2021. It seems likely that the impact of COVID-19 has helped decrease the number of arrests in 2020 and 2021, especially in 2020 with so many things being shutdown. It will be interesting to see if the number of arrests in 2021 is larger than 2020, which would be a deviation from the trend of arrests going down.
+
+While this plot would seem to indicate progress in terms of safety in New York, it will be interesting to see if the number of crimes has dropped significantly as well. If arrests are going down, but crimes are not, then this would indicate that the city is not actually safer, but instead people are getting away with more crimes. We were also interested in looking at the distribution of arrests by month to see if this varied throughout the year. From the plot below, we see that there doesn't seem to be significant variation from month to month in terms of arrests over the past 10 years.
 
 ```{r}
 nyc_arrests_biggest_months <- nyc_arrests_combined %>%
@@ -127,7 +129,9 @@ ggplot(data = nyc_arrests_biggest_months, aes(x = ARREST_MONTH, y = Number_Arres
   theme(axis.text=element_text(size=8))
 ```
 
-One small pattern that we can see from this plot is that the number of arrests seems to drop off a little in December, with December 2014 being the most extreme example. The reasoning for this drop off is unclear, but it could potentially be related to the holiday season. It will be interesting to compare to the number of crimes in December to see if people commit fewer crimes at the end of the year. Another aspect of this plot that we found interesting is that the number of arrests really drops off in 2020 once COVID hit. April, June, and July all had very low arrest totals and this was likely due to the fact that most people were quarantining and not going out much. 
+One small pattern that we can see from this plot is that the number of arrests seems to drop off a little in December, with December 2014 being the most extreme example. The reasoning for this general drop off is unclear, but it could potentially be related to the holiday season. December of 2014, however, provides an interesting case. In this month, anti-police sentiment was high in the city following the recent trial for the killing of Eric Garner by the NYPD. Some sources even reported that there was a deliberate slowdown in police activity during this time (https://arstechnica.com/science/2017/09/nyc-cops-did-a-work-stop-yet-crime-dropped/), though this was denied by the police union (https://www.nycpba.org/press-releases/2015/pba-president-no-slowdown/). Observing the graph, it would seem that there was, in fact, a reduced number of arrests that month, though it remains unknown if this is evidence of a coordinated effort.
+
+Another aspect of this plot that we found interesting is that the number of arrests really drops off in 2020 with the onset of the COVID-19 pandemic. April, June, and July all had very low arrest totals, and this was likely due to the fact that most people were quarantining and not going out much. 
 
 We also wanted to look at individual days to see if there may be a reason certain days had such levels of crime. We created a Cleveland dot plot to look at the 30 days with the highest arrest totals in the past 10 years.
 
@@ -156,10 +160,12 @@ ggplot(data = nyc_arrest_biggest_days, aes(x = Number_Arrests, y = fct_reorder(A
 
 ```
 
-From the plot above, we see that the most arrests in one day over the past 10 years was 1750 on March 7th, 2012. There doesn't seem to be anything in particular that explains why there were so many arrests on this day since it was a seemingly ordinary Wednesday in March. This was one of two days with more than 1700 arrests, with the other being February 1st, 2012 which also happened to be a Wednesday. It is also interesting to see that all of these days were either in 2011, 2012, or 2013. This makes sense given what the bar plot above showed us in terms of arrests by year, but it is still interesting to see that there were no days recently that made it in the top 30. When looking at the days on this list, we also noticed that most of these days occurred earlier in the year. Only one of the 30 days occurred in the second half of the year which seems a bit odd considering that there wasn't a huge difference between the number of arrests by month. It would be interesting to see if this pattern continued for the top 50 or 100 days in terms of most arrests, and if there is a potential explanation for why this is the case. Another interesting point is the weekdays on which the most arrests occurred. As we can see, all of the top days were Wednesdays, Thursdays, and Fridays. It may be argued that Weekends typically see less activity, as they may see fewer people commuting into the city. It is quite curious, though, that Mondays and Tuesdays are under-represented.
+From the plot above, we see that the most arrests in one day over the past 10 years was 1750 on March 7th, 2012. There doesn't seem to be anything in particular that explains why there were so many arrests on this day, since it was a seemingly ordinary Wednesday in March. This was one of two days with more than 1700 arrests, with the other being February 1st, 2012, another Wednesday a month earlier. It is also interesting to see that all of these days were either in 2011, 2012, or 2013. This makes sense given what the bar plot above showed us in terms of arrests by year, but it is still interesting to see that there were no more recent days that made it into the top 30.
+
+When looking at the days on this list, we also noticed that most of these days occurred earlier in the year. Only one of the 30 days occurred in the second half of the year. This seems a bit odd, considering that there wasn't a huge difference between the number of arrests by month. It would be interesting to see if this pattern continued for the top 50 or 100 days in terms of most arrests, and if there is a potential explanation for why this is the case. Another interesting point is the weekdays on which the most arrests occurred. As we can see, all of the top days were Wednesdays, Thursdays, and Fridays. It may be argued that Weekends typically see less activity, as they may see fewer people commuting into the city. It is quite curious, though, that Mondays and Tuesdays are under-represented.
 
 
-We also want to look at the types of arrests that are occurring in New York City. The three types of arrests according to the data dictionary are felonies, misdemeanors, and violations. A bar plot showing how common each arrest type has been over the past 10 years is below. 
+We also want to look at the types of arrests that are occurring in New York City. The four types of arrests according to the data dictionary are felonies, misdemeanors, infractions, and violations. A bar plot showing how common each arrest type has been over the past 10 years is below. 
 
 ```{r, message = FALSE, warning = FALSE}
 nyc_arrests_type <- nyc_arrests_combined %>%
@@ -175,9 +181,9 @@ ggplot(data = nyc_arrests_type, aes(x = fct_reorder(LAW_CAT_CD, Number_Arrests, 
   theme_grey(14)
 ```
 
-From the bar plot above, we can see that misdemeanor is the most common type of arrest in our dataset with over 2 million arrests that were related to misdemeanor charges. Felony is the next most common type of arrest with just under 1 million arrests while violations only account for around 200,000 arrests. There is also a small portion of arrests classified as `I`, which denotes infractions. There were also a small amount of arrests that did not have a `LAW_CAT_CD`, so these were categorized as `NA` in our plot. 
+From the bar plot above, we can see that misdemeanor is the most common type of arrest in our dataset, with over 2 million arrests related to misdemeanor charges. Felony is the next most common type of arrest with just under 1 million arrests, while violations only account for around 200,000 arrests. There is also a small portion of arrests classified as `I`, which denotes infractions. There were also a small number of arrests that did not have a `LAW_CAT_CD`, so these were categorized as `NA` in our plot. 
 
-Next, we made a parallel coordinates plot to get a better understanding of the arrests made in each borough. We categorized the types of arrests into five categories: Murder, Rape, Aggravated Assault, Motor Vehicle Theft, and Robbery. 
+Next, we made a parallel coordinates plot to get a better understanding of the arrests made in each borough. We categorized a subset of our arrests into five categories: Murder, Rape, Aggravated Assault, Motor Vehicle Theft, and Robbery. 
 
 ```{r}
 nyc_coords <- nyc_arrests_categories_simple %>%
@@ -198,7 +204,7 @@ ggparcoord(data = nyc_coords, columns = 2:6, groupColumn = "County", scale = "gl
 
 ```
 
-From the parallel coordinates plot, Richmond County (Staten Island) has had the fewest number of arrests in all of these categories over the past 10 years. This is not surprising since Staten Island is the least populated of the five boroughs. The Bronx has had the most arrests related to murder with over 3500 in the past 10 years, but did not have the most arrests in any of the other four categories. Kings County (Brooklyn) had the most arrests related to rape, aggravated assault, motor vehicle theft, and robbery since 2011. While Kings County had the most arrests in all of these categories, the number of arrests varied significantly. Aggravated assault had almost 50,000 arrests and robbery had around 35,000 while there were just over 5000 arrests for rape and 3500 for motor vehicle theft. Queens County did not have the most or fewest arrests in any category, but almost had as many motor vehicle thefts as Kings County. Finally, New York County had the second fewest arrests for murder, rape, aggravated assault, and motor vehicle theft.
+From the parallel coordinates plot, we see that Richmond County (Staten Island) has had the fewest number of arrests in all of these categories over the past 10 years. This is not surprising since Staten Island is the least populated of the five boroughs. The Bronx has had the most arrests related to murder with over 3500 in the past 10 years, but did not have the most arrests in any of the other four categories. Kings County (Brooklyn) had the most arrests related to rape, aggravated assault, motor vehicle theft, and robbery since 2011. While Kings County had the most arrests in all of these categories, the number of arrests varied significantly. Aggravated assault had almost 50,000 arrests and robbery had around 35,000, while there were just over 5000 arrests for rape and 3500 for motor vehicle theft. Queens County did not have the most or fewest arrests in any category, but almost had as many motor vehicle thefts as Kings County. Finally, New York County had the second fewest arrests for murder, rape, aggravated assault, and motor vehicle theft. It is interesting to see how the five boroughs, though geographically close, can vary in terms of how many crimes are committed across these categories.
 
 ## Arrests Compared to Crime
 
@@ -270,8 +276,9 @@ ggplot(crime_vs_arrests, aes(fill = Category, y = YearCounty, x = Count)) +
 
 ```
 
-There are some very interesting things to be observed here. First, arrests do not map exactly to reported crimes. Aggravated Assault, Murder, and Motor Vehicle Theft all present cases where the number of arrests does not exactly match the associated number of crimes reported. Rape seems the exception, with arrest counts closer to crime reports. Next, it is interesting to note that the degree to which arrests differ from crime reports, and the direction of the mismatch, varies. In the case of motor vehicle theft, crime reports outpace arrests by a large degree. This makes sense, considering that many motor vehicle thefts occur when the vehicle owner is not present. Since motor vehicle theft often has the criminal and the victim at different locations during the time of the crime, it is reasonable that it may be harder to make an arrest after the crime, since fewer details may be known about the criminal. One confusing relation is the relation between murder arrests and reports. It seems counter-intuitive that the number of arrests made would exceed the number of murders committed. Perhaps this can be attributed to arrests made before the actual criminal was determined. Once again, we have a case where the victim cannot report effectively regarding details of the criminal, but with a crime considered to be more severe.
-In general, however, arrests seem to exhibit values similar to crime reports. One of the primary lessons from this visual is the understanding that arrest data can serve as a proxy for crime data, but should be recognized as a different metric, and prone to distortion.
+There are some very interesting things to be observed here. First, arrests do not map exactly to reported crimes. Aggravated Assault, Murder, and Motor Vehicle Theft all present cases where the number of arrests does not exactly match the associated number of crimes reported. Rape seems the exception, with arrest counts closer to crime reports. Next, it is interesting to note that the degree to which arrests differ from crime reports, and the direction of the mismatch, varies. In the case of motor vehicle theft, crime reports outpace arrests by a large degree. This makes sense, considering that many motor vehicle thefts occur when the vehicle owner is not present. Since motor vehicle theft often has the criminal and the victim at different locations during the time of the crime, it is reasonable that it may be harder to make an arrest after the crime, since fewer details may be known about the criminal. One confusing relation is the relation between murder arrests and reports. It seems counter-intuitive that the number of arrests made would exceed the number of murders committed. Perhaps this can be attributed to arrests made before the actual criminal was determined, or maybe this corresponds to cases where multiple people commit a single murder. Once again, we have a case where the victim cannot report effectively regarding details of the criminal, but with a crime considered to be much more severe.
+
+In general, arrests seem to exhibit values similar to crime reports. One of the primary lessons from this visual is the understanding that arrest data can serve as a proxy for crime data, but should be recognized as a different metric, and prone to distortion. As we will continue to see later, arrest data often offers more insight into the process of enforcing laws, rather than crime itself.
 
 ## Arrests Related to Marijuana over time
 
@@ -331,9 +338,11 @@ ggplot(nyc_mj_arrests_by_date,aes(x=ARREST_DATE,y=COUNT_OF_ARRESTS, color = fct_
   scale_color_colorblind()
 ```
 
-There are some very interesting observations here. As can be observed, there was a tremendous drop in marijuana arrests after the launch of Mayor de Blasio's November 19th, 2014 policy initiative. However, this short-term decrease did not last. Though marijuana arrests show a marked decrease after the initiative as compared to before, arrests did see a rebound in 2015. The next largest decline appears to begin around January 2018, though the cause of this decline is not immediately obvious. It may be linked to a more widespread acceptance of marijuana that year, as evident in the commissioning of a study on the legalization of marijuana commissioned by Governor Cuomo that January (https://www.nysenate.gov/newsroom/press-releases/jamaal-t-bailey/marijuana-legalization-impact-assessment-study). Further developments later that year solidify this direction, such as the aforementioned end of prosecution in several boroughs, and the end of arrests for smoking. Unlike the previous decline, this second drop in arrests would not see a rebound, and arrests end entirely after the March 31st, 2021 legalization. The reasons for earlier declines in 2011 and 2012 are not as easy to explain, but it should be noted that 2011 was a high point in marijuana arrests. (https://gothamist.com/news/nyc-still-marijuana-arrest-capital-of-the-world-arrests-rose-again-last-year)
+There are some very interesting observations here. As can be observed, there was a tremendous drop in marijuana arrests after the launch of Mayor de Blasio's November 19th, 2014 policy initiative. However, this short-term decrease did not last. Though marijuana arrests show a marked decrease after the initiative as compared to before, arrests did see a rebound in 2015. It should also be noted that this drop could be partly the result of a policing slowdown in December of 2014, as previously mentioned. The next largest decline appears to begin around January 2018, though the cause of this decline is not immediately obvious. It may be linked to a more widespread acceptance of marijuana that year, as evident in the commissioning of a study on the legalization of marijuana commissioned by Governor Cuomo that January (https://www.nysenate.gov/newsroom/press-releases/jamaal-t-bailey/marijuana-legalization-impact-assessment-study). Further developments later that year solidify this direction, such as the aforementioned end of prosecution in several boroughs, and the end of arrests for smoking. Unlike the previous decline, this second drop in arrests would not see a rebound, and arrests end entirely after the March 31st, 2021 legalization. The reasons for earlier declines in 2011 and 2012 are not as easy to explain, but it should be noted that 2011 was a high point in marijuana arrests. (https://gothamist.com/news/nyc-still-marijuana-arrest-capital-of-the-world-arrests-rose-again-last-year)
 
-While marijuana was still illegal, and the cause of many arrests, many critics of marijuana laws claimed that one of the main victims of these laws were young men of color, who were arrested and often jailed at higher rates as a consequence of these laws. Is this actually the case? Below is a visual that looks at data from 2011-2013 (inclusive), before any major policy actions we have discussed.
+It is somewhat interesting that the 2018 declines in arrests are largely uniform across boroughs. Looking at the graph, one may not realize that the end of prosecution for marijuana smoking occurred at slightly different times between the different boroughs.
+
+While marijuana was still illegal, and the cause of many arrests, many critics of marijuana laws claimed that one of the main victims of these laws were young men of color, who were arrested and often jailed at higher rates as a consequence of these laws. Is this actually the case? Below is a visual that looks at data from 2011-2013 (inclusive), before any major policy actions we have discussed. Regions inside the mosaic plot represent the number of arrests of individuals of certain races and ages. The races are White, Black, Blackhispa (Black Hispanic), Whitehispa (White Hispanic), and Other (all races not in these categories). Sex is divided into M for Male and F for Female.
 
 ```{r, fig.width = 10, fig.height = 10}
 nyc_mj_arrests_mosaic <- (
@@ -411,11 +420,11 @@ nyc_arrest_dayafter %>%
 
 ```
 
-Not only do we want to look at the arrests on election day, but we also wanted to look at the day after the election. We want to see if the results of the election potentially lead to more arrests the next day. On November 4th 2012, 439 arrests occurred which is even fewer than the 479 that occurred on election day, and again well below the average for the year. In 2016, 868 arrests happened the day after the election, which was just barely above the daily average of 860.3 in that year. Finally, on November 8th 2020, 364 arrests were made which was slightly below the average of 383.6 arrests. There does not seem to be a major pattern in terms of arrest during election periods. It was interesting to see that the number of arrests was well below average in 2012 during these election days, but this pattern didn't seem to hold in 2016 and 2020.
+Not only do we want to look at the arrests on election day, but we also wanted to look at the day after the election. We want to see if the results of the election potentially lead to more arrests the next day. On November 4th 2012, 439 arrests occurred, which is even fewer than the 479 that occurred on election day, and again well below the average for the year. In 2016, 868 arrests happened the day after the election, which was just barely above the daily average of 860.3 in that year. Finally, on November 8th 2020, 364 arrests were made which was slightly below the average of 383.6 arrests. There does not seem to be a major pattern in terms of arrest during election periods. It was interesting to see that the number of arrests was well below average in 2012 during these election days, but this pattern didn't seem to hold in 2016 and 2020.
 
 ## Thanksgiving Day Parade - More arrests, or fewer?
 
-Many of the events discussed so far have been fairly prominent occurrences, with the ability to affect arrest rates over long periods of time. However, these are not the only events that occur in New York City. Many of these other events are smaller in scope, and less historical, but do provide another interesting perspective on how circumstance can impact numbers of arrests. Let us consider NYC's annual Thanksgiving Day parade. This annual event sees thousands of residents and tourists gather to spectate a common experience. Along with these throngs come an increased police presence, and possible opportunities for criminals. The question remains then, how does the Thanksgiving Thursday compare to any other November Thursday? See below a map of thefts in New York City on Thanksgiving Day (on the left), and the Thursdays prior (on the right) with the parade route shown in blue.
+Many of the events discussed so far have been fairly prominent occurrences, with the ability to affect arrest rates over long periods of time. However, these are not the only events that occur in New York City. Many of these other events are smaller in scope, and less historical, but do provide another interesting perspective on how circumstance can impact numbers of arrests. Let us consider NYC's annual Thanksgiving Day parade. This annual event sees thousands of residents and tourists gather to spectate a common experience. Along with these throngs come an increased police presence, and possible opportunities for criminals. The question remains then, how does the Thanksgiving Thursday compare to any other November Thursday? See below a map of arrests in New York City on Thanksgiving Day (on the left), and the Thursdays prior (on the right) with the parade route shown in blue.
 
 ```{r}
 nyc_thanksgiving_arrests <- (
@@ -479,10 +488,16 @@ The results are somewhat unexpected. It may seem intuitive to suspect elevated l
   labs(title = "Fewer Arrests on Thanksgiving?",
        x = "",
        y = "Number of Arrests") +
-  theme_grey(14)
+  theme_grey(14) +
+  theme(axis.text.x = element_blank(),
+        axis.ticks.x = element_blank())
 
 
 ```
+
+### A Note on Reproducibility
+
+Please note that ggmap requires an API token. If you would like to repeat this analysis, please generate a Google API token for your own use, and provide it using the register_google() function.
 
 ## Have Drunk Driving Arrests Gone Down Recently?
 
@@ -507,4 +522,29 @@ ggplot(data = drunk_driving, aes(x = ARREST_YEAR, y = Number_Arrests)) + geom_co
 
 ```
 
-From the plot above, we can see an interesting trend in terms of drunk driving arrests over the past 10 years. There is a clear increase in arrests during 2013 and 2014 related to drunk driving before it drops off in subsequent years. There is a sharp drop in number of arrests in 2020 and so far in 2021 which is likely due to the pandemic. As noted on the plot, Lyft was started in 2012 while Uber was created in 2009. These apps didn't seem to have much impact on drunk driving arrests initially, but could have had some impact once they got larger and became more well-known. There has been a progressive decrease in drunk driving arrests since 2015/2016 which is likely due to a combination of the growth of these apps as well as more awareness towards drunk driving. Even if the reasoning for the drop off is not completely clear, it is a good sign that the number of drunk driving arrests has gone down in recent years.
+From the plot above, we can see an interesting trend in terms of drunk driving arrests over the past 10 years. There is a clear increase in arrests during 2013 and 2014 related to drunk driving before it drops off in subsequent years. There is a sharp drop in number of arrests in 2020 and so far in 2021 which is likely due to the pandemic. As noted on the plot, Lyft was started in 2012 while Uber was created in 2009. These apps didn't seem to have much impact on drunk driving arrests initially, but could have had some impact once they got larger and became more well-known. There has been a progressive decrease in drunk driving arrests since 2015/2016, which could be due to a combination of the growth of these apps and a possible increase in awareness towards drunk driving. Even if the reasoning for the drop off is not completely clear, it seems to be a good sign that the number of drunk driving arrests has gone down in recent years.
+
+There is still one more consideration, however. We have seen previously that arrests have been in decline in general. Is this decline merely a result of a general decline in crime? If we look at the percentage of arrests attributed to drunk driving, relative to all arrests, our conclusion becomes less clear. From this graph, it would seem that drunk driving arrests have not declined significantly relative to arrests in general.
+
+```{r}
+general_arrests <- nyc_arrests_combined %>%
+  mutate(ARREST_YEAR = format(ARREST_DATE, format = "%Y")) %>%
+  group_by(ARREST_YEAR) %>%
+  summarize(Number_Arrests_Total = n())
+
+dd_as_percentage <- (
+  drunk_driving %>%
+    left_join(general_arrests) %>%
+    mutate(Percentage = (Number_Arrests / Number_Arrests_Total)*100)
+)
+
+ggplot(data = dd_as_percentage, aes(x = ARREST_YEAR, y = Percentage)) +
+  geom_col(fill = "black") +
+  geom_vline(xintercept = 2, color = "red") +
+  annotate(geom="text", x=1.35, y= 2.5, label="Lyft started",
+              color="red") +
+  labs(title = "Drunk Driving Arrests as Percentage of Total Arrests",
+       x = "Year",
+       y = "Percentage of Total Arrests") +
+  theme_grey(14)
+```
