@@ -28,3 +28,12 @@ weather-data-1
 top-100-days
 interactive-component-1
 combining-weather-and-top-100
+arrest-data-acquisition
+arrest-data-details
+arrest-data-issues
+crime-data-acquisition
+crime-data-details
+crime-data-issues
+weather-data-acquisition
+weather-data-details
+weather-data-issues
