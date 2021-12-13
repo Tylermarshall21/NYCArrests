@@ -9,22 +9,53 @@ Arrest data from the city of New York from 2006 to the present will serve as our
 1. 2006 - Jan 1st 2021: https://data.cityofnewyork.us/Public-Safety/NYPD-Arrests-Data-Historic-/8h9b-rp9u 
 2. Jan 1st 2021 – Present: https://data.cityofnewyork.us/Public-Safety/NYPD-Arrest-Data-Year-to-Date-/uip8-fykc 
 
-This data is collected by the NYPD and made available through New York City Open Data.
 
-This data has a number of interesting features, such as geographical data regarding where the arrest was made, crime related to the arrest, and various pieces of demographic data associated with the apprehended person. The various crime statistics, as well as location information, will allow us to plot out trends in arrests over various factors, and effectively connect these factors with other datasets.
+For this analysis, we will limit our data to the last 10 years, starting on January 1st, 2011. Since the entire dataset is quite large, focusing on a smaller time period made data cleaning and transformation quicker while also making the size of the data file smaller. We still wanted to look at an extended period of time to look for patterns in arrests, so we decided to use the last 10 years for our project. Even after limiting the dataset to the last 10 years, there are still over 3.2 million total observations (3,248,336 to be exact). This is still a very large dataset, so we are still able to use it to identify arrest trends in New York City. 
 
-For this analysis, we will limit our data to the last 10 years, starting on January 1st, 2011. Since the entire dataset is quite large, focusing on a smaller time period made data cleaning and transformation quicker while also making the size of the data file smaller. We still wanted to look at an extended period of time to look for patterns in arrests, so we decided to use the last 10 years for our project. Even after limiting the dataset to the last 10 years, there are still over 3.2 million observations (3,248,336 to be exact). This is still a very large dataset, so we will still be able to use it to identify arrest trends in New York City. 
+### Arrest Data Acquisition
 
+This data is collected by the NYPD and made available through New York City Open Data. Though this data is available through API, we opted to simply use CSV files directly obtained from the source. The more recent 2021 data is pulled as-is, but the historical data proved cumbersome to work with in its original form - our solutions to this will be elaborated on later.
+
+### Arrest Data Details
+
+This data has a number of interesting features, such as geographical data regarding where the arrest was made, crime related to the arrest, and various pieces of demographic data associated with the apprehended person. The 2021 dataset contains approximately 115,000 rows, and the historical dataset (2006-2020) is larger, with approximately 5.15 million rows.
+
+The various arrest statistics, as well as location information, allows us to plot out trends in arrests over various factors, and effectively connect these factors with other datasets.
+
+### Arrest Data Issues
+
+These datasets were relatively clean prior to import, so we did not need to overly concern ourselves with gaps and other similar concerns. One issue, however, was the size of our data. With over 5 million rows, we found the historical dataset to be somewhat difficult to work with, and felt that the scope of time was perhaps too large. To alleviate this issue, we created a pared-down version of our original historical dataset, looking at only the years 2011-2020, and removed certain columns we did not intend to reference.
 
 ## Crime Data
 
-Data on crimes reported in New York City will serve as a check against our general assumption that crime correlates strongly with arrests. This data is obtained from https://data.ny.gov/Public-Safety/Index-Crimes-by-County-and-Agency-Beginning-1990/ca8h-8gjq , and is maintained by the New York State Division of Criminal Justice Services.
+Data on crimes reported in New York City will serve as a check against our general assumption that crime correlates strongly with arrests.
 
-This dataset, which spans the years 1990 to 2020, provides summary crime statistics for each New York county in each year. It provides aggregated values for the numbers of crimes committed in various categories over the given calendar year. One shortcoming with this dataset is its lack of granularity. Annual, county-level data is good, but it does limit the dataset's usefulness for considering crime demographics, and does not allow for comparing crime rates during particular times of the year. Also, since we are still in the middle of 2021, the 2021 data is not yet available which means we will not be able to make any 2021 comparisons between crimes and arrests.
+### Crime Data Acquisition
 
-Another point to note regarding this dataset is classification. The definition of rape applied to categorize these crimes was altered in the year 2015 (https://www.criminaljustice.ny.gov/crimnet/ojsa/stats.htm). As a result, comparisons made before and after 2015 should be mindful an uptick in crimes of this category is certainly related to some degree with this change in classification technique. Current definitions for the various crimes found in the dataset can be found here: https://ucr.fbi.gov/crime-in-the-u.s/2017/crime-in-the-u.s.-2017/topic-pages/offense-definitions
+This data is obtained from https://data.ny.gov/Public-Safety/Index-Crimes-by-County-and-Agency-Beginning-1990/ca8h-8gjq , and is maintained by the New York State Division of Criminal Justice Services. Once again, we opted to use provided csv files directly from the source.
+
+### Crime Data Details
+
+This dataset, which spans the years 1990 to 2020, provides summary crime statistics for each New York county in each year. It provides aggregated values for the numbers of crimes committed in various categories over the given calendar year. There are approximately 88,700 rows in the dataset.
+
+### Crime Data Issues
+
+One shortcoming with this dataset is its lack of granularity. Annual, county-level data is good, but it does limit the dataset's usefulness for considering crime demographics, and does not allow for comparing crime rates during particular times of the year. Also, since we are still in the middle of 2021, the 2021 data is not yet available. As a result, we will not be able to make any 2021 comparisons between crimes and arrests.
+
+Another point to note regarding this dataset is classification. The definition of rape applied to categorize these crimes was altered in the year 2015 (https://www.criminaljustice.ny.gov/crimnet/ojsa/stats.htm). As a result, comparisons made before and after 2015 should be mindful an uptick in crimes of this category is certainly related to some degree with this change in classification technique. Current definitions for the various crimes found in the dataset can be found here: https://ucr.fbi.gov/crime-in-the-u.s/2017/crime-in-the-u.s.-2017/topic-pages/offense-definitions . Fortunately, our analysis avoided issues regarding this classification update.
 
 ## Weather Data
 
-For our interactive component, we incorporated some weather data. This data was taken from the NOAA records for LaGuardia Ariport (roughly central location) from 2011 to 2014. This data can be acquired here: https://www.weather.gov/wrh/Climate?wfo=okx . An API would have been preferred, but we encountered some issues with access. Data collected was Mean Precipitation and Temperature data.
+For our interactive component, we incorporated some weather data.
 
+### Weather Data Acquisition
+
+This data was taken from the NOAA records and can be acquired here: https://www.weather.gov/wrh/Climate?wfo=okx . An API would have been preferred for collection, but we encountered some issues with access. Data taken from these tables was manually compiled into parseable CSV files.
+
+### Weather Data Details
+
+Weather data was taken from the NOAA records for LaGuardia Ariport (roughly central location) from 2011 to 2014. Data collected was Mean Precipitation and Temperature data for all days in this time period, with two total data points for each day.
+
+### Weather Data Issues
+
+The format the data was acquired in was non-ideal, and transformation was needed before it could be used in our analysis. In addition, there were some missing data points, corresponding to equipment failures. Fortunately, these missing values did not intersect with our dates of interest, so there was no impact to our final analysis.
