@@ -1,2 +1,5 @@
 # Conclusion
 
+In our project, we were able to explore various aspects of arrest and crime data from New York City over the past ten years. We were able to learn that arrests have definitely gone down during this time period, but crime data suggests not much has changed. That is not necessarily a good sign for safety in New York City, but is what the data is telling us. We were also able to see what the days of the week had the biggest arrest days, and somewhat surprisingly the top 50 days in terms of arrests were all either Wednesday, Thursday, or Friday. Our other explorations allowed us to see the impact of laws changing in regards to marijuana arrests as well as the impact of drunk driving arrests after Uber and Lyft were introduced. 
+
+However, we also faced some limitations during our analysis. 
