@@ -495,6 +495,10 @@ The results are somewhat unexpected. It may seem intuitive to suspect elevated l
 
 ```
 
+### A Note on Reproducibility
+
+Please note that ggmap requires an API token. If you would like to repeat this analysis, please generate a Google API token for your own use, and provide it using the register_google() function.
+
 ## Have Drunk Driving Arrests Gone Down Recently?
 
 Our next exploration is looking at arrests related to drunk driving. We wanted to see if the creation of apps like Uber and Lyft has helped limit the number of drunk driving arrests. To do this, we looked at the number of drunk driving arrests in each of the past 10 years.
