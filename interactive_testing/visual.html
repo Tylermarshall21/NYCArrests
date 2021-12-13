@@ -148,7 +148,7 @@
       weekday: d.Weekday,
       arrest_count: +d.Number_Arrests,
       year: d.ARREST_YEAR,
-      month_num: d.ARREST_MONTH,
+      month_num: +d.ARREST_MONTH,
       month_text: d.ARREST_MONTH_TEXT,
       precip: +d.Precipitation,
       temp: +d.Mean_Temperature,
@@ -287,7 +287,7 @@
 				createq2()
 		};
 		
-		function question2update(year){
+	function question2update(year){
     console.log(year)
     
 			var arrestBars = d3.select("g#bars")
@@ -297,12 +297,70 @@
 
 			var newarrestdata = arrestBars
 				.data().filter(d => d.year == year);
-
+				
 				update(newarrestdata)
-				//createq3()
+				createq3()
 		};
 		
-		function createq2(){
+	function question3update(month_num){
+    console.log(month_num)
+    
+			var arrestBars = d3.select("g#bars")
+			.selectAll("rect");
+			
+			console.log(arrestBars.data())
+
+			var newarrestdata = arrestBars
+				.data().filter(d => (d.month_num <= month_num & d.month_num > month_num-4));
+				
+				update(newarrestdata)
+				createq4()
+		};
+		
+	function question4update(precip_thresh){
+    console.log(precip_thresh)
+    
+			var arrestBars = d3.select("g#bars")
+			.selectAll("rect");
+			
+			console.log(arrestBars.data())
+
+			if(precip_thresh == 0.002){
+			 var newarrestdata = arrestBars
+				.data().filter(d => d.precip >= precip_thresh);
+			}else{
+			  var newarrestdata = arrestBars
+				.data().filter(d => d.precip == precip_thresh);
+			}
+				
+				update(newarrestdata)
+				createq5()
+		};
+	
+	function question5update(t_f){
+    console.log(t_f)
+    
+			var arrestBars = d3.select("g#bars")
+			.selectAll("rect");
+			
+			var best = arrestBars.data()[0].key
+			var worst = arrestBars.data()[arrestBars.data().length - 1].key
+			
+			console.log(arrestBars.data())
+
+			if(t_f == 0){
+			 var newarrestdata = arrestBars
+				.data().filter(d => d.key == best);
+			}else{
+			  var newarrestdata = arrestBars
+				.data().filter(d => d.key == worst);
+			}
+				
+				update(newarrestdata)
+				//createq5()
+		};
+		
+	function createq2(){
 		  
 		  // Arrest Second Round Questions
 		  
@@ -332,7 +390,7 @@
       .attr("y", barchartMargin.top + 110)
       .text("Looking for other years? Believe it or not, none of them are represented in the top 100!");
   
-  var q2answers = ['2011','2012','2013','2014']
+  var q2answers = ["2011","2012","2013","2014"]
     .map((value, key) => ({key, value}))
     
   var arrestQuestions = svg.select("g#question_panels")
@@ -348,7 +406,7 @@
       .attr("text",d => d.value)
       .on("click", function ()
 					{
-						question1update(d3.select(this).attr("text"))
+						question2update(d3.select(this).attr("text"))
 						});
 						
 	svg.select("g#question_panels")
@@ -359,11 +417,204 @@
       .attr("x", barchartWidth + barchartMargin.left + (questionWidth - 100)/2)
       .attr("y", (d, i) => barchartMargin.top + 200 + i * 100 + (questionHeight / 20))
       .text(d => d.value);
+			
+		};
+		
+	function createq3(){
 		  
+		  // Arrest Third Round Questions
+		  
+		  svg.select("g#question").selectAll("text").remove();
+		  svg.select("g#question").selectAll("rect").remove();
 
+		  svg.select("g#question_panels").selectAll("rect").remove();
+		  svg.select("g#question_panels").selectAll("text").remove();
+
+  
+  var question = svg.select("g#question")
+      .append("rect")
+      .attr("x", barchartWidth + barchartMargin.left + 50)
+      .attr("y", barchartMargin.top + 20)
+      .attr("width", questionWidth - 100)
+      .attr("height", questionHeight / 5)
+      .attr("fill","ivory");
+						
+	svg.select("g#question")
+      .append("text")
+      .attr("x", barchartWidth + barchartMargin.left + 60)
+      .attr("y", barchartMargin.top + 50)
+      .text("In which months do your think the highest arrest days occurred?");
+  svg.select("g#question")
+      .append("text")
+      .attr("x", barchartWidth + barchartMargin.left + 60)
+      .attr("y", barchartMargin.top + 110)
+      .text("Here's a hint, which month is it definitely not?");
+  
+  var q3answers = [{key:3, value:"January, February, March"},
+                    {key:6, value:"April, May, June"},
+                    {key:9, value:"July, August, September"},
+                    {key:12, value:"October, November,December"}]
+    
+  var arrestQuestions = svg.select("g#question_panels")
+      .selectAll("rect")
+      .data(q3answers, d => d.key)
+      .enter()
+      .append("rect")
+      .attr("x", barchartWidth + barchartMargin.left + 50)
+      .attr("y", (d, i) => barchartMargin.top + 200 + i * 100)
+      .attr("width", questionWidth - 100)
+      .attr("height", questionHeight / 10)
+      .attr("fill","white")
+      .attr("text",d => d.value)
+      .attr("key", d=> d.key)
+      .on("click", function ()
+					{
+						question3update(d3.select(this).attr("key"))
+						});
+						
+	svg.select("g#question_panels")
+			.selectAll("text")
+      .data(q3answers, d => d.key)
+      .enter()
+      .append("text")
+      .attr("x", barchartWidth + barchartMargin.left + (questionWidth - 100)/2)
+      .attr("y", (d, i) => barchartMargin.top + 200 + i * 100 + (questionHeight / 20))
+      .text(d => d.value);
 			
 		};
 
+  function createq4(){
+		  
+		  // Arrest Fourth Round Questions
+		  
+		  svg.select("g#question").selectAll("text").remove();
+		  svg.select("g#question").selectAll("rect").remove();
+
+		  svg.select("g#question_panels").selectAll("rect").remove();
+		  svg.select("g#question_panels").selectAll("text").remove();
+
+  
+  var question = svg.select("g#question")
+      .append("rect")
+      .attr("x", barchartWidth + barchartMargin.left + 50)
+      .attr("y", barchartMargin.top + 20)
+      .attr("width", questionWidth - 100)
+      .attr("height", questionHeight / 5)
+      .attr("fill","ivory");
+						
+	svg.select("g#question")
+      .append("text")
+      .attr("x", barchartWidth + barchartMargin.left + 60)
+      .attr("y", barchartMargin.top + 50)
+      .text("On the days with the most arrests, what was the weather like?");
+  svg.select("g#question")
+      .append("text")
+      .attr("x", barchartWidth + barchartMargin.left + 60)
+      .attr("y", barchartMargin.top + 110)
+      .text("Hint: Use your intuition!");
+  
+  var q4answers = [{key:0.00, value:"No precipitation"},
+                    {key:0.001, value:"Trace amounts of precipitation"},
+                    {key:0.002, value:"Precipitation greater than trace amounts"}]
+    
+  var arrestQuestions = svg.select("g#question_panels")
+      .selectAll("rect")
+      .data(q4answers, d => d.key)
+      .enter()
+      .append("rect")
+      .attr("x", barchartWidth + barchartMargin.left + 50)
+      .attr("y", (d, i) => barchartMargin.top + 200 + i * 100)
+      .attr("width", questionWidth - 100)
+      .attr("height", questionHeight / 10)
+      .attr("fill","white")
+      .attr("text",d => d.value)
+      .attr("key", d=> d.key)
+      .on("click", function ()
+					{
+						question4update(d3.select(this).attr("key"))
+						});
+						
+	svg.select("g#question_panels")
+			.selectAll("text")
+      .data(q4answers, d => d.key)
+      .enter()
+      .append("text")
+      .attr("x", barchartWidth + barchartMargin.left + (questionWidth - 100)/2)
+      .attr("y", (d, i) => barchartMargin.top + 200 + i * 100 + (questionHeight / 20))
+      .text(d => d.value);
+			
+		};
+		
+  function createq5(){
+		  
+		  // Arrest Fifth Round Questions
+		  
+		  svg.select("g#question").selectAll("text").remove();
+		  svg.select("g#question").selectAll("rect").remove();
+
+		  svg.select("g#question_panels").selectAll("rect").remove();
+		  svg.select("g#question_panels").selectAll("text").remove();
+
+  
+  var question = svg.select("g#question")
+      .append("rect")
+      .attr("x", barchartWidth + barchartMargin.left + 50)
+      .attr("y", barchartMargin.top + 20)
+      .attr("width", questionWidth - 100)
+      .attr("height", questionHeight / 5)
+      .attr("fill","ivory");
+						
+	svg.select("g#question")
+      .append("text")
+      .attr("x", barchartWidth + barchartMargin.left + 60)
+      .attr("y", barchartMargin.top + 40)
+      .text("Final Question: Get this one right and we'll eliminate all but the top entry!");
+	svg.select("g#question")
+      .append("text")
+      .attr("x", barchartWidth + barchartMargin.left + 60)
+      .attr("y", barchartMargin.top + 60)
+      .text("True or False: When crowds fill the city on Thanksgiving Day, daily arrests increase");
+	svg.select("g#question")
+      .append("text")
+      .attr("x", barchartWidth + barchartMargin.left + 60)
+      .attr("y", barchartMargin.top + 80)
+      .text("significantly.");
+  svg.select("g#question")
+      .append("text")
+      .attr("x", barchartWidth + barchartMargin.left + 60)
+      .attr("y", barchartMargin.top + 130)
+      .text("Hint: Think back to the analyses in the Results section.");
+  
+  var q4answers = [{key:1, value:"True"},
+                    {key:0, value:"False"}]
+    
+  var arrestQuestions = svg.select("g#question_panels")
+      .selectAll("rect")
+      .data(q4answers, d => d.key)
+      .enter()
+      .append("rect")
+      .attr("x", barchartWidth + barchartMargin.left + 50)
+      .attr("y", (d, i) => barchartMargin.top + 200 + i * 100)
+      .attr("width", questionWidth - 100)
+      .attr("height", questionHeight / 10)
+      .attr("fill","white")
+      .attr("text",d => d.value)
+      .attr("key", d=> d.key)
+      .on("click", function ()
+					{
+						question5update(d3.select(this).attr("key"))
+						});
+						
+	svg.select("g#question_panels")
+			.selectAll("text")
+      .data(q4answers, d => d.key)
+      .enter()
+      .append("text")
+      .attr("x", barchartWidth + barchartMargin.left + (questionWidth - 100)/2)
+      .attr("y", (d, i) => barchartMargin.top + 200 + i * 100 + (questionHeight / 20))
+      .text(d => d.value);
+			
+		};
     </script>
 
   </body>
