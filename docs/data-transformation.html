@@ -24,7 +24,7 @@
 <meta name="author" content="Ryan Rogers and Tyler Marshall" />
 
 
-<meta name="date" content="2021-12-11" />
+<meta name="date" content="2021-12-13" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -157,7 +157,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="3.1.4" data-path="data-transformation.html"><a href="data-transformation.html#aggregating-by-category"><i class="fa fa-check"></i><b>3.1.4</b> Aggregating by Category</a></li>
 </ul></li>
 <li class="chapter" data-level="3.2" data-path="data-transformation.html"><a href="data-transformation.html#crime-data-1"><i class="fa fa-check"></i><b>3.2</b> Crime Data</a></li>
-<li class="chapter" data-level="3.3" data-path="data-transformation.html"><a href="data-transformation.html#weather-data-1"><i class="fa fa-check"></i><b>3.3</b> Weather Data</a></li>
+<li class="chapter" data-level="3.3" data-path="data-transformation.html"><a href="data-transformation.html#interactive-component"><i class="fa fa-check"></i><b>3.3</b> Interactive Component</a>
+<ul>
+<li class="chapter" data-level="3.3.1" data-path="data-transformation.html"><a href="data-transformation.html#top-100-days"><i class="fa fa-check"></i><b>3.3.1</b> Top 100 Days</a></li>
+<li class="chapter" data-level="3.3.2" data-path="data-transformation.html"><a href="data-transformation.html#weather-data-1"><i class="fa fa-check"></i><b>3.3.2</b> Weather Data</a></li>
+<li class="chapter" data-level="3.3.3" data-path="data-transformation.html"><a href="data-transformation.html#combining-weather-and-top-100"><i class="fa fa-check"></i><b>3.3.3</b> Combining Weather and Top 100</a></li>
+</ul></li>
 </ul></li>
 <li class="chapter" data-level="4" data-path="missing-values.html"><a href="missing-values.html"><i class="fa fa-check"></i><b>4</b> Missing values</a>
 <ul>
@@ -172,7 +177,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="5.5" data-path="results.html"><a href="results.html#thanksgiving-day-parade---more-arrests-or-fewer"><i class="fa fa-check"></i><b>5.5</b> Thanksgiving Day Parade - More arrests, or fewer?</a></li>
 <li class="chapter" data-level="5.6" data-path="results.html"><a href="results.html#have-drunk-driving-arrests-gone-down-recently"><i class="fa fa-check"></i><b>5.6</b> Have Drunk Driving Arrests Gone Down Recently</a></li>
 </ul></li>
-<li class="chapter" data-level="6" data-path="interactive-component.html"><a href="interactive-component.html"><i class="fa fa-check"></i><b>6</b> Interactive component</a></li>
+<li class="chapter" data-level="6" data-path="interactive-component-1.html"><a href="interactive-component-1.html"><i class="fa fa-check"></i><b>6</b> Interactive component</a></li>
 <li class="chapter" data-level="7" data-path="conclusion.html"><a href="conclusion.html"><i class="fa fa-check"></i><b>7</b> Conclusion</a></li>
 <li class="divider"></li>
 <li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
@@ -269,46 +274,93 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb7-11"><a href="data-transformation.html#cb7-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">Category =</span> <span class="st">&quot;Crime Reports&quot;</span>)</span>
 <span id="cb7-12"><a href="data-transformation.html#cb7-12" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 </div>
-<div id="weather-data-1" class="section level2" number="3.3">
-<h2><span class="header-section-number">3.3</span> Weather Data</h2>
+<div id="interactive-component" class="section level2" number="3.3">
+<h2><span class="header-section-number">3.3</span> Interactive Component</h2>
+<p>Some data was assembled and formatted for use in our interactive visual. This included a list of the top 100 days with the most arrests and weather in NYC.</p>
+<div id="top-100-days" class="section level3" number="3.3.1">
+<h3><span class="header-section-number">3.3.1</span> Top 100 Days</h3>
+<p>First, we assembled the top 100 days with the highest arrests and stored this as a dataframe.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="data-transformation.html#cb8-1" aria-hidden="true" tabindex="-1"></a>nyc_arrest_top_hundred <span class="ot">&lt;-</span> nyc_arrests_combined <span class="sc">%&gt;%</span></span>
+<span id="cb8-2"><a href="data-transformation.html#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Weekday =</span> <span class="fu">wday</span>(ARREST_DATE)) <span class="sc">%&gt;%</span></span>
+<span id="cb8-3"><a href="data-transformation.html#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(ARREST_DATE, Weekday) <span class="sc">%&gt;%</span></span>
+<span id="cb8-4"><a href="data-transformation.html#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">Number_Arrests =</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb8-5"><a href="data-transformation.html#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb8-6"><a href="data-transformation.html#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(Number_Arrests)) <span class="sc">%&gt;%</span></span>
+<span id="cb8-7"><a href="data-transformation.html#cb8-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">ARREST_YEAR =</span> <span class="fu">year</span>(ARREST_DATE),</span>
+<span id="cb8-8"><a href="data-transformation.html#cb8-8" aria-hidden="true" tabindex="-1"></a>         <span class="at">ARREST_MONTH =</span> <span class="fu">month</span>(ARREST_DATE),</span>
+<span id="cb8-9"><a href="data-transformation.html#cb8-9" aria-hidden="true" tabindex="-1"></a>         <span class="at">ARREST_MONTH_TEXT =</span> <span class="fu">month</span>(ARREST_DATE)) <span class="sc">%&gt;%</span></span>
+<span id="cb8-10"><a href="data-transformation.html#cb8-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">100</span>)</span>
+<span id="cb8-11"><a href="data-transformation.html#cb8-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-12"><a href="data-transformation.html#cb8-12" aria-hidden="true" tabindex="-1"></a>nyc_arrest_top_hundred<span class="sc">$</span>Weekday <span class="ot">&lt;-</span> <span class="fu">factor</span>(nyc_arrest_top_hundred<span class="sc">$</span>Weekday,</span>
+<span id="cb8-13"><a href="data-transformation.html#cb8-13" aria-hidden="true" tabindex="-1"></a>                                     <span class="at">levels=</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">5</span>,<span class="dv">6</span>,<span class="dv">7</span>),</span>
+<span id="cb8-14"><a href="data-transformation.html#cb8-14" aria-hidden="true" tabindex="-1"></a>                                     <span class="at">labels=</span><span class="fu">c</span>(<span class="st">&quot;Sunday&quot;</span>, <span class="st">&quot;Monday&quot;</span>, <span class="st">&quot;Tuesday&quot;</span>, <span class="st">&quot;Wednesday&quot;</span>, <span class="st">&quot;Thursday&quot;</span>,<span class="st">&quot;Friday&quot;</span>,<span class="st">&quot;Saturday&quot;</span>)</span>
+<span id="cb8-15"><a href="data-transformation.html#cb8-15" aria-hidden="true" tabindex="-1"></a>                                     )</span>
+<span id="cb8-16"><a href="data-transformation.html#cb8-16" aria-hidden="true" tabindex="-1"></a>nyc_arrest_top_hundred<span class="sc">$</span>ARREST_MONTH_TEXT <span class="ot">&lt;-</span> <span class="fu">factor</span>(nyc_arrest_top_hundred<span class="sc">$</span>ARREST_MONTH_TEXT,</span>
+<span id="cb8-17"><a href="data-transformation.html#cb8-17" aria-hidden="true" tabindex="-1"></a>                                                   <span class="at">levels=</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">5</span>,<span class="dv">6</span>,<span class="dv">7</span>,<span class="dv">8</span>,<span class="dv">9</span>,<span class="dv">10</span>,<span class="dv">11</span>,<span class="dv">12</span>),</span>
+<span id="cb8-18"><a href="data-transformation.html#cb8-18" aria-hidden="true" tabindex="-1"></a>                                                   <span class="at">labels=</span><span class="fu">c</span>(<span class="st">&quot;January&quot;</span>,</span>
+<span id="cb8-19"><a href="data-transformation.html#cb8-19" aria-hidden="true" tabindex="-1"></a>                                                            <span class="st">&quot;February&quot;</span>,</span>
+<span id="cb8-20"><a href="data-transformation.html#cb8-20" aria-hidden="true" tabindex="-1"></a>                                                            <span class="st">&quot;March&quot;</span>,</span>
+<span id="cb8-21"><a href="data-transformation.html#cb8-21" aria-hidden="true" tabindex="-1"></a>                                                            <span class="st">&quot;April&quot;</span>,</span>
+<span id="cb8-22"><a href="data-transformation.html#cb8-22" aria-hidden="true" tabindex="-1"></a>                                                            <span class="st">&quot;May&quot;</span>,</span>
+<span id="cb8-23"><a href="data-transformation.html#cb8-23" aria-hidden="true" tabindex="-1"></a>                                                            <span class="st">&quot;June&quot;</span>,</span>
+<span id="cb8-24"><a href="data-transformation.html#cb8-24" aria-hidden="true" tabindex="-1"></a>                                                            <span class="st">&quot;July&quot;</span>,</span>
+<span id="cb8-25"><a href="data-transformation.html#cb8-25" aria-hidden="true" tabindex="-1"></a>                                                            <span class="st">&quot;August&quot;</span>,</span>
+<span id="cb8-26"><a href="data-transformation.html#cb8-26" aria-hidden="true" tabindex="-1"></a>                                                            <span class="st">&quot;September&quot;</span>,</span>
+<span id="cb8-27"><a href="data-transformation.html#cb8-27" aria-hidden="true" tabindex="-1"></a>                                                            <span class="st">&quot;October&quot;</span>,</span>
+<span id="cb8-28"><a href="data-transformation.html#cb8-28" aria-hidden="true" tabindex="-1"></a>                                                            <span class="st">&quot;November&quot;</span>,</span>
+<span id="cb8-29"><a href="data-transformation.html#cb8-29" aria-hidden="true" tabindex="-1"></a>                                                            <span class="st">&quot;December&quot;</span>)</span>
+<span id="cb8-30"><a href="data-transformation.html#cb8-30" aria-hidden="true" tabindex="-1"></a>                                                   )</span></code></pre></div>
+</div>
+<div id="weather-data-1" class="section level3" number="3.3.2">
+<h3><span class="header-section-number">3.3.2</span> Weather Data</h3>
 <p>Our weather data was stored in csv files, which we then transformed to form a cleaner data set. In our original dataset, there were some values marked as T, representing precipitation less than 0.01 inches. For the sake of simplicity, we translated ‘Trace’ precipitation as 0.001. This will show that there was precipitation less than the threshold of 0.01, while not overstating the quantity of rain. For our uses, this will not make the data misleading when presented. On days where equipment malfunctioned, we set the value to NA.</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="data-transformation.html#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Precipitation Data Import</span></span>
-<span id="cb8-2"><a href="data-transformation.html#cb8-2" aria-hidden="true" tabindex="-1"></a>nyc_weather <span class="ot">&lt;-</span> <span class="fu">read.table</span>(<span class="st">&quot;./Precip_Data.csv&quot;</span>,</span>
-<span id="cb8-3"><a href="data-transformation.html#cb8-3" aria-hidden="true" tabindex="-1"></a>                        <span class="at">header=</span><span class="cn">TRUE</span>,</span>
-<span id="cb8-4"><a href="data-transformation.html#cb8-4" aria-hidden="true" tabindex="-1"></a>                        <span class="at">sep=</span><span class="st">&quot;,&quot;</span>,</span>
-<span id="cb8-5"><a href="data-transformation.html#cb8-5" aria-hidden="true" tabindex="-1"></a>                        <span class="at">quote=</span><span class="st">&#39;&quot;&#39;</span></span>
-<span id="cb8-6"><a href="data-transformation.html#cb8-6" aria-hidden="true" tabindex="-1"></a>                        )</span>
-<span id="cb8-7"><a href="data-transformation.html#cb8-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-8"><a href="data-transformation.html#cb8-8" aria-hidden="true" tabindex="-1"></a>nyc_weather <span class="ot">&lt;-</span> (</span>
-<span id="cb8-9"><a href="data-transformation.html#cb8-9" aria-hidden="true" tabindex="-1"></a>  nyc_weather <span class="sc">%&gt;%</span></span>
-<span id="cb8-10"><a href="data-transformation.html#cb8-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="sc">!</span>Day,</span>
-<span id="cb8-11"><a href="data-transformation.html#cb8-11" aria-hidden="true" tabindex="-1"></a>                 <span class="at">names_to =</span> <span class="st">&quot;Month&quot;</span>,</span>
-<span id="cb8-12"><a href="data-transformation.html#cb8-12" aria-hidden="true" tabindex="-1"></a>                 <span class="at">values_to =</span> <span class="st">&quot;Precipitation&quot;</span></span>
-<span id="cb8-13"><a href="data-transformation.html#cb8-13" aria-hidden="true" tabindex="-1"></a>                 ) <span class="sc">%&gt;%</span></span>
-<span id="cb8-14"><a href="data-transformation.html#cb8-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">unite</span>(Date, <span class="fu">c</span>(Month, Day))</span>
-<span id="cb8-15"><a href="data-transformation.html#cb8-15" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb8-16"><a href="data-transformation.html#cb8-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-17"><a href="data-transformation.html#cb8-17" aria-hidden="true" tabindex="-1"></a>nyc_weather<span class="sc">$</span>Date <span class="ot">&lt;-</span> <span class="fu">as_date</span>(nyc_weather<span class="sc">$</span>Date, <span class="at">format=</span><span class="st">&quot;%b.%y_%d&quot;</span>)</span>
-<span id="cb8-18"><a href="data-transformation.html#cb8-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-19"><a href="data-transformation.html#cb8-19" aria-hidden="true" tabindex="-1"></a>nyc_temp <span class="ot">&lt;-</span> <span class="fu">read.table</span>(<span class="st">&quot;./Temp_Data.csv&quot;</span>,</span>
-<span id="cb8-20"><a href="data-transformation.html#cb8-20" aria-hidden="true" tabindex="-1"></a>                        <span class="at">header=</span><span class="cn">TRUE</span>,</span>
-<span id="cb8-21"><a href="data-transformation.html#cb8-21" aria-hidden="true" tabindex="-1"></a>                        <span class="at">sep=</span><span class="st">&quot;,&quot;</span>,</span>
-<span id="cb8-22"><a href="data-transformation.html#cb8-22" aria-hidden="true" tabindex="-1"></a>                        <span class="at">quote=</span><span class="st">&#39;&quot;&#39;</span></span>
-<span id="cb8-23"><a href="data-transformation.html#cb8-23" aria-hidden="true" tabindex="-1"></a>                        )</span>
-<span id="cb8-24"><a href="data-transformation.html#cb8-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-25"><a href="data-transformation.html#cb8-25" aria-hidden="true" tabindex="-1"></a>nyc_temp <span class="ot">&lt;-</span> (</span>
-<span id="cb8-26"><a href="data-transformation.html#cb8-26" aria-hidden="true" tabindex="-1"></a>  nyc_temp <span class="sc">%&gt;%</span></span>
-<span id="cb8-27"><a href="data-transformation.html#cb8-27" aria-hidden="true" tabindex="-1"></a>    <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="sc">!</span>Day,</span>
-<span id="cb8-28"><a href="data-transformation.html#cb8-28" aria-hidden="true" tabindex="-1"></a>                 <span class="at">names_to =</span> <span class="st">&quot;Month&quot;</span>,</span>
-<span id="cb8-29"><a href="data-transformation.html#cb8-29" aria-hidden="true" tabindex="-1"></a>                 <span class="at">values_to =</span> <span class="st">&quot;Mean_Temperature&quot;</span></span>
-<span id="cb8-30"><a href="data-transformation.html#cb8-30" aria-hidden="true" tabindex="-1"></a>                 ) <span class="sc">%&gt;%</span></span>
-<span id="cb8-31"><a href="data-transformation.html#cb8-31" aria-hidden="true" tabindex="-1"></a>    <span class="fu">unite</span>(Date, <span class="fu">c</span>(Month, Day))</span>
-<span id="cb8-32"><a href="data-transformation.html#cb8-32" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb8-33"><a href="data-transformation.html#cb8-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-34"><a href="data-transformation.html#cb8-34" aria-hidden="true" tabindex="-1"></a>nyc_temp<span class="sc">$</span>Date <span class="ot">&lt;-</span> <span class="fu">as_date</span>(nyc_temp<span class="sc">$</span>Date, <span class="at">format=</span><span class="st">&quot;%b.%y_%d&quot;</span>)</span>
-<span id="cb8-35"><a href="data-transformation.html#cb8-35" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-36"><a href="data-transformation.html#cb8-36" aria-hidden="true" tabindex="-1"></a>nyc_weather <span class="ot">&lt;-</span> <span class="fu">full_join</span>(nyc_weather, nyc_temp)</span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="data-transformation.html#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Precipitation Data Import</span></span>
+<span id="cb9-2"><a href="data-transformation.html#cb9-2" aria-hidden="true" tabindex="-1"></a>nyc_weather <span class="ot">&lt;-</span> <span class="fu">read.table</span>(<span class="st">&quot;./Precip_Data.csv&quot;</span>,</span>
+<span id="cb9-3"><a href="data-transformation.html#cb9-3" aria-hidden="true" tabindex="-1"></a>                        <span class="at">header=</span><span class="cn">TRUE</span>,</span>
+<span id="cb9-4"><a href="data-transformation.html#cb9-4" aria-hidden="true" tabindex="-1"></a>                        <span class="at">sep=</span><span class="st">&quot;,&quot;</span>,</span>
+<span id="cb9-5"><a href="data-transformation.html#cb9-5" aria-hidden="true" tabindex="-1"></a>                        <span class="at">quote=</span><span class="st">&#39;&quot;&#39;</span></span>
+<span id="cb9-6"><a href="data-transformation.html#cb9-6" aria-hidden="true" tabindex="-1"></a>                        )</span>
+<span id="cb9-7"><a href="data-transformation.html#cb9-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-8"><a href="data-transformation.html#cb9-8" aria-hidden="true" tabindex="-1"></a>nyc_weather <span class="ot">&lt;-</span> (</span>
+<span id="cb9-9"><a href="data-transformation.html#cb9-9" aria-hidden="true" tabindex="-1"></a>  nyc_weather <span class="sc">%&gt;%</span></span>
+<span id="cb9-10"><a href="data-transformation.html#cb9-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="sc">!</span>Day,</span>
+<span id="cb9-11"><a href="data-transformation.html#cb9-11" aria-hidden="true" tabindex="-1"></a>                 <span class="at">names_to =</span> <span class="st">&quot;Month&quot;</span>,</span>
+<span id="cb9-12"><a href="data-transformation.html#cb9-12" aria-hidden="true" tabindex="-1"></a>                 <span class="at">values_to =</span> <span class="st">&quot;Precipitation&quot;</span></span>
+<span id="cb9-13"><a href="data-transformation.html#cb9-13" aria-hidden="true" tabindex="-1"></a>                 ) <span class="sc">%&gt;%</span></span>
+<span id="cb9-14"><a href="data-transformation.html#cb9-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">unite</span>(Date, <span class="fu">c</span>(Month, Day))</span>
+<span id="cb9-15"><a href="data-transformation.html#cb9-15" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb9-16"><a href="data-transformation.html#cb9-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-17"><a href="data-transformation.html#cb9-17" aria-hidden="true" tabindex="-1"></a>nyc_weather<span class="sc">$</span>Date <span class="ot">&lt;-</span> <span class="fu">as_date</span>(nyc_weather<span class="sc">$</span>Date, <span class="at">format=</span><span class="st">&quot;%b.%y_%d&quot;</span>)</span>
+<span id="cb9-18"><a href="data-transformation.html#cb9-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-19"><a href="data-transformation.html#cb9-19" aria-hidden="true" tabindex="-1"></a>nyc_temp <span class="ot">&lt;-</span> <span class="fu">read.table</span>(<span class="st">&quot;./Temp_Data.csv&quot;</span>,</span>
+<span id="cb9-20"><a href="data-transformation.html#cb9-20" aria-hidden="true" tabindex="-1"></a>                        <span class="at">header=</span><span class="cn">TRUE</span>,</span>
+<span id="cb9-21"><a href="data-transformation.html#cb9-21" aria-hidden="true" tabindex="-1"></a>                        <span class="at">sep=</span><span class="st">&quot;,&quot;</span>,</span>
+<span id="cb9-22"><a href="data-transformation.html#cb9-22" aria-hidden="true" tabindex="-1"></a>                        <span class="at">quote=</span><span class="st">&#39;&quot;&#39;</span></span>
+<span id="cb9-23"><a href="data-transformation.html#cb9-23" aria-hidden="true" tabindex="-1"></a>                        )</span>
+<span id="cb9-24"><a href="data-transformation.html#cb9-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-25"><a href="data-transformation.html#cb9-25" aria-hidden="true" tabindex="-1"></a>nyc_temp <span class="ot">&lt;-</span> (</span>
+<span id="cb9-26"><a href="data-transformation.html#cb9-26" aria-hidden="true" tabindex="-1"></a>  nyc_temp <span class="sc">%&gt;%</span></span>
+<span id="cb9-27"><a href="data-transformation.html#cb9-27" aria-hidden="true" tabindex="-1"></a>    <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="sc">!</span>Day,</span>
+<span id="cb9-28"><a href="data-transformation.html#cb9-28" aria-hidden="true" tabindex="-1"></a>                 <span class="at">names_to =</span> <span class="st">&quot;Month&quot;</span>,</span>
+<span id="cb9-29"><a href="data-transformation.html#cb9-29" aria-hidden="true" tabindex="-1"></a>                 <span class="at">values_to =</span> <span class="st">&quot;Mean_Temperature&quot;</span></span>
+<span id="cb9-30"><a href="data-transformation.html#cb9-30" aria-hidden="true" tabindex="-1"></a>                 ) <span class="sc">%&gt;%</span></span>
+<span id="cb9-31"><a href="data-transformation.html#cb9-31" aria-hidden="true" tabindex="-1"></a>    <span class="fu">unite</span>(Date, <span class="fu">c</span>(Month, Day))</span>
+<span id="cb9-32"><a href="data-transformation.html#cb9-32" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb9-33"><a href="data-transformation.html#cb9-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-34"><a href="data-transformation.html#cb9-34" aria-hidden="true" tabindex="-1"></a>nyc_temp<span class="sc">$</span>Date <span class="ot">&lt;-</span> <span class="fu">as_date</span>(nyc_temp<span class="sc">$</span>Date, <span class="at">format=</span><span class="st">&quot;%b.%y_%d&quot;</span>)</span>
+<span id="cb9-35"><a href="data-transformation.html#cb9-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-36"><a href="data-transformation.html#cb9-36" aria-hidden="true" tabindex="-1"></a>nyc_weather <span class="ot">&lt;-</span> <span class="fu">full_join</span>(nyc_weather, nyc_temp)</span></code></pre></div>
+</div>
+<div id="combining-weather-and-top-100" class="section level3" number="3.3.3">
+<h3><span class="header-section-number">3.3.3</span> Combining Weather and Top 100</h3>
+<p>A simple join combines the two datasets, which are then stored as a file.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="data-transformation.html#cb10-1" aria-hidden="true" tabindex="-1"></a>combined_hundred <span class="ot">&lt;-</span> <span class="fu">left_join</span>(nyc_arrest_top_hundred, nyc_weather, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">&quot;ARREST_DATE&quot;</span> <span class="ot">=</span> <span class="st">&quot;Date&quot;</span>))</span>
+<span id="cb10-2"><a href="data-transformation.html#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="data-transformation.html#cb10-3" aria-hidden="true" tabindex="-1"></a>combined_hundred<span class="sc">$</span>Ranking <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(combined_hundred)</span>
+<span id="cb10-4"><a href="data-transformation.html#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-5"><a href="data-transformation.html#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(combined_hundred, <span class="at">file=</span><span class="st">&quot;interactive_testing/tophundred.csv&quot;</span>)</span></code></pre></div>
 
+</div>
 </div>
 </div>
             </section>
