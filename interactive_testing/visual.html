@@ -164,7 +164,7 @@
     // Initialize Barchart Scale, Axes
     
     var xScale = d3.scaleLinear()
-      .domain([0, d3.max(arrestdata, d => d.arrest_count)])
+      .domain([0, 1750 /*d3.max(arrestdata, d => d.arrest_count)*/])
       .range([0, barchartWidth]);
       
     var yScale = d3.scaleBand()
@@ -185,7 +185,9 @@
       .selectAll("rect")
       .data(arrestdata, d => d.key);
     
-    arrestBars.enter().append("rect")
+    arrestBars
+      .enter()
+      .append("rect")
       .attr("x", d => 0 + barchartMargin.left)
       .attr("y", (d, i) => yScale(d.key) + barchartMargin.top)
       .attr("width", d => xScale(d.arrest_count))
@@ -220,7 +222,7 @@
     
     console.log(arrestdata.length)
 
-    xScale.domain([0, d3.max(arrestdata, d => d.arrest_count)]);
+    xScale.domain([0, 1750 /*d3.max(arrestdata, d => d.arrest_count)*/]);
 
     yScale.domain(d3.range(d3.min(arrestdata, d => d.key),d3.max(arrestdata, d => d.key)+1));
 
@@ -284,7 +286,11 @@
 				.data().filter(d => d.weekday == weekday);
 
 				update(newarrestdata)
-				createq2()
+				if(newarrestdata.length == 0){
+				  gameover(newarrestdata)
+				}else{
+				  createq2()
+				}
 		};
 		
 	function question2update(year){
@@ -299,7 +305,11 @@
 				.data().filter(d => d.year == year);
 				
 				update(newarrestdata)
+				if(newarrestdata.length == 0){
+				  gameover(newarrestdata)
+				}else{
 				createq3()
+				}
 		};
 		
 	function question3update(month_num){
@@ -311,10 +321,14 @@
 			console.log(arrestBars.data())
 
 			var newarrestdata = arrestBars
-				.data().filter(d => (d.month_num <= month_num & d.month_num > month_num-4));
+				.data().filter(d => (d.month_num <= month_num & d.month_num > month_num-3));
 				
 				update(newarrestdata)
+				if(newarrestdata.length == 0){
+				  gameover(newarrestdata)
+				}else{
 				createq4()
+				}
 		};
 		
 	function question4update(precip_thresh){
@@ -334,7 +348,11 @@
 			}
 				
 				update(newarrestdata)
+				if(newarrestdata.length == 0){
+				  gameover(newarrestdata)
+				}else{
 				createq5()
+				}
 		};
 	
 	function question5update(t_f){
@@ -357,7 +375,7 @@
 			}
 				
 				update(newarrestdata)
-				//createq5()
+				gameover(newarrestdata)
 		};
 		
 	function createq2(){
@@ -614,6 +632,145 @@
       .attr("y", (d, i) => barchartMargin.top + 200 + i * 100 + (questionHeight / 20))
       .text(d => d.value);
 			
+		};
+		
+  function gameover(result_data){
+		  
+		  // Game is over - only 0 or 1 bar left
+		  
+		  svg.select("g#question").selectAll("text").remove();
+		  svg.select("g#question").selectAll("rect").remove();
+
+		  svg.select("g#question_panels").selectAll("rect").remove();
+		  svg.select("g#question_panels").selectAll("text").remove();
+		  
+		  svg.select("g#qTitles").selectAll("text").remove();
+
+  
+  var question = svg.select("g#question")
+      .append("rect")
+      .attr("x", barchartWidth + barchartMargin.left + questionWidth / 2 - 175)
+      .attr("y", barchartMargin.top + 30)
+      .attr("width", questionWidth - 400)
+      .attr("height", questionHeight / 6)
+      .attr("fill","lightblue");
+						
+	svg.select("g#question")
+      .append("text")
+      .attr("x", barchartWidth + questionWidth/2 - 100)
+      .attr("y", barchartMargin.top + 100)
+      .style("font-size", "50px")
+      .text("Game Over!");
+  
+  if(result_data.length == 1){
+    
+    var result_vals = result_data[0]
+    
+  var arrestQuestions = svg.select("g#question_panels")
+      .append("rect")
+      .attr("x", barchartWidth + barchartMargin.left + 50)
+      .attr("y", (d, i) => barchartMargin.top + 200 + i * 100)
+      .attr("width", questionWidth - 100)
+      .attr("height", questionHeight / 10 - 10)
+      .attr("fill","white")
+						
+	svg.select("g#question_panels")
+      .append("text")
+      .attr("x", barchartWidth + barchartMargin.left + 60)
+      .attr("y", (d, i) => barchartMargin.top + (questionHeight / 20) + 200)
+      .style("font-size", "30px")
+      .text("You eliminated all but one date.");
+      
+  svg.select("g#question_panels")
+      .append("rect")
+      .attr("x", barchartWidth + barchartMargin.left + 50)
+      .attr("y", (d, i) => barchartMargin.top + 220 + questionHeight/10)
+      .attr("width", questionWidth - 100)
+      .attr("height", questionHeight / 5)
+      .attr("fill","white")
+						
+	svg.select("g#question_panels")
+      .append("text")
+      .attr("x", barchartWidth + barchartMargin.left + 60)
+      .attr("y", (d, i) => barchartMargin.top + (questionHeight / 20) + 270)
+      .text("Your selection had " + result_vals.arrest_count + " arrests!");
+      
+	svg.select("g#question_panels")
+      .append("text")
+      .attr("x", barchartWidth + barchartMargin.left + 60)
+      .attr("y", (d, i) => barchartMargin.top + (questionHeight / 20) + 300)
+      .text("Here are some other details about your selection:");
+      
+	svg.select("g#question_panels")
+      .append("text")
+      .attr("x", barchartWidth + barchartMargin.left + 60)
+      .attr("y", (d, i) => barchartMargin.top + (questionHeight / 20) + 320)
+      .text("Your selected date was: " + result_vals.date + ", ranked number " + result_vals.key);
+      
+	svg.select("g#question_panels")
+      .append("text")
+      .attr("x", barchartWidth + barchartMargin.left + 60)
+      .attr("y", (d, i) => barchartMargin.top + (questionHeight / 20) + 340)
+      .text("It was a " + result_vals.weekday);
+  
+  if(result_vals.precip == 0){
+	svg.select("g#question_panels")
+      .append("text")
+      .attr("x", barchartWidth + barchartMargin.left + 60)
+      .attr("y", (d, i) => barchartMargin.top + (questionHeight / 20) + 360)
+      .text("There was no precipitation that day, and the average temperature was " + result_vals.temp + "°F");
+  }else if(result_vals.precip == 0.001){
+	svg.select("g#question_panels")
+      .append("text")
+      .attr("x", barchartWidth + barchartMargin.left + 60)
+      .attr("y", (d, i) => barchartMargin.top + (questionHeight / 20) + 360)
+      .text("There was trace precipitation that day, and the average temperature was " + result_vals.temp + "°F");
+  }else{
+	svg.select("g#question_panels")
+      .append("text")
+      .attr("x", barchartWidth + barchartMargin.left + 60)
+      .attr("y", (d, i) => barchartMargin.top + (questionHeight / 20) + 360)
+      .text("There was " + result_vals.precip + " inches of precipitation that day, and the average temperature was " + result_vals.temp + "°F");
+  }
+  // All possibilities eliminated...
+		}else{
+		  var arrestQuestions = svg.select("g#question_panels")
+      .append("rect")
+      .attr("x", barchartWidth + barchartMargin.left + 50)
+      .attr("y", (d, i) => barchartMargin.top + 200 + i * 100)
+      .attr("width", questionWidth - 100)
+      .attr("height", questionHeight / 10 - 10)
+      .attr("fill","white")
+						
+	svg.select("g#question_panels")
+      .append("text")
+      .attr("x", barchartWidth + barchartMargin.left + 60)
+      .attr("y", (d, i) => barchartMargin.top + (questionHeight / 20) + 200)
+      .style("font-size", "30px")
+      .text("You eliminated all of the dates...");
+		  
+		}
+		
+		svg.select("g#question_panels")
+      .append("rect")
+      .attr("x", barchartWidth + barchartMargin.left + 50)
+      .attr("y", h - 200)
+      .attr("width", questionWidth - 100)
+      .attr("height", questionHeight / 5 - 30)
+      .attr("fill","yellow")
+						
+	svg.select("g#question_panels")
+      .append("text")
+      .attr("x", barchartWidth + barchartMargin.left + 60)
+      .attr("y", h - 165)
+      .style("font-size", "30px")
+      .text("Not satisfied with your result?");
+	svg.select("g#question_panels")
+      .append("text")
+      .attr("x", barchartWidth + barchartMargin.left + 60)
+      .attr("y", h - 130)
+      .style("font-size", "30px")
+      .text("Refresh to try again!");
 		};
     </script>
 
