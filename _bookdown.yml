@@ -2,7 +2,7 @@ book_filename: "finalproj"
 output_dir: docs
 delete_merged_file: true
 edit: https://github.com/Tylermarshall21/NYCArrests/edit/main/%s
-view: https://github.com/Tylermarhall21/NYCArrests/blob/main/%s
+view: https://github.com/Tylermarshall21/NYCArrests/blob/main/%s
 language:
   ui:
     chapter_name: "Chapter "
