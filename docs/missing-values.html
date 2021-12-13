@@ -81,9 +81,24 @@
 </ul></li>
 <li class="chapter" data-level="2" data-path="data-sources.html"><a href="data-sources.html"><i class="fa fa-check"></i><b>2</b> Data sources</a>
 <ul>
-<li class="chapter" data-level="2.1" data-path="data-sources.html"><a href="data-sources.html#arrest-data"><i class="fa fa-check"></i><b>2.1</b> Arrest Data</a></li>
-<li class="chapter" data-level="2.2" data-path="data-sources.html"><a href="data-sources.html#crime-data"><i class="fa fa-check"></i><b>2.2</b> Crime Data</a></li>
-<li class="chapter" data-level="2.3" data-path="data-sources.html"><a href="data-sources.html#weather-data"><i class="fa fa-check"></i><b>2.3</b> Weather Data</a></li>
+<li class="chapter" data-level="2.1" data-path="data-sources.html"><a href="data-sources.html#arrest-data"><i class="fa fa-check"></i><b>2.1</b> Arrest Data</a>
+<ul>
+<li class="chapter" data-level="2.1.1" data-path="data-sources.html"><a href="data-sources.html#arrest-data-acquisition"><i class="fa fa-check"></i><b>2.1.1</b> Arrest Data Acquisition</a></li>
+<li class="chapter" data-level="2.1.2" data-path="data-sources.html"><a href="data-sources.html#arrest-data-details"><i class="fa fa-check"></i><b>2.1.2</b> Arrest Data Details</a></li>
+<li class="chapter" data-level="2.1.3" data-path="data-sources.html"><a href="data-sources.html#arrest-data-issues"><i class="fa fa-check"></i><b>2.1.3</b> Arrest Data Issues</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="data-sources.html"><a href="data-sources.html#crime-data"><i class="fa fa-check"></i><b>2.2</b> Crime Data</a>
+<ul>
+<li class="chapter" data-level="2.2.1" data-path="data-sources.html"><a href="data-sources.html#crime-data-acquisition"><i class="fa fa-check"></i><b>2.2.1</b> Crime Data Acquisition</a></li>
+<li class="chapter" data-level="2.2.2" data-path="data-sources.html"><a href="data-sources.html#crime-data-details"><i class="fa fa-check"></i><b>2.2.2</b> Crime Data Details</a></li>
+<li class="chapter" data-level="2.2.3" data-path="data-sources.html"><a href="data-sources.html#crime-data-issues"><i class="fa fa-check"></i><b>2.2.3</b> Crime Data Issues</a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="data-sources.html"><a href="data-sources.html#weather-data"><i class="fa fa-check"></i><b>2.3</b> Weather Data</a>
+<ul>
+<li class="chapter" data-level="2.3.1" data-path="data-sources.html"><a href="data-sources.html#weather-data-acquisition"><i class="fa fa-check"></i><b>2.3.1</b> Weather Data Acquisition</a></li>
+<li class="chapter" data-level="2.3.2" data-path="data-sources.html"><a href="data-sources.html#weather-data-details"><i class="fa fa-check"></i><b>2.3.2</b> Weather Data Details</a></li>
+<li class="chapter" data-level="2.3.3" data-path="data-sources.html"><a href="data-sources.html#weather-data-issues"><i class="fa fa-check"></i><b>2.3.3</b> Weather Data Issues</a></li>
+</ul></li>
 </ul></li>
 <li class="chapter" data-level="3" data-path="data-transformation.html"><a href="data-transformation.html"><i class="fa fa-check"></i><b>3</b> Data transformation</a>
 <ul>
@@ -140,7 +155,7 @@
 <h1><span class="header-section-number">Chapter 4</span> Missing values</h1>
 <div id="investigating-missing-values" class="section level2" number="4.1">
 <h2><span class="header-section-number">4.1</span> Investigating Missing Values</h2>
-<p>The main dataset for our project is data on New York City arrests. For this particular analysis, we will focus only on the NYC arrest data for the past 10 years which is what we will be using for our analysis. Before visualizing our missing values, however, we noticed that some of the entries in the data had empty strings (""), but were not classified as NA in the dataset. Since we felt these empty strings were the equivalent of NA, we changed them in our dataset before plotting the missing values.</p>
+<p>The main dataset for our project is data on New York City arrests. For this particular analysis, we will focus only on the NYC arrest data for the past 10 years. Before visualizing our missing values, however, we noticed that some of the entries in the data had empty strings (""), but were not classified as NA in the dataset. Since we felt these empty strings were the equivalent of NA, we changed them in our dataset before plotting the missing values.</p>
 <p><img src="finalproj_files/figure-html/missing%20values%201-1.png" width="672" /></p>
 <p>From the first plot, we can see that there are 6 different patterns in our data with the most common pattern being no missing data. The plot above shows that there isn’t too much missing data in our dataset, but there are still a few variables that had missing values. The most common pattern where there was missing data is for just <code>LAW_CA</code> to be missing, and this happened around 15000 times in our dataset. <code>LAW_CA</code> is the level of the offense (felony, misdemeanor or violation), so it seems this is not always documented when the arrest occurs. The second most common pattern where data was missing was for the data to be missing <code>KY_</code>, <code>OFN</code>, and <code>PD_D</code>. This pattern was far less common and occurred around 5000 times out of over 3.2 million observations in the data. <code>KY_</code> is an internal classification keycode, <code>OFN</code> is a description of internal classification, and <code>PD_D</code> is a description of internal classification that is more granular than <code>OFN</code>. It seems that on occasion these codes and descriptions were not filled in when the arrest was made. The next most common pattern contains <code>KY_</code>, <code>OFN</code>, <code>PD_D</code> again, but also contains <code>PD_C</code>. <code>PD_C</code> is another internal classification code that is more granular than <code>KY_</code>. This pattern is very similar to previous one, but contains another missing variable that is similar to the others. The next most common missing patterns has the most missing variables with <code>LAW_CA</code>, <code>KY_</code>, <code>OFN</code>, <code>PD_D</code>, <code>PD_C</code>, <code>LAW_CO</code> all missing. <code>LAW_CO</code> is the only variable in this group that hadn’t been in another pattern and this variable represents the law code charges which is a classification code to indicate the charge of the arrest. Our final missing pattern only had <code>ARREST_B</code> variable which is the borough that the arrest occurred in. This pattern was not very common which indicates that the arrest records do a good job keeping track of the location where the arrest happened. We also want to plot our missing data showing percentage missing instead of number of rows missing.</p>
 <p><img src="finalproj_files/figure-html/missing%20values%202-1.png" width="672" /></p>
@@ -250,7 +265,7 @@ K
 </tr>
 </tbody>
 </table>
-<p>We wanted to look to see if there were any patterns of missing data in terms of location of the arrest. We started by looking at the borough that the arrest occurred in to see if certain boroughs had more missing data than others. We found that Manhattan had the largest percentage of arrests with at least missing values, but still only 1 percent of Manhattan arrests were missing data. There was missing data in .7 percent of Bronx arrests and .6 percent of Queens arrests. Staten Island and Brooklyn had the lowest percent of arrests with missing data with only .3 percent. There is some small difference in missing data by borough, but does not seem to be a clear pattern in terms of the borough the arrest occurred in.</p>
+<p>We wanted to look to see if there were any patterns of missing data in terms of location of the arrest. We started by looking at the borough that the arrest occurred in to see if certain boroughs had more missing data than others. (Boroughs are: M for Manhattan, B for Bronx, Q for Queens, S for Staten Island, and K for Brooklyn) We found that Manhattan had the largest percentage of arrests with at least one missing value, but still noted only 1 percent of Manhattan arrests were missing data. There was missing data in .7 percent of Bronx arrests and .6 percent of Queens arrests. Staten Island and Brooklyn had the lowest percent of arrests with missing data with only .3 percent. There is some small difference in missing data by borough, but does not seem to be a clear pattern in terms of the borough the arrest occurred in.</p>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -341,7 +356,7 @@ PCT_Missing
 </tr>
 </tbody>
 </table>
-<p>We also wanted to look to see if any precincts had more missing data than others. There were 77 different precincts in the dataset and the percentage of missing data ranged from 6 percent to .09 percent. The precinct with the highest proportion of missing data was precinct 5 while precincts 100 and 22 had the lowest proportion of missing data. Precinct 10 was missing data on 5.9 percent of its arrest which was the second highest, but precincts 5 and 10 were the only ones with more than 2.5 percent of entries missing data. Thus, it seems there does seem to be a few precincts that are much more likely to have missing data compared to others. Now that we have looked into our missing data, we are going to move on to analyzing our data in the results section.</p>
+<p>We also wanted to look to see if any precincts had more missing data than others. There were 77 different precincts in the dataset and the percentage of missing data ranged from 6 percent to .09 percent. The precinct with the highest proportion of missing data was precinct 5 while precincts 100 and 22 had the lowest proportion of missing data. Precinct 10 was missing data on 5.9 percent of its arrests, which was the second highest, but precincts 5 and 10 were the only ones with more than 2.5 percent of entries missing data. Thus, there does seem to be a few precincts that are much more likely to have missing data compared to others. Now that we have looked into our missing data, we are going to move on to analyzing our data in the results section.</p>
 
 </div>
 </div>
