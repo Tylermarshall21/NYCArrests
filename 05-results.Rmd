@@ -241,7 +241,7 @@ ggplot(crime_vs_arrests_totals2, aes(fill = Category, x = Year, y = Count)) +
   scale_x_continuous(breaks=c(2011,2012,2013,2014,2015,2016,2017,2018,2019,2020)) +
   labs(title="Yearly Arrests Compared to Indexed Crimes",
        x="Year",
-       y="Number of Arrests (in thousands)"
+       y="Count of Reports (in thousands)"
        ) +
   theme_grey(14) +
   theme(axis.text=element_text(size=10)) +
@@ -268,7 +268,7 @@ ggplot(crime_vs_arrests, aes(fill = Category, y = YearCounty, x = Count)) +
   coord_flip() +
   labs(title="Yearly Arrests By NYC County Compared to Indexed Crimes 2017-2019",
        y="Year and County",
-       x="Count"
+       x="Count of Reports"
        ) +
   theme_grey(12) +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1,size=10)) +
